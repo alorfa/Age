@@ -1,0 +1,33 @@
+#pragma once
+
+#include "Age/Application.hpp"
+#include "Age/Object/Object3D.hpp"
+#include "Age/Transform/Camera3D.hpp"
+#include "Age/Resource/TextureLoader.hpp"
+#include "Age/Resource/ModelLoader.hpp"
+#include "Age/Resource/ShaderLoader.hpp"
+#include "Age/Game/WorldScene.hpp"
+#include "Age/Game/Cube.hpp"
+
+using namespace a_game_engine;
+
+namespace a_game
+{
+	class TestGame : public Application
+	{
+	public:
+		ivec2 stopMouse;
+		float sensitivity = 3.f;
+		float time = 0.f;
+		bool mouseIsCamera = false;
+		std::unique_ptr<WorldScene> world;
+
+		void init() override;
+		void loadResources() override;
+		void handleRawEvents(const sf::Event& ev) override;
+		void handleEvents(float delta) override;
+		void update(float delta) override;
+		void draw() const override;
+		void onExit() override;
+	};
+}

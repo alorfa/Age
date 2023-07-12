@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{11da45a7-1db4-4460-b1c2-76fb99357746}</ProjectGuid>
+    <RootNamespace>Age</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>Not$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>Not$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-window-s.lib;sfml-system-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>D:\libs\glew-2.1.0\lib\Release\x64;D:\libs\freetype\lib;D:\libs\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-window-s.lib;sfml-system-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>D:\libs\glew-2.1.0\lib\Release\x64;D:\libs\freetype\lib;D:\libs\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm;D:\libs\assimp2\assimp\include;D:\libs\assimp2\assimp\myBuild\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)externallib64\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>D:\libs\glew-2.1.0\lib\Release\x64;D:\libs\freetype\lib;D:\libs\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm;D:\libs\assimp2\assimp\include;D:\libs\assimp2\assimp\myBuild\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)externallib64\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-window-s.lib;sfml-system-s.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-window-s.lib;sfml-system-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>D:\libs\glew-2.1.0\lib\Release\x64;D:\libs\freetype\lib;D:\libs\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Age\Application.hpp" />
+    <ClInclude Include="Age\Auxiliary\DEBUG.hpp" />
+    <ClInclude Include="Age\Auxiliary\print_math.hpp" />
+    <ClInclude Include="Age\EventHandler.hpp" />
+    <ClInclude Include="Age\Game\Cube.hpp" />
+    <ClInclude Include="Age\Game\Monkie.hpp" />
+    <ClInclude Include="Age\Game\WorldScene.hpp" />
+    <ClInclude Include="Age\Game\Gdata.hpp" />
+    <ClInclude Include="Age\Light\Light.hpp" />
+    <ClInclude Include="Age\Light\LightSource.hpp" />
+    <ClInclude Include="Age\LL\Buffers\FrameBuffer.hpp" />
+    <ClInclude Include="Age\LL\Buffers\VertexBuffer.hpp" />
+    <ClInclude Include="Age\LL\opengl.h" />
+    <ClInclude Include="Age\LL\Shader\Shader.hpp" />
+    <ClInclude Include="Age\LL\Shader\ShaderCompiler.hpp" />
+    <ClInclude Include="Age\LL\Texture\Image.hpp" />
+    <ClInclude Include="Age\LL\Texture\Texture2D.hpp" />
+    <ClInclude Include="Age\Math\mat3.hpp" />
+    <ClInclude Include="Age\Math\mat4.hpp" />
+    <ClInclude Include="Age\Math\vec2.hpp" />
+    <ClInclude Include="Age\Math\vec3.hpp" />
+    <ClInclude Include="Age\Object\Material.hpp" />
+    <ClInclude Include="Age\Object\Mesh3D.hpp" />
+    <ClInclude Include="Age\Object\Model3D.hpp" />
+    <ClInclude Include="Age\Object\Object3D.hpp" />
+    <ClInclude Include="Age\Resource\File.hpp" />
+    <ClInclude Include="Age\Resource\Logger.hpp" />
+    <ClInclude Include="Age\Resource\ModelLoader.hpp" />
+    <ClInclude Include="Age\Resource\ResourceLoader.hpp" />
+    <ClInclude Include="Age\Resource\ShaderMaker.hpp" />
+    <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
+    <ClInclude Include="Age\Resource\TextureLoader.hpp" />
+    <ClInclude Include="Age\Scene\DefaultRenderer3D.hpp" />
+    <ClInclude Include="Age\Scene\Renderer3D.hpp" />
+    <ClInclude Include="Age\Scene\Scene3D.hpp" />
+    <ClInclude Include="Age\Transform\Camera3D.hpp" />
+    <ClInclude Include="Age\Transform\Transform3D.hpp" />
+    <ClInclude Include="Age\types.hpp" />
+    <ClInclude Include="TestGame.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Age\Application.cpp" />
+    <ClCompile Include="Age\EventHandler.cpp" />
+    <ClCompile Include="Age\Game\Cube.cpp" />
+    <ClCompile Include="Age\Game\Monkie.cpp" />
+    <ClCompile Include="Age\Game\WorldScene.cpp" />
+    <ClCompile Include="Age\Game\Gdata.cpp" />
+    <ClCompile Include="Age\Light\LightSource.cpp" />
+    <ClCompile Include="Age\LL\Buffers\FrameBuffer.cpp" />
+    <ClCompile Include="Age\LL\Buffers\VertexBuffer.cpp" />
+    <ClCompile Include="Age\LL\Shader\Shader.cpp" />
+    <ClCompile Include="Age\LL\Shader\ShaderCompiler.cpp" />
+    <ClCompile Include="Age\LL\Texture\Image.cpp" />
+    <ClCompile Include="Age\LL\Texture\Texture2D.cpp" />
+    <ClCompile Include="Age\Math\mat.cpp" />
+    <ClCompile Include="Age\Object\Mesh3D.cpp" />
+    <ClCompile Include="Age\Object\Model3D.cpp" />
+    <ClCompile Include="Age\Object\Object3D.cpp" />
+    <ClCompile Include="Age\Resource\File.cpp" />
+    <ClCompile Include="Age\Resource\Logger.cpp" />
+    <ClCompile Include="Age\Resource\ModelLoader.cpp" />
+    <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
+    <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
+    <ClCompile Include="Age\Resource\TextureLoader.cpp" />
+    <ClCompile Include="Age\Scene\DefaultRenderer3D.cpp" />
+    <ClCompile Include="Age\Scene\Renderer.cpp" />
+    <ClCompile Include="Age\Scene\Scene3D.cpp" />
+    <ClCompile Include="Age\Transform\Camera3D.cpp" />
+    <ClCompile Include="Age\Transform\Transform3D.cpp" />
+    <ClCompile Include="TestGame.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
