@@ -11,7 +11,8 @@ namespace a_game_engine
 		static std::unique_ptr<Texture2D> defaultTexture;
 		std::map<std::filesystem::path, std::unique_ptr<Texture2D>> textures;
 	public:
-		bool logSuccessfulOperations = true;
+		bool logOnLoad = true;
+		bool logOnUnload = true;
 		~TextureLoader();
 
 		struct Settings
@@ -22,11 +23,13 @@ namespace a_game_engine
 			TextureWrap 
 				wrapX = TextureWrap::Repeat, 
 				wrapY = TextureWrap::Repeat;
+			bool srgb = false;
 		};
 
 		Texture2D& load(const std::filesystem::path& path, const Settings& s = Settings());
 		static std::unique_ptr<Texture2D> readFromFile(const std::filesystem::path& path, const Settings& s = Settings(),
-			bool logSuccess = true);
+			bool logOnLoad = true);
+
 		static Texture2D& getDefault();
 	};
 }

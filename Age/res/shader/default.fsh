@@ -96,7 +96,7 @@ const float gamma = 2.2f;
 void main()
 {
     vec3 light = vec3(0.f);
-    vec3 diffuse = pow(texture(textures[0], fragUv).rgb, vec3(gamma));
+    vec3 diffuse = texture(textures[0], fragUv).rgb;
     vec3 specular = texture(textures[0], fragUv).rgb;
     vec3 realNormal = computeNormal(fragNormal);
     float shininess = 64;

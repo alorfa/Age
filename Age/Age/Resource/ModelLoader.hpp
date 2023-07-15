@@ -19,9 +19,12 @@ namespace a_game_engine
 			mat4 rootNodeTransform;
 			bool inverseUV = false;
 			bool withNormalMap = false;
+			bool disableSrgb = false;
 
-			Settings(const mat4& mat, bool inverseUv = false, bool withNormalMap = false);
-			Settings(const vec3& scale, bool rotate, bool inverseUv = false, bool withNormalMap = false);
+			Settings(const mat4 & mat, bool inverseUv = false, bool withNormalMap = false,
+				bool disableSrgb = false);
+			Settings(const vec3& scale, bool rotate, bool inverseUv = false, bool withNormalMap = false, 
+				bool disableSrgb = false);
 			Settings() = default;
 		};
 

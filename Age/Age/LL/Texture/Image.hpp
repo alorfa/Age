@@ -1,7 +1,6 @@
 #pragma once
 
 #include <filesystem>
-#include "Age/Math/vec2.hpp"
 #include "Age/LL/Texture/Texture2D.hpp"
 
 namespace a_game_engine

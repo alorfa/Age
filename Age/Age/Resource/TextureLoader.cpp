@@ -9,18 +9,18 @@ namespace a_game_engine
 
 	TextureLoader::~TextureLoader()
 	{
-		if (logSuccessfulOperations)
+		if (logOnUnload)
 			for (const auto& t : textures)
 			{
 				if (t.second)
-					Logger::logInfo("Texture " + t.first.string() + " was unloaded");
+					Logger::logInfo("Image " + t.first.string() + " was unloaded");
 			}
 	}
 
 	Texture2D& TextureLoader::load(const std::filesystem::path& path, const Settings& s)
 	{
 		return ResourceLoader::defaultLoad<Texture2D, std::filesystem::path>(textures, path, 
-			[&](const std::filesystem::path& p) { return readFromFile(path, s, logSuccessfulOperations); },
+			[&](const std::filesystem::path& p) { return readFromFile(path, s, logOnLoad); },
 			getDefault);
 	}
 	std::unique_ptr<Texture2D> TextureLoader::readFromFile(const std::filesystem::path& path, const Settings& s,
@@ -33,8 +33,16 @@ namespace a_game_engine
 
 		bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear && s.minFilter <= TextureFiltering::NearMipNear;
 		auto result = std::make_unique<Texture2D>();
-		result->create(Texture2D::Settings{img.getSize(), img.getData(), img.getFormat(), 
-			TextureDataType::Ubyte, mipmaps});
+		Texture2D::Settings settings = { img.getSize(), img.getData(), img.getFormat(),
+			TextureDataType::Ubyte, mipmaps };
+		if (s.srgb)
+		{
+			if (img.getFormat() == TextureFormat::RGB)
+				settings.internal = TextureFormat::SRGB;
+			else
+				settings.internal = TextureFormat::SRGB_Alpha;
+		}
+		result->create(settings);
 		result->setWrap(s.wrapX, s.wrapY);
 		result->setFiltering(s.minFilter, s.magFilter);
 		if (logSuccess)

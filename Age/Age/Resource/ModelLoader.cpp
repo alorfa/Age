@@ -108,15 +108,18 @@ namespace a_game_engine
 		}
 
 		std::vector<Texture2D*> handleMaterialOfType(aiMaterial* mat, aiTextureType type,
-			TextureLoader& textureLoader, const std::filesystem::path& path)
+			TextureLoader& textureLoader, const std::filesystem::path& path, bool srgb)
 		{
 			std::vector<Texture2D*> result;
+
+			TextureLoader::Settings settings;
+			settings.srgb = srgb;
 
 			for (uint i = 0; i < mat->GetTextureCount(type); i++)
 			{
 				aiString filename;
 				mat->GetTexture(type, i, &filename);
-				result.push_back(&textureLoader.load(path / filename.C_Str()));
+				result.push_back(&textureLoader.load(path / filename.C_Str(), settings));
 			}
 
 			return result;
@@ -132,19 +135,30 @@ namespace a_game_engine
 			return false;
 		}
 
-		TextureMaterial handleAiMaterial(aiMaterial* mat, TextureLoader& loader, const std::filesystem::path& path)
+		TextureMaterial handleAiMaterial(aiMaterial* mat, TextureLoader& loader, 
+			const std::filesystem::path& path, bool disableSrgb)
 		{
-			aiTextureType types[] = { aiTextureType_DIFFUSE, 
-			aiTextureType_NORMALS,
+			aiTextureType colorTypes[] = { aiTextureType_DIFFUSE };
+
+			aiTextureType types[] = { aiTextureType_NORMALS,
 			aiTextureType_DIFFUSE_ROUGHNESS,
 			aiTextureType_METALNESS,
 			aiTextureType_AMBIENT_OCCLUSION,
 			aiTextureType_UNKNOWN };
 
 			TextureMaterial result;
+			for (aiTextureType type : colorTypes)
+			{
+				auto textures = handleMaterialOfType(mat, type, loader, path, !disableSrgb);
+				for (auto* tex : textures)
+				{
+					if (not has(result.textures, tex))
+						result.textures.push_back(tex);
+				}
+			}
 			for (aiTextureType type : types)
 			{
-				auto textures = handleMaterialOfType(mat, type, loader, path);
+				auto textures = handleMaterialOfType(mat, type, loader, path, false);
 				for (auto* tex : textures)
 				{
 					if (not has(result.textures, tex))
@@ -160,7 +174,7 @@ namespace a_game_engine
 
 	ModelLoader::ModelLoader()
 	{
-		textureLoader.logSuccessfulOperations = false;
+		textureLoader.logOnLoad = textureLoader.logOnUnload = false;
 	}
 
 	ModelLoader::~ModelLoader()
@@ -206,7 +220,7 @@ namespace a_game_engine
 		for (uint i = 0; i < scene->mNumMaterials; i++)
 		{
 			auto* mat = scene->mMaterials[i];
-			materials[i] = handleAiMaterial(mat, textureLoader, parentPath);
+			materials[i] = handleAiMaterial(mat, textureLoader, parentPath, s.disableSrgb);
 		}
 
 		for (uint i = 0; i < scene->mNumMeshes; i++)
@@ -236,13 +250,15 @@ namespace a_game_engine
 		}
 		return *defModel;
 	}
-	ModelLoader::Settings::Settings(const mat4& mat, bool inverseUv, bool withNormalMap)
-		: rootNodeTransform(mat), inverseUV(inverseUv), withNormalMap(withNormalMap)
+	ModelLoader::Settings::Settings(const mat4& mat, bool inverseUv, bool withNormalMap,
+		bool disableSrgb)
+		: rootNodeTransform(mat), inverseUV(inverseUv), withNormalMap(withNormalMap), disableSrgb(disableSrgb)
 	{}
-	ModelLoader::Settings::Settings(const vec3& scale, bool rotate, bool inverseUv, bool withNormalMap)
+	ModelLoader::Settings::Settings(const vec3& scale, bool rotate, bool inverseUv, bool withNormalMap,
+		bool disableSrgb)
 		: rootNodeTransform(Transform3D::createMatrix({0.f}, 
 				rotate ? vec3{glm::radians(90.f), 0.f, 0.f} : vec3{0.f}, 
 				scale)),
-		inverseUV(inverseUv), withNormalMap(withNormalMap)
+		inverseUV(inverseUv), withNormalMap(withNormalMap), disableSrgb(disableSrgb)
 	{}
 }
