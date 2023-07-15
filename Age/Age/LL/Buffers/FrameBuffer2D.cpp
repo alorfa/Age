@@ -1,4 +1,4 @@
-#include "FrameBuffer.hpp"
+#include "FrameBuffer2D.hpp"
 #include "Age/LL/opengl.h"
 #include <utility>
 

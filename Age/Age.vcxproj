@@ -189,7 +189,7 @@
     <ClInclude Include="Age\Game\Gdata.hpp" />
     <ClInclude Include="Age\Light\Light.hpp" />
     <ClInclude Include="Age\Light\LightSource.hpp" />
-    <ClInclude Include="Age\LL\Buffers\FrameBuffer.hpp" />
+    <ClInclude Include="Age\LL\Buffers\FrameBuffer2D.hpp" />
     <ClInclude Include="Age\LL\Buffers\VertexBuffer.hpp" />
     <ClInclude Include="Age\LL\opengl.h" />
     <ClInclude Include="Age\LL\Shader\Shader.hpp" />
@@ -228,7 +228,7 @@
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
     <ClCompile Include="Age\Light\LightSource.cpp" />
-    <ClCompile Include="Age\LL\Buffers\FrameBuffer.cpp" />
+    <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\LL\Buffers\VertexBuffer.cpp" />
     <ClCompile Include="Age\LL\Shader\Shader.cpp" />
     <ClCompile Include="Age\LL\Shader\ShaderCompiler.cpp" />

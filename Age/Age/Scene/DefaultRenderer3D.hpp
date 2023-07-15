@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Renderer3D.hpp"
-#include "Age/LL/Buffers/FrameBuffer.hpp"
+#include "Age/LL/Buffers/FrameBuffer2D.hpp"
 
 namespace a_game_engine
 {

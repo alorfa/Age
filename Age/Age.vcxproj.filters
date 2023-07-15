@@ -37,7 +37,7 @@
     <ClInclude Include="Age\Game\Cube.hpp" />
     <ClInclude Include="Age\Game\Monkie.hpp" />
     <ClInclude Include="Age\Resource\ShaderMaker.hpp" />
-    <ClInclude Include="Age\LL\Buffers\FrameBuffer.hpp" />
+    <ClInclude Include="Age\LL\Buffers\FrameBuffer2D.hpp" />
     <ClInclude Include="Age\Scene\Renderer3D.hpp" />
     <ClInclude Include="Age\Scene\DefaultRenderer3D.hpp" />
     <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
@@ -69,7 +69,7 @@
     <ClCompile Include="Age\Game\Cube.cpp" />
     <ClCompile Include="Age\Game\Monkie.cpp" />
     <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
-    <ClCompile Include="Age\LL\Buffers\FrameBuffer.cpp" />
+    <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\Scene\DefaultRenderer3D.cpp" />
     <ClCompile Include="Age\Scene\Renderer.cpp" />
   </ItemGroup>
