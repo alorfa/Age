@@ -22,11 +22,9 @@ namespace a_game_engine
 		struct Settings
 		{
 			uvec2 size;
-			TextureFormat format = TextureFormat::RGB;
-			bool hdr = true;
+			TextureFormat internal = TextureFormat::RGB;
 
-			Settings(const uvec2& size, TextureFormat format = TextureFormat::RGB,
-				bool hdr = true);
+			Settings(const uvec2& size, TextureFormat format = TextureFormat::RGB);
 		};
 
 		void create(const Settings& s);
@@ -34,4 +32,6 @@ namespace a_game_engine
 		static void useDefault(const uvec2& viewport);
 		static bool checkActiveBuffer();
 	};
+
+	using FrameBuffer = FrameBuffer2D;
 }

@@ -110,6 +110,5 @@ void main()
 
     light += sceneAmbient * diffuse;
 
-    //FragColor = vec4(light, 1.f);
-    FragColor = vec4(pow(light, vec3(1.f/gamma)), 1.f);
+    FragColor = vec4(light, 1.f);
 }

@@ -40,6 +40,7 @@
     <ClInclude Include="Age\LL\Buffers\FrameBuffer.hpp" />
     <ClInclude Include="Age\Scene\Renderer3D.hpp" />
     <ClInclude Include="Age\Scene\DefaultRenderer3D.hpp" />
+    <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />

@@ -14,7 +14,8 @@ namespace a_game_engine
 	enum class TextureFormat
 	{ 
 		Undefined = 0, R = 1, RG, RGB, RGBA,
-		Depth24_Stencil8
+		RGB_Float16, RGBA_Float16, RGB_Float32, RGBA_Float32, 
+		SRGB, SRGB_Alpha, Depth24_Stencil8
 	};
 	enum class TextureFiltering
 	{ 
@@ -66,4 +67,6 @@ namespace a_game_engine
 		inline const uvec2& getSize() const { return _size; }
 		void activate(int number = 0) const;
 	};
+
+	using Texture = Texture2D;
 }

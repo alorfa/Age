@@ -170,7 +170,7 @@ int main()
 	}*/
 
 	auto game = std::make_unique<a_game::TestGame>();
-	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 8, 16);
+	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 8, 24);
 
 	return 0;
 }

@@ -23,10 +23,9 @@ namespace a_game_engine
 	void DefaultRenderer3D::updateSize(const uvec2& newSize)
 	{
 		size = newSize;
-		mainFb.create(FrameBuffer2D::Settings(newSize, TextureFormat::RGB, true));
+		mainFb.create(FrameBuffer2D::Settings(newSize, TextureFormat::RGB_Float16));
 		mainFb.texture.setFiltering(TextureFiltering::Linear);
 		mainFb.texture.setWrap(TextureWrap::ClampToEdge);
-		Logger::logDebug("Default renderer is resized");
 	}
 	void DefaultRenderer3D::drawObject(const Object3D& o, const Scene3D& sc,
 		const Camera3D& c, const Shader* s) const
@@ -35,10 +34,10 @@ namespace a_game_engine
 	}
 	void DefaultRenderer3D::drawScene(const Scene3D& sc) const
 	{
-		/*set3DContext();
-		mainFb.use();*/
+		set3DContext();
+		mainFb.use();
 
-		glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		for (const auto& obj : sc.objects)
 			drawObject(*obj, sc, *sc.activeCamera, nullptr);
@@ -47,11 +46,11 @@ namespace a_game_engine
 		for (const auto& obj : sc.spotLights)
 			drawObject(*obj, sc, *sc.activeCamera, nullptr);
 
-		/*mainFb.useDefault(size);
+		mainFb.useDefault(size);
 		set2DContext();
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
 		shader->setUniform("tex", mainFb.texture, 0);
-		verts->draw();*/
+		verts->draw();
 	}
 }

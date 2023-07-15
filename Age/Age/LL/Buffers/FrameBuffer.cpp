@@ -1,5 +1,6 @@
 #include "FrameBuffer.hpp"
 #include "Age/LL/opengl.h"
+#include <utility>
 
 namespace a_game_engine
 {
@@ -23,8 +24,18 @@ namespace a_game_engine
 		clear();
 		glGenFramebuffers(1, &_fbuf);
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		texture.create(Texture2D::Settings{s.size, nullptr, s.format, 
-			s.hdr ? TextureDataType::Float : TextureDataType::Ubyte, false});
+		bool hdr = (s.internal == TextureFormat::RGB_Float16 ||
+			s.internal == TextureFormat::RGBA_Float16 ||
+			s.internal == TextureFormat::RGB_Float32 ||
+			s.internal == TextureFormat::RGBA_Float32);
+		bool hasAlpha = 
+			(s.internal == TextureFormat::RGBA ||
+			s.internal == TextureFormat::RGBA_Float16 ||
+			s.internal == TextureFormat::RGBA_Float32);
+
+		texture.create(Texture2D::Settings{s.size, nullptr, s.internal, 
+			hasAlpha ? TextureFormat::RGBA : TextureFormat::RGB,
+			hdr ? TextureDataType::Float : TextureDataType::Ubyte, false});
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.getId(), 0);
 
 		glGenRenderbuffers(1, &_rbuf);
@@ -48,14 +59,19 @@ namespace a_game_engine
 		return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 	}
 	FrameBuffer2D::FrameBuffer2D(FrameBuffer2D&& other)
-		//: _tex(std::move(other._tex))
+		: texture(std::move(other.texture))
 	{
+		std::swap(_fbuf, other._fbuf);
+		std::swap(_rbuf, other._rbuf);
 	}
 	FrameBuffer2D& FrameBuffer2D::operator=(FrameBuffer2D&& other)
 	{
+		std::swap(texture, other.texture);
+		std::swap(_fbuf, other._fbuf);
+		std::swap(_rbuf, other._rbuf);
 		return *this;
 	}
-	FrameBuffer2D::Settings::Settings(const uvec2& size, TextureFormat format, bool hdr)
-		: size(size), format(format), hdr(hdr)
+	FrameBuffer2D::Settings::Settings(const uvec2& size, TextureFormat format)
+		: size(size), internal(format)
 	{}
 }

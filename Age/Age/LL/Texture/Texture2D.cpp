@@ -16,6 +16,18 @@ namespace a_game_engine
 			return GL_RGB;
 		case TextureFormat::RGBA:
 			return GL_RGBA;
+		case TextureFormat::RGB_Float16:
+			return GL_RGB16F;
+		case TextureFormat::RGBA_Float16:
+			return GL_RGBA16F;
+		case TextureFormat::RGB_Float32:
+			return GL_RGB32F;
+		case TextureFormat::RGBA_Float32:
+			return GL_RGBA32F;
+		case TextureFormat::SRGB:
+			return GL_SRGB;
+		case TextureFormat::SRGB_Alpha:
+			return GL_SRGB_ALPHA;
 		case TextureFormat::Depth24_Stencil8:
 			return GL_DEPTH24_STENCIL8;
 		}
