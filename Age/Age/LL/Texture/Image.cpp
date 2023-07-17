@@ -14,10 +14,10 @@ namespace a_game_engine
 		stbi_set_flip_vertically_on_load(true);
 		clear();
 		int components, x, y;
-		_data = stbi_load_from_memory(data, size, &x, &y, &components, 0); //TODO: log if null
-		_size.x = (uint)x;
-		_size.y = (uint)y;
-		_format = TextureFormat(components);
+		_img.data = stbi_load_from_memory(data, size, &x, &y, &components, 0); //TODO: log if null
+		_img.size.x = (uint)x;
+		_img.size.y = (uint)y;
+		_img.format = TextureFormat(components);
 	}
 	void Image::loadFromFile(const std::filesystem::path& path)
 	{
@@ -27,12 +27,12 @@ namespace a_game_engine
 	}
 	void Image::clear()
 	{
-		if (_data)
+		if (_img.data)
 		{
-			stbi_image_free(_data);
-			_data = nullptr;
-			_size.x = _size.y = 0;
-			_format = TextureFormat::Undefined;
+			stbi_image_free(_img.data);
+			_img.data = nullptr;
 		}
+		_img.size.x = _img.size.y = 0;
+		_img.format = TextureFormat::Undefined;
 	}
 }

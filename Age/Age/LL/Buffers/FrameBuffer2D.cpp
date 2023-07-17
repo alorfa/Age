@@ -33,9 +33,10 @@ namespace a_game_engine
 			s.internal == TextureFormat::RGBA_Float16 ||
 			s.internal == TextureFormat::RGBA_Float32);
 
-		texture.create(Texture2D::Settings{s.size, nullptr, s.internal, 
+		ImageInfo info{ s.size, nullptr,
 			hasAlpha ? TextureFormat::RGBA : TextureFormat::RGB,
-			hdr ? TextureDataType::Float : TextureDataType::Ubyte, false});
+			hdr ? TextureDataType::Float : TextureDataType::Ubyte };
+		texture.create(Texture2D::Settings{info, s.internal, false});
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.getId(), 0);
 
 		glGenRenderbuffers(1, &_rbuf);

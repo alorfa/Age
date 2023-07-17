@@ -1,15 +1,13 @@
 #pragma once
 
 #include <filesystem>
-#include "Age/LL/Texture/Texture2D.hpp"
+#include "Age/LL/Texture/TexEnums.hpp"
 
 namespace a_game_engine
 {
 	class Image
 	{
-		uvec2 _size;
-		ubyte* _data = nullptr;
-		TextureFormat _format = TextureFormat::Undefined;
+		ImageInfo _img;
 	public:
 		~Image();
 
@@ -17,8 +15,6 @@ namespace a_game_engine
 		void loadFromFile(const std::filesystem::path& path);
 		void clear();
 
-		inline const ubyte* getData() const { return _data; }
-		inline uvec2 getSize() const { return _size; }
-		inline TextureFormat getFormat() const { return _format; }
+		inline const ImageInfo& getInfo() const { return _img; }
 	};
 }

@@ -28,16 +28,15 @@ namespace a_game_engine
 	{
 		Image img;
 		img.loadFromFile(path);
-		if (img.getSize().x == 0 or img.getSize().y == 0)
+		if (img.getInfo().size.x == 0 or img.getInfo().size.y == 0)
 			return nullptr;
 
 		bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear && s.minFilter <= TextureFiltering::NearMipNear;
 		auto result = std::make_unique<Texture2D>();
-		Texture2D::Settings settings = { img.getSize(), img.getData(), img.getFormat(),
-			TextureDataType::Ubyte, mipmaps };
+		Texture2D::Settings settings = { img.getInfo(), mipmaps };
 		if (s.srgb)
 		{
-			if (img.getFormat() == TextureFormat::RGB)
+			if (img.getInfo().format == TextureFormat::RGB)
 				settings.internal = TextureFormat::SRGB;
 			else
 				settings.internal = TextureFormat::SRGB_Alpha;

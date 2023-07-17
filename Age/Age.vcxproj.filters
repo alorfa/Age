@@ -41,6 +41,7 @@
     <ClInclude Include="Age\Scene\Renderer3D.hpp" />
     <ClInclude Include="Age\Scene\DefaultRenderer3D.hpp" />
     <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
+    <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -72,5 +73,7 @@
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\Scene\DefaultRenderer3D.cpp" />
     <ClCompile Include="Age\Scene\Renderer.cpp" />
+    <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
+    <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
   </ItemGroup>
 </Project>

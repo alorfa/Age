@@ -4,80 +4,6 @@
 
 namespace a_game_engine
 {
-	int Texture2D::toOglFormat(TextureFormat f)
-	{
-		switch (f)
-		{
-		case TextureFormat::R:
-			return GL_RED;
-		case TextureFormat::RG:
-			return GL_RG;
-		case TextureFormat::RGB:
-			return GL_RGB;
-		case TextureFormat::RGBA:
-			return GL_RGBA;
-		case TextureFormat::RGB_Float16:
-			return GL_RGB16F;
-		case TextureFormat::RGBA_Float16:
-			return GL_RGBA16F;
-		case TextureFormat::RGB_Float32:
-			return GL_RGB32F;
-		case TextureFormat::RGBA_Float32:
-			return GL_RGBA32F;
-		case TextureFormat::SRGB:
-			return GL_SRGB;
-		case TextureFormat::SRGB_Alpha:
-			return GL_SRGB_ALPHA;
-		case TextureFormat::Depth24_Stencil8:
-			return GL_DEPTH24_STENCIL8;
-		}
-		return GL_RGBA;
-	}
-	int Texture2D::toOglFilter(TextureFiltering f)
-	{
-		switch (f)
-		{
-		case TextureFiltering::Linear:
-			return GL_LINEAR;
-		case TextureFiltering::Near:
-			return GL_NEAREST;
-		case TextureFiltering::LinearMipLinear:
-			return GL_LINEAR_MIPMAP_LINEAR;
-		case TextureFiltering::LinearMipNear:
-			return GL_LINEAR_MIPMAP_NEAREST;
-		case TextureFiltering::NearMipLinear:
-			return GL_NEAREST_MIPMAP_LINEAR;
-		case TextureFiltering::NearMipNear:
-			return GL_NEAREST_MIPMAP_NEAREST;
-		}
-		return GL_LINEAR;
-	}
-	int Texture2D::toOglWrap(TextureWrap w)
-	{
-		switch (w)
-		{
-		case TextureWrap::Repeat:
-			return GL_REPEAT;
-		case TextureWrap::MirroredRepeat:
-			return GL_MIRRORED_REPEAT;
-		case TextureWrap::ClampToEdge:
-			return GL_CLAMP_TO_EDGE;
-		}
-		return GL_REPEAT;
-	}
-
-	int Texture2D::toOglType(TextureDataType t)
-	{
-		switch (t)
-		{
-		case TextureDataType::Float:
-			return GL_FLOAT;
-		case TextureDataType::Uint_24_8:
-			return GL_UNSIGNED_INT_24_8;
-		}
-		return GL_UNSIGNED_BYTE;
-	}
-
 	Texture2D::Texture2D(const Settings& s)
 	{
 		create(s);
@@ -85,7 +11,8 @@ namespace a_game_engine
 
 	Texture2D::~Texture2D()
 	{
-		glDeleteTextures(1, &_id);
+		if (_id)
+			glDeleteTextures(1, &_id);
 	}
 
 	Texture2D::Texture2D(Texture2D&& other) noexcept
@@ -108,13 +35,13 @@ namespace a_game_engine
 		glGenTextures(1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);
 
-		_size = s.size;
+		_size = s.img.size;
 
 		int outerFormat = s.internal == TextureFormat::Depth24_Stencil8 ?
-			GL_DEPTH_STENCIL : toOglFormat(s.outer);
-		glTexImage2D(GL_TEXTURE_2D, 0, toOglFormat(s.internal),
-			s.size.x, s.size.y, 0,
-			outerFormat, toOglType(s.type), s.data);
+			GL_DEPTH_STENCIL : TexEnums::toOglFormat(s.img.format);
+		glTexImage2D(GL_TEXTURE_2D, 0, TexEnums::toOglFormat(s.internal),
+			_size.x, _size.y, 0,
+			outerFormat, TexEnums::toOglType(s.img.type), s.img.data);
 		if (s.mipmaps)
 			glGenerateMipmap(GL_TEXTURE_2D);
 	}
@@ -122,8 +49,8 @@ namespace a_game_engine
 	void Texture2D::setWrap(TextureWrap x, TextureWrap y)
 	{
 		glBindTexture(GL_TEXTURE_2D, _id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toOglWrap(x)); 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toOglWrap(y));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TexEnums::toOglWrap(x));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TexEnums::toOglWrap(y));
 	}
 	void Texture2D::setWrap(TextureWrap wrap)
 	{
@@ -132,8 +59,8 @@ namespace a_game_engine
 	void Texture2D::setFiltering(TextureFiltering min, TextureFiltering mag)
 	{
 		glBindTexture(GL_TEXTURE_2D, _id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, toOglFilter(min));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, toOglFilter(mag));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexEnums::toOglFilter(min));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexEnums::toOglFilter(mag));
 	}
 	void Texture2D::setFiltering(TextureFiltering filter)
 	{
@@ -144,12 +71,11 @@ namespace a_game_engine
 		glActiveTexture(GL_TEXTURE0 + number);
 		glBindTexture(GL_TEXTURE_2D, _id);
 	}
-	Texture2D::Settings::Settings(const uvec2& size, const ubyte* data, TextureFormat internal, 
-		TextureFormat outer, TextureDataType type, bool mipmaps)
-		: size(size), data(data), internal(internal), outer(outer), type(type), mipmaps(mipmaps)
+
+	Texture2D::Settings::Settings(const ImageInfo& img, TextureFormat internal, bool mipmaps)
+		: img(img), internal(internal), mipmaps(mipmaps)
 	{}
-	Texture2D::Settings::Settings(const uvec2& size, const ubyte* data, TextureFormat format, 
-		TextureDataType type, bool mipmaps)
-		: size(size), data(data), internal(format), outer(format), type(type), mipmaps(mipmaps)
+	Texture2D::Settings::Settings(const ImageInfo& img, bool mipmaps)
+		: img(img), internal(img.format), mipmaps(mipmaps)
 	{}
 }
