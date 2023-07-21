@@ -27,7 +27,6 @@
     <ClInclude Include="Age\Object\Mesh3D.hpp" />
     <ClInclude Include="Age\Object\Object3D.hpp" />
     <ClInclude Include="Age\Object\Material.hpp" />
-    <ClInclude Include="Age\Scene\Scene3D.hpp" />
     <ClInclude Include="Age\Math\mat4.hpp" />
     <ClInclude Include="Age\Light\Light.hpp" />
     <ClInclude Include="Age\Light\LightSource.hpp" />
@@ -42,6 +41,7 @@
     <ClInclude Include="Age\Scene\DefaultRenderer3D.hpp" />
     <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
     <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
+    <ClInclude Include="Age\Object\Node3D.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -65,7 +65,6 @@
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
     <ClCompile Include="Age\Light\LightSource.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
-    <ClCompile Include="Age\Scene\Scene3D.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
     <ClCompile Include="Age\Game\Cube.cpp" />
     <ClCompile Include="Age\Game\Monkie.cpp" />
@@ -75,5 +74,6 @@
     <ClCompile Include="Age\Scene\Renderer.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
+    <ClCompile Include="Age\Object\Node3D.cpp" />
   </ItemGroup>
 </Project>

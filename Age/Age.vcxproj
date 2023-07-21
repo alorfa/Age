@@ -205,6 +205,7 @@
     <ClInclude Include="Age\Object\Material.hpp" />
     <ClInclude Include="Age\Object\Mesh3D.hpp" />
     <ClInclude Include="Age\Object\Model3D.hpp" />
+    <ClInclude Include="Age\Object\Node3D.hpp" />
     <ClInclude Include="Age\Object\Object3D.hpp" />
     <ClInclude Include="Age\Resource\File.hpp" />
     <ClInclude Include="Age\Resource\Logger.hpp" />
@@ -215,7 +216,6 @@
     <ClInclude Include="Age\Resource\TextureLoader.hpp" />
     <ClInclude Include="Age\Scene\DefaultRenderer3D.hpp" />
     <ClInclude Include="Age\Scene\Renderer3D.hpp" />
-    <ClInclude Include="Age\Scene\Scene3D.hpp" />
     <ClInclude Include="Age\Transform\Camera3D.hpp" />
     <ClInclude Include="Age\Transform\Transform3D.hpp" />
     <ClInclude Include="Age\types.hpp" />
@@ -240,6 +240,7 @@
     <ClCompile Include="Age\Math\mat.cpp" />
     <ClCompile Include="Age\Object\Mesh3D.cpp" />
     <ClCompile Include="Age\Object\Model3D.cpp" />
+    <ClCompile Include="Age\Object\Node3D.cpp" />
     <ClCompile Include="Age\Object\Object3D.cpp" />
     <ClCompile Include="Age\Resource\File.cpp" />
     <ClCompile Include="Age\Resource\Logger.cpp" />
@@ -249,7 +250,6 @@
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
     <ClCompile Include="Age\Scene\DefaultRenderer3D.cpp" />
     <ClCompile Include="Age\Scene\Renderer.cpp" />
-    <ClCompile Include="Age\Scene\Scene3D.cpp" />
     <ClCompile Include="Age\Transform\Camera3D.cpp" />
     <ClCompile Include="Age\Transform\Transform3D.cpp" />
     <ClCompile Include="TestGame.cpp" />

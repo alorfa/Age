@@ -1,52 +1,55 @@
 #include "LightSource.hpp"
-#include <Age/Scene/Scene3D.hpp>
+#include "Age/LL/Shader/Shader.hpp"
 
 namespace a_game_engine
 {
-	PointLightSource::PointLightSource(const Model3D& m, const Shader& sh)
+	PointLightSource::PointLightSource(Node3D* parent)
+		: Object3D(parent)
 	{
-		model = &m;
-		shader = &sh;
+		isInfluencing = true;
 	}
 	void PointLightSource::update(float delta)
 	{
 		light.pos = transform.getPosition();
 	}
-	void PointLightSource::draw(const Scene3D& sc, const Camera3D& camera, const Shader* s) const
+
+	void PointLightSource::draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const
 	{
 		if (s == nullptr)
 			s = shader;
 
 		s->use();
-		s->setUniform("view", camera.transform.getMatrix());
-		s->setUniform("projection", camera.getProjection());
-		s->setUniform("sceneAmbient", sc.ambient);
 		s->setUniform("lightColor", light.color);
 
-		model->draw(transform.getMatrix(), *s);
+		Object3D::draw(parent, scene, c, s);
 	}
 
-	SpotLightSource::SpotLightSource(const Model3D& m, const Shader& sh)
+	SpotLightSource::SpotLightSource(Node3D* parent)
+		: Object3D(parent)
 	{
-		model = &m;
-		shader = &sh;
+		isInfluencing = true;
 	}
+
 	void SpotLightSource::update(float delta)
 	{
 		light.pos = transform.getPosition();
 		light.dir = Transform3D::getForwardDir(transform.getRotation());
 	}
-	void SpotLightSource::draw(const Scene3D& sc, const Camera3D& camera, const Shader* s) const
+
+	void SpotLightSource::draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const
 	{
 		if (s == nullptr)
 			s = shader;
 
 		s->use();
-		s->setUniform("view", camera.transform.getMatrix());
-		s->setUniform("projection", camera.getProjection());
-		s->setUniform("sceneAmbient", sc.ambient);
 		s->setUniform("lightColor", light.color);
 
-		model->draw(transform.getMatrix(), *s);
+		Object3D::draw(parent, scene, c, s);
+	}
+
+	DirLightSource::DirLightSource(Node3D* parent)
+		: Node3D(parent)
+	{
+		isInfluencing = true;
 	}
 }

@@ -6,8 +6,6 @@
 
 namespace a_game_engine
 {
-	class Scene3D;
-
 	class Mesh3D
 	{
 	public:

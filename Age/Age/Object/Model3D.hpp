@@ -8,8 +8,6 @@
 
 namespace a_game_engine
 {
-	class Scene3D;
-
 	class Model3D
 	{
 	public:

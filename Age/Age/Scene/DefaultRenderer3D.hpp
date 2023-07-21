@@ -14,8 +14,8 @@ namespace a_game_engine
 		DefaultRenderer3D();
 
 		void updateSize(const uvec2& newSize);
-		void drawObject(const Object3D& o, const Scene3D& sc,
+		void drawObject(const Node3D& o, const Node3D& scene,
 			const Camera3D& c, const Shader* s) const override;
-		void drawScene(const Scene3D& sc) const override;
+		void drawScene(const Node3D& scene, const Camera3D& camera) const override;
 	};
 }

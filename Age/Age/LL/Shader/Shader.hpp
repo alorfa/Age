@@ -11,8 +11,8 @@ namespace a_game_engine
 	struct mat4;
 	struct ColorMaterial;
 	struct TextureMaterial;
-	class Scene3D;
 	class Camera3D;
+	class Node3D;
 
 	class Shader
 	{
@@ -48,7 +48,7 @@ namespace a_game_engine
 		void setUniform(const char* name, const PointLight& light) const;
 		void setUniform(const char* name, const SpotLight& light) const;
 		void setUniform(const char* name, const ColorMaterial& mat) const;
-		void setLights(const Scene3D& scene) const;
+		void setLights(const Node3D& scene) const;
 		void setCamera(const Camera3D& camera) const;
 
 		void use() const;

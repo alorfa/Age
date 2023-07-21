@@ -5,7 +5,8 @@
 
 namespace a_game
 {
-	Cube::Cube()
+	Cube::Cube(Node3D* parent)
+		: Object3D(parent)
 	{
 		auto& m = gdata->modelLoader.load(gdata->res / "model/daedric/scene.gltf", 
 			ModelLoader::Settings{ vec3{5.f}, false, false, true });
@@ -20,14 +21,5 @@ namespace a_game
 		time += delta;
 		//transform.changePosition().y += s * delta;
 		//transform.changeRotation().z += delta * 0.20f;
-	}
-	void Cube::draw(const Scene3D& sc, const Camera3D& camera, const Shader* s) const
-	{
-		if (s == nullptr)
-			s = shader;
-
-		s->use();
-
-		Object3D::draw(sc, camera, s);
 	}
 }

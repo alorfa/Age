@@ -11,8 +11,7 @@ namespace a_game
 	public:
 		float time = 0.f;
 
-		Cube();
+		Cube(Node3D* parent);
 		void update(float delta) override;
-		virtual void draw(const Scene3D&, const Camera3D&, const Shader* s = nullptr) const override;
 	};
 }

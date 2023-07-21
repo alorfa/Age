@@ -6,8 +6,10 @@
 #include "Age/Math/mat4.hpp"
 #include "Age/Resource/Logger.hpp"
 #include "Age/Object/Material.hpp"
+#include "Age/Object/Node3D.hpp"
+#include "Age/Transform/Camera3D.hpp"
+#include "Age/Light/LightSource.hpp"
 #include <format>
-#include "Age/Scene/Scene3D.hpp"
 
 namespace a_game_engine
 {
@@ -139,33 +141,36 @@ namespace a_game_engine
 		setUniform((name + ".specular"s).c_str(), mat.specular);
 		setUniform((name + ".shininess"s).c_str(), mat.shininess);
 	}
-	void Shader::setLights(const Scene3D& scene) const
+	void Shader::setLights(const Node3D& scene) const
 	{
-		setUniform("sceneAmbient", scene.ambient);
-		int i = 0;
-		for (const auto& light : scene.pointLights)
+		int pointLightsCount = 0;
+		int dirLightsCount = 0;
+		int spotLightsCount = 0;
+		for (const auto& light : scene.infChildren)
 		{
-			setUniform(("pointLightSources[" + std::to_string(i++) + ']').c_str(), light->light);
-			if (i >= MAX_LIGHT_SOURCES)
-				break;
+			auto* pointLight = light->as<PointLightSource>();
+			if (pointLight and pointLightsCount < MAX_LIGHT_SOURCES)
+			{
+				//std::format("pointLightSources[{}]", pointLightsCount++).c_str()
+				setUniform(("pointLightSources[" + std::to_string(pointLightsCount++) + ']').c_str(), pointLight->light);
+				continue;
+			}
+			auto* dirLight = light->as<DirLightSource>();
+			if (dirLight and dirLightsCount < MAX_LIGHT_SOURCES)
+			{
+				setUniform(("dirLightSources[" + std::to_string(dirLightsCount++) + ']').c_str(), dirLight->light);
+				continue;
+			}
+			auto* spotLight = light->as<SpotLightSource>();
+			if (spotLight and spotLightsCount < MAX_LIGHT_SOURCES)
+			{
+				setUniform(("spotLightSources[" + std::to_string(spotLightsCount++) + ']').c_str(), spotLight->light);
+				continue;
+			}
 		}
-		setUniform("pointLightsCount", i);
-		i = 0;
-		for (const auto& light : scene.dirLights)
-		{
-			setUniform(("dirLightSources[" + std::to_string(i++) + ']').c_str(), light);
-			if (i >= MAX_LIGHT_SOURCES)
-				break;
-		}
-		setUniform("dirLightsCount", i);
-		i = 0;
-		for (const auto& light : scene.spotLights)
-		{
-			setUniform(("spotLightSources[" + std::to_string(i++) + ']').c_str(), light->light);
-			if (i >= MAX_LIGHT_SOURCES)
-				break;
-		}
-		setUniform("spotLightsCount", i);
+		setUniform("pointLightsCount", pointLightsCount);
+		setUniform("dirLightsCount", dirLightsCount);
+		setUniform("spotLightsCount", spotLightsCount);
 	}
 	void Shader::setCamera(const Camera3D& camera) const
 	{

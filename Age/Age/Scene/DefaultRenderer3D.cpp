@@ -1,10 +1,11 @@
 #pragma once
 
 #include "DefaultRenderer3D.hpp"
-#include "Age/Scene/Scene3D.hpp"
 #include "Age/Resource/Logger.hpp"
 #include "Age/LL/opengl.h"
 #include "Age/Resource/ShaderLoader.hpp"
+#include "Age/LL/Buffers/VertexBuffer.hpp"
+#include "Age/Object/Object3D.hpp"
 
 namespace a_game_engine
 {
@@ -27,24 +28,21 @@ namespace a_game_engine
 		mainFb.texture.setFiltering(TextureFiltering::Linear);
 		mainFb.texture.setWrap(TextureWrap::ClampToEdge);
 	}
-	void DefaultRenderer3D::drawObject(const Object3D& o, const Scene3D& sc,
+	void DefaultRenderer3D::drawObject(const Node3D& o, const Node3D& sc,
 		const Camera3D& c, const Shader* s) const
 	{
-		o.draw(sc, c, s);
+		o.drawNode(sc.transform.getMatrix(), sc, c, s);
 	}
-	void DefaultRenderer3D::drawScene(const Scene3D& sc) const
+	void DefaultRenderer3D::drawScene(const Node3D& sc, const Camera3D& camera) const
 	{
 		set3DContext();
 		mainFb.use();
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		for (const auto& obj : sc.objects)
-			drawObject(*obj, sc, *sc.activeCamera, nullptr);
-		for (const auto& obj : sc.pointLights)
-			drawObject(*obj, sc, *sc.activeCamera, nullptr);
-		for (const auto& obj : sc.spotLights)
-			drawObject(*obj, sc, *sc.activeCamera, nullptr);
+		sc.forEachConst([&](const Node3D& n) {
+			drawObject(n, sc, camera, nullptr); 
+			});
 
 		mainFb.useDefault(size);
 		set2DContext();

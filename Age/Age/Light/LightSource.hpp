@@ -10,10 +10,11 @@ namespace a_game_engine
 	public:
 		PointLight light;
 
-		PointLightSource(const Model3D& m, const Shader& sh);
+		PointLightSource(Node3D* parent);
 
-		virtual void update(float delta) override;
-		virtual void draw(const Scene3D&, const Camera3D&, const Shader* s = nullptr) const override;
+		void update(float delta) override;
+		void draw(const mat4& parent, const Node3D& scene, const Camera3D& c,
+			const Shader* s = nullptr) const override;
 	};
 
 	class SpotLightSource : public Object3D
@@ -21,9 +22,18 @@ namespace a_game_engine
 	public:
 		SpotLight light;
 
-		SpotLightSource(const Model3D& m, const Shader& sh);
+		SpotLightSource(Node3D* parent);
 
-		virtual void update(float delta) override;
-		virtual void draw(const Scene3D&, const Camera3D&, const Shader* s = nullptr) const override;
+		void update(float delta) override;
+		void draw(const mat4& parent, const Node3D& scene, const Camera3D& c,
+			const Shader* s = nullptr) const override;
+	};
+
+	class DirLightSource : public Node3D
+	{
+	public:
+		DirLight light;
+
+		DirLightSource(Node3D* parent);
 	};
 }
