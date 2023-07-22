@@ -214,8 +214,8 @@
     <ClInclude Include="Age\Resource\ShaderMaker.hpp" />
     <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
     <ClInclude Include="Age\Resource\TextureLoader.hpp" />
-    <ClInclude Include="Age\Scene\DefaultRenderer3D.hpp" />
-    <ClInclude Include="Age\Scene\Renderer3D.hpp" />
+    <ClInclude Include="Age\Render\DefaultRenderer3D.hpp" />
+    <ClInclude Include="Age\Render\Renderer3D.hpp" />
     <ClInclude Include="Age\Transform\Camera3D.hpp" />
     <ClInclude Include="Age\Transform\Transform3D.hpp" />
     <ClInclude Include="Age\types.hpp" />
@@ -248,8 +248,8 @@
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
     <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
-    <ClCompile Include="Age\Scene\DefaultRenderer3D.cpp" />
-    <ClCompile Include="Age\Scene\Renderer.cpp" />
+    <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
+    <ClCompile Include="Age\Render\Renderer.cpp" />
     <ClCompile Include="Age\Transform\Camera3D.cpp" />
     <ClCompile Include="Age\Transform\Transform3D.cpp" />
     <ClCompile Include="TestGame.cpp" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Age/Scene/DefaultRenderer3D.hpp>
+#include <Age/Render/DefaultRenderer3D.hpp>
 #include <Age/Object/Node3D.hpp>
 #include <Age/Light/LightSource.hpp>
 
