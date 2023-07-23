@@ -1,10 +1,9 @@
 #include "WorldScene.hpp"
 #include "Gdata.hpp"
-#include "Cube.hpp"
-#include "Monkie.hpp"
 #include <Age/Light/LightSource.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Age/EventHandler.hpp>
+#include "FollowToCamera.hpp"
 
 namespace a_game
 {
@@ -20,10 +19,17 @@ namespace a_game
 		activeCamera = &gdata->camera;
 
 		//ambient = vec3{ 0.2f, 0.2f, 0.5f };
-		auto cube = std::make_unique<Cube>(this);
-		auto monkie = std::make_unique<Monkie>(this);
+		std::unique_ptr<Object3D> objs[2] = {
+			std::make_unique<Object3D>(this),
+			std::make_unique<Object3D>(this)
+		};
+		objs[0]->model = &gdata->modelLoader.load(gdata->res / "model/daedric/scene.gltf",
+			ModelLoader::Settings{ vec3{5.f}, false, false, true });
+		objs[1]->model = &gdata->modelLoader.load(gdata->res / "model/kirara/scene.gltf",
+			ModelLoader::Settings{ vec3{10.f}, false});
+		objs[0]->shader = &gdata->shaderLoader.load(gdata->res / "shader/pbrNormal");
+		objs[1]->shader = &gdata->shaderLoader.load(gdata->res / "shader/default");
 		auto flashLight = std::make_unique<SpotLightSource>(this);
-		spotLight = flashLight.get();
 		std::unique_ptr<PointLightSource> lights[2] = { 
 			std::make_unique<PointLightSource>(this), 
 			std::make_unique<PointLightSource>(this) };
@@ -31,6 +37,7 @@ namespace a_game
 			&gdata->modelLoader.load(gdata->res / "model/cube.obj");
 		flashLight->shader = lights[0]->shader = lights[1]->shader = 
 			&gdata->shaderLoader.load(gdata->res / "shader/lightSource");
+		flashLight->addComponent(std::make_unique<FollowToCamera>(*flashLight, *activeCamera));
 
 		lights[0]->transform.changePosition() = vec3(-1.f, 5, 2);
 		lights[1]->transform.changePosition() = vec3(-3.f, 4, -2);
@@ -40,14 +47,14 @@ namespace a_game
 		lights[1]->light.color = vec3(1.0f, 0.1f, 0.1f);
 		//lights[1]->light.color = vec3(0.0f, 0.f, 0.f);
 		lights[1]->light.ambient = lights[1]->light.color * 0.1f;
-		cube->transform.changePosition() = { -3, 5, 0 };
-		monkie->transform.changePosition() = { 0, 5, -1 };
+		objs[0]->transform.changePosition() = {-3, 5, 0};
+		objs[1]->transform.changePosition() = { 0, 5, -1 };
 		flashLight->light.color = { 0.6f, 0.6f, 1.f };
 		flashLight->light.ambient = flashLight->light.color * 0.1f;
 		auto dirLight = std::make_unique<DirLightSource>(this);
 
-		addChild(std::move(cube));
-		addChild(std::move(monkie));
+		addChild(std::move(objs[0]));
+		addChild(std::move(objs[1]));
 		addChild(std::move(lights[0]));
 		addChild(std::move(lights[1]));
 		addChild(std::move(flashLight));
@@ -67,11 +74,13 @@ namespace a_game
 		{
 			defRender.updateSize({ ev.size.width ,ev.size.height });
 		}
+		Node3D::handleRawEvents(ev);
 	}
 	void WorldScene::handleEvents(const EventHandler& ev, float delta)
 	{
 		if (ev.getEvent("escape"))
 			gdata->window->close();
+		Node3D::handleEvents(ev, delta);
 	}
 	void WorldScene::update(float delta)
 	{
@@ -85,8 +94,7 @@ namespace a_game
 		/*dirl.color.z = -sinf(time);
 		dirl.color.x = std::max(-cosf(time), 0.f);*/
 
-		spotLight->transform.changePosition() = activeCamera->transform.getPosition();
-		spotLight->transform.changeRotation() = activeCamera->transform.getRotation();
+		Node3D::update(delta);
 	}
 	void WorldScene::draw(const mat4& transform, const Node3D&, const Camera3D&, const Shader* s) const
 	{

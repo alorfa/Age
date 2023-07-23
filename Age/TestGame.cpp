@@ -86,7 +86,7 @@ namespace a_game
 			gdata->camera.setWindowSize(newSize);
 		}
 
-		world->handleRawEventsNode(ev);
+		world->handleRawEvents(ev);
 	}
 	void TestGame::handleEvents(float delta)
 	{
@@ -137,12 +137,12 @@ namespace a_game
 				rot.x = maxrot;
 			gdata->camera.transform.changeRotation() = rot;
 		}
-		world->handleEventsNode(_eventHandler, delta);
+		world->handleEvents(_eventHandler, delta);
 	}
 	void TestGame::update(float delta)
 	{
 		time += delta;
-		world->updateNode(delta);
+		world->update(delta);
 	}
 	void TestGame::draw() const
 	{

@@ -7,7 +7,11 @@ namespace a_game_engine
 	Node3D::Node3D(Node3D* parent)
 		: parent(parent)
 	{}
-	void Node3D::addChild(std::unique_ptr<Node3D> node)
+	void Node3D::addComponent(std::unique_ptr<Component>&& comp)
+	{
+		components.push_back(std::move(comp));
+	}
+	void Node3D::addChild(std::unique_ptr<Node3D>&& node)
 	{
 		if (node->isInfluencing)
 			infChildren.push_front(std::move(node));
@@ -30,50 +34,42 @@ namespace a_game_engine
 	}
 	void Node3D::handleRawEvents(const sf::Event& ev)
 	{
-	}
-	void Node3D::handleRawEventsNode(const sf::Event& ev)
-	{
-		handleRawEvents(ev);
 		forEach([&](Node3D& n) {
-				n.handleRawEventsNode(ev);
-			});
+			for (auto& comp : n.components)
+			{
+				comp->handleRawEvents(ev);
+			}
+			n.handleRawEvents(ev);
+		});
 	}
 	void Node3D::handleEvents(const EventHandler& ev, float delta)
 	{
-	}
-	void Node3D::handleEventsNode(const EventHandler& ev, float delta)
-	{
-		handleEvents(ev, delta);
-		forEach([&](Node3D& n) 
+		forEach([&](Node3D& n) {
+			for (auto& comp : n.components)
 			{
-				n.handleEventsNode(ev, delta);
-			});
+				comp->handleEvents(ev, delta);
+			}
+			n.handleEvents(ev, delta);
+		});
 	}
 	void Node3D::update(float delta)
 	{
-
-	}
-	void Node3D::updateNode(float delta)
-	{
-		update(delta);
-		forEach([&](Node3D& n)
+		forEach([&](Node3D& n) {
+			for (auto& comp : n.components)
 			{
-				n.updateNode(delta);
-			});
+				comp->update(delta);
+			}
+			n.update(delta);
+		});
 	}
-	void Node3D::draw(const mat4& t, const Node3D& sc, const Camera3D& c, const Shader* s) const
+	void Node3D::draw(const mat4& parent, const Node3D& sc, const Camera3D& c, const Shader* s) const
 	{
-	}
-	void Node3D::drawNode(const mat4& t, const Node3D& sc, const Camera3D& c, const Shader* s) const
-	{
-		draw(t, sc, c, s);
-
 		if (s == nullptr)
 			s = shader;
-		mat4 curTransform = t * transform.getMatrix();
+		mat4 curTransform = parent * transform.getMatrix();
 		forEachConst([&](const Node3D& n)
 			{
-				n.drawNode(curTransform, sc, c, s);
+				n.draw(curTransform, sc, c, s);
 			});
 	}
 }

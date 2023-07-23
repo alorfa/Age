@@ -7,7 +7,6 @@
 #include "Age/Resource/ModelLoader.hpp"
 #include "Age/Resource/ShaderLoader.hpp"
 #include "Age/Game/WorldScene.hpp"
-#include "Age/Game/Cube.hpp"
 
 using namespace a_game_engine;
 

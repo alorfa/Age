@@ -11,6 +11,7 @@ namespace a_game_engine
 	void PointLightSource::update(float delta)
 	{
 		light.pos = transform.getPosition();
+		Object3D::update(delta);
 	}
 
 	void PointLightSource::draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const
@@ -34,6 +35,7 @@ namespace a_game_engine
 	{
 		light.pos = transform.getPosition();
 		light.dir = Transform3D::getForwardDir(transform.getRotation());
+		Object3D::update(delta);
 	}
 
 	void SpotLightSource::draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const

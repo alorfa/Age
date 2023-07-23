@@ -183,8 +183,7 @@
     <ClInclude Include="Age\Auxiliary\DEBUG.hpp" />
     <ClInclude Include="Age\Auxiliary\print_math.hpp" />
     <ClInclude Include="Age\EventHandler.hpp" />
-    <ClInclude Include="Age\Game\Cube.hpp" />
-    <ClInclude Include="Age\Game\Monkie.hpp" />
+    <ClInclude Include="Age\Game\FollowToCamera.hpp" />
     <ClInclude Include="Age\Game\WorldScene.hpp" />
     <ClInclude Include="Age\Game\Gdata.hpp" />
     <ClInclude Include="Age\Light\Light.hpp" />
@@ -202,6 +201,7 @@
     <ClInclude Include="Age\Math\mat4.hpp" />
     <ClInclude Include="Age\Math\vec2.hpp" />
     <ClInclude Include="Age\Math\vec3.hpp" />
+    <ClInclude Include="Age\Object\Component.hpp" />
     <ClInclude Include="Age\Object\Material.hpp" />
     <ClInclude Include="Age\Object\Mesh3D.hpp" />
     <ClInclude Include="Age\Object\Model3D.hpp" />
@@ -224,8 +224,7 @@
   <ItemGroup>
     <ClCompile Include="Age\Application.cpp" />
     <ClCompile Include="Age\EventHandler.cpp" />
-    <ClCompile Include="Age\Game\Cube.cpp" />
-    <ClCompile Include="Age\Game\Monkie.cpp" />
+    <ClCompile Include="Age\Game\FollowToCamera.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
     <ClCompile Include="Age\Light\LightSource.cpp" />
@@ -238,6 +237,7 @@
     <ClCompile Include="Age\LL\Texture\Texture2D.cpp" />
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
     <ClCompile Include="Age\Math\mat.cpp" />
+    <ClCompile Include="Age\Object\Component.cpp" />
     <ClCompile Include="Age\Object\Mesh3D.cpp" />
     <ClCompile Include="Age\Object\Model3D.cpp" />
     <ClCompile Include="Age\Object\Node3D.cpp" />

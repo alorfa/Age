@@ -2,8 +2,9 @@
 
 #include <forward_list>
 #include <memory>
-#include "Age/Transform/Transform3D.hpp"
 #include <functional>
+#include "Age/Transform/Transform3D.hpp"
+#include "Component.hpp"
 
 namespace sf
 {
@@ -25,13 +26,15 @@ namespace a_game_engine
 		Container children;
 		Container infChildren;
 		bool isInfluencing = false;
+		std::vector<std::unique_ptr<Component>> components;
 
 		Transform3D transform;
 		const Shader* shader = nullptr;
 
 		Node3D(Node3D* parent);
 
-		void addChild(std::unique_ptr<Node3D> node);
+		void addComponent(std::unique_ptr<Component>&& comp);
+		void addChild(std::unique_ptr<Node3D>&& node);
 		void forEach(std::function<void(Node3D&)> func);
 		void forEachConst(std::function<void(const Node3D&)> func) const;
 
@@ -45,16 +48,9 @@ namespace a_game_engine
 		}
 
 		virtual void handleRawEvents(const sf::Event& ev);
-		void handleRawEventsNode(const sf::Event& ev);
-
 		virtual void handleEvents(const EventHandler& ev, float delta);
-		void handleEventsNode(const EventHandler& ev, float delta);
-
 		virtual void update(float delta);
-		void updateNode(float delta);
-
 		virtual void draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const;
-		void drawNode(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s = nullptr) const;
 
 		virtual ~Node3D() = default;
 	};

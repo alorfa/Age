@@ -33,8 +33,6 @@
     <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
     <ClInclude Include="Age\Game\WorldScene.hpp" />
     <ClInclude Include="Age\Game\Gdata.hpp" />
-    <ClInclude Include="Age\Game\Cube.hpp" />
-    <ClInclude Include="Age\Game\Monkie.hpp" />
     <ClInclude Include="Age\Resource\ShaderMaker.hpp" />
     <ClInclude Include="Age\LL\Buffers\FrameBuffer2D.hpp" />
     <ClInclude Include="Age\Render\Renderer3D.hpp" />
@@ -42,6 +40,8 @@
     <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
     <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
     <ClInclude Include="Age\Object\Node3D.hpp" />
+    <ClInclude Include="Age\Object\Component.hpp" />
+    <ClInclude Include="Age\Game\FollowToCamera.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -66,8 +66,6 @@
     <ClCompile Include="Age\Light\LightSource.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
-    <ClCompile Include="Age\Game\Cube.cpp" />
-    <ClCompile Include="Age\Game\Monkie.cpp" />
     <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
@@ -75,5 +73,7 @@
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
     <ClCompile Include="Age\Object\Node3D.cpp" />
+    <ClCompile Include="Age\Object\Component.cpp" />
+    <ClCompile Include="Age\Game\FollowToCamera.cpp" />
   </ItemGroup>
 </Project>

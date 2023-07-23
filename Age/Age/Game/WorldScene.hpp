@@ -12,7 +12,6 @@ namespace a_game
 	{
 		DefaultRenderer3D defRender;
 		DirLightSource* dirLight;
-		SpotLightSource* spotLight;
 	public:
 		WorldScene();
 

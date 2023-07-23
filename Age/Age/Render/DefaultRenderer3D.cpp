@@ -31,7 +31,7 @@ namespace a_game_engine
 	void DefaultRenderer3D::drawObject(const Node3D& o, const Node3D& sc,
 		const Camera3D& c, const Shader* s) const
 	{
-		o.drawNode(sc.transform.getMatrix(), sc, c, s);
+		o.draw(sc.transform.getMatrix(), sc, c, s);
 	}
 	void DefaultRenderer3D::drawScene(const Node3D& sc, const Camera3D& camera) const
 	{

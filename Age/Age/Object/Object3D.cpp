@@ -23,5 +23,7 @@ namespace a_game_engine
 
 		mat4 curTransform = t * transform.getMatrix();
 		model->draw(curTransform, *s);
+
+		Node3D::draw(t, sc, camera, s);
 	}
 }
