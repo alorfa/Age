@@ -17,6 +17,48 @@
 
 namespace a_game
 {
+	namespace
+	{
+		void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, 
+			GLsizei length, GLchar const* message, void const* user_param)
+		{
+			const auto src_str = [source]() {
+				switch (source)
+				{
+				case GL_DEBUG_SOURCE_API: return "API";
+				case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "WINDOW SYSTEM";
+				case GL_DEBUG_SOURCE_SHADER_COMPILER: return "SHADER COMPILER";
+				case GL_DEBUG_SOURCE_THIRD_PARTY: return "THIRD PARTY";
+				case GL_DEBUG_SOURCE_APPLICATION: return "APPLICATION";
+				default: return "OTHER";
+				}
+			}();
+
+			auto const type_str = [type]() {
+				switch (type)
+				{
+				case GL_DEBUG_TYPE_ERROR: return "ERROR";
+				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "DEPRECATED_BEHAVIOR";
+				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "UNDEFINED_BEHAVIOR";
+				case GL_DEBUG_TYPE_PORTABILITY: return "PORTABILITY";
+				case GL_DEBUG_TYPE_PERFORMANCE: return "PERFORMANCE";
+				case GL_DEBUG_TYPE_MARKER: return "MARKER";
+				default: return "OTHER";
+				}
+			}();
+
+			auto const severity_str = [severity]() {
+				switch (severity) {
+				case GL_DEBUG_SEVERITY_HIGH: return "HIGH";
+				case GL_DEBUG_SEVERITY_MEDIUM: return "MEDIUM";
+				case GL_DEBUG_SEVERITY_LOW: return "LOW";
+				default: return "NOTIFICATION";
+				}
+			}();
+			Logger::logError(std::format("{}, {}, {}, {}: {}", src_str, type_str, severity_str, id, message));
+		}
+	}
+
 	void TestGame::init()
 	{
 		world = std::make_unique<WorldScene>();
@@ -38,7 +80,10 @@ namespace a_game
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+		
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(message_callback, nullptr);
 
 		_eventHandler.setEvent("jump", [](const sf::Event& e)
 			{

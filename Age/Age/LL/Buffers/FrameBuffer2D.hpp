@@ -22,9 +22,12 @@ namespace a_game_engine
 		struct Settings
 		{
 			uvec2 size;
-			TextureFormat internal = TextureFormat::RGB;
+			TextureFormat internal = TextureFormat::RGB_Float16, outer = TextureFormat::RGB_Float16;
 
-			Settings(const uvec2& size, TextureFormat format = TextureFormat::RGB);
+			inline Settings(const uvec2& size, TextureFormat format = TextureFormat::RGB_Float16)
+				: size(size), internal(format), outer(format) {}
+			inline Settings(const uvec2& size, TextureFormat inner, TextureFormat outer)
+				: size(size), internal(inner), outer(outer) {}
 		};
 
 		void create(const Settings& s);

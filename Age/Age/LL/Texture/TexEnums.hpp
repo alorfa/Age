@@ -27,6 +27,7 @@ namespace a_game_engine
 	{
 	public:
 		static int toOglFormat(TextureFormat);
+		static void toOglOuterFormat(TextureFormat f, int& format, int& type);
 		static int toOglFilter(TextureFiltering);
 		static int toOglWrap(TextureWrap);
 		static int toOglType(TextureDataType);
@@ -37,11 +38,9 @@ namespace a_game_engine
 		uvec2 size;
 		ubyte* data = nullptr;
 		TextureFormat format = TextureFormat::Undefined;
-		TextureDataType type = TextureDataType::Ubyte;
 
 		ImageInfo() = default;
-		inline ImageInfo(const uvec2& size, ubyte* data, TextureFormat format,
-			TextureDataType type = TextureDataType::Ubyte)
-			: size(size), data(data), format(format), type(type) {}
+		inline ImageInfo(const uvec2& size, ubyte* data, TextureFormat format)
+			: size(size), data(data), format(format) {}
 	};
 }

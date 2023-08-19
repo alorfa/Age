@@ -24,18 +24,8 @@ namespace a_game_engine
 		clear();
 		glGenFramebuffers(1, &_fbuf);
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		bool hdr = (s.internal == TextureFormat::RGB_Float16 ||
-			s.internal == TextureFormat::RGBA_Float16 ||
-			s.internal == TextureFormat::RGB_Float32 ||
-			s.internal == TextureFormat::RGBA_Float32);
-		bool hasAlpha = 
-			(s.internal == TextureFormat::RGBA ||
-			s.internal == TextureFormat::RGBA_Float16 ||
-			s.internal == TextureFormat::RGBA_Float32);
 
-		ImageInfo info{ s.size, nullptr,
-			hasAlpha ? TextureFormat::RGBA : TextureFormat::RGB,
-			hdr ? TextureDataType::Float : TextureDataType::Ubyte };
+		ImageInfo info{ s.size, nullptr, s.outer };
 		texture.create(Texture2D::Settings{info, s.internal, false});
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.getId(), 0);
 
@@ -72,7 +62,4 @@ namespace a_game_engine
 		std::swap(_rbuf, other._rbuf);
 		return *this;
 	}
-	FrameBuffer2D::Settings::Settings(const uvec2& size, TextureFormat format)
-		: size(size), internal(format)
-	{}
 }

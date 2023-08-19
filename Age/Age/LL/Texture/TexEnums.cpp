@@ -8,13 +8,13 @@ namespace a_game_engine
 		switch (f)
 		{
 		case TextureFormat::R:
-			return GL_RED;
+			return GL_R8;
 		case TextureFormat::RG:
-			return GL_RG;
+			return GL_RG8;
 		case TextureFormat::RGB:
-			return GL_RGB;
+			return GL_RGB8;
 		case TextureFormat::RGBA:
-			return GL_RGBA;
+			return GL_RGBA8;
 		case TextureFormat::RGB_Float16:
 			return GL_RGB16F;
 		case TextureFormat::RGBA_Float16:
@@ -24,14 +24,67 @@ namespace a_game_engine
 		case TextureFormat::RGBA_Float32:
 			return GL_RGBA32F;
 		case TextureFormat::SRGB:
-			return GL_SRGB;
+			return GL_SRGB8;
 		case TextureFormat::SRGB_Alpha:
-			return GL_SRGB_ALPHA;
+			return GL_SRGB8_ALPHA8;
 		case TextureFormat::Depth24_Stencil8:
 			return GL_DEPTH24_STENCIL8;
 		}
-		return GL_RGBA;
+		return GL_RGB8;
     }
+
+	void TexEnums::toOglOuterFormat(TextureFormat f, int& format, int& type)
+	{
+		switch (f)
+		{
+		case TextureFormat::R:
+		case TextureFormat::RG:
+		case TextureFormat::RGB:
+		case TextureFormat::RGBA:
+			type = GL_UNSIGNED_BYTE; 
+			break;
+		case TextureFormat::RGB_Float16:
+		case TextureFormat::RGBA_Float16:
+			type = GL_HALF_FLOAT; 
+			break;
+		case TextureFormat::RGB_Float32:
+		case TextureFormat::RGBA_Float32:
+			type = GL_FLOAT; 
+			break;
+		case TextureFormat::Depth24_Stencil8:
+			type = GL_UNSIGNED_INT_24_8;
+			break;
+		default:
+			type = GL_UNSIGNED_BYTE;
+		}
+
+		switch (f)
+		{
+		case TextureFormat::RGB:
+		case TextureFormat::SRGB:
+		case TextureFormat::RGB_Float16:
+		case TextureFormat::RGB_Float32:
+			format = GL_RGB;
+			break;
+		case TextureFormat::RGBA:
+		case TextureFormat::SRGB_Alpha:
+		case TextureFormat::RGBA_Float16:
+		case TextureFormat::RGBA_Float32:
+			format = GL_RGBA;
+			break;
+		case TextureFormat::Depth24_Stencil8:
+			format = GL_DEPTH_STENCIL;
+			break;
+		case TextureFormat::R:
+			format = GL_RED;
+			break;
+		case TextureFormat::RG:
+			format = GL_RG;
+			break;
+		default:
+			format = GL_RGB;
+		}
+	}
 
     int TexEnums::toOglFilter(TextureFiltering f)
     {

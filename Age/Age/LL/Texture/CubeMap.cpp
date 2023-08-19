@@ -33,11 +33,11 @@ namespace a_game_engine
 		for (uint i = 0; i < 6; i++)
 		{
 			const auto& img = s.images[i];
-			int outerFormat = s.internal == TextureFormat::Depth24_Stencil8 ?
-				GL_DEPTH_STENCIL : TexEnums::toOglFormat(img.format);
+			int outerFormat, outerType;
+			int innerFormat = TexEnums::toOglFormat(s.internal);
+			TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-				TexEnums::toOglFormat(s.internal), img.size.x, img.size.y, 0,
-				TexEnums::toOglFormat(img.format), TexEnums::toOglType(img.type), img.data);
+				innerFormat, img.size.x, img.size.y, 0, outerFormat, outerType, img.data);
 		}
 	}
 	void CubeMap::setWrap(TextureWrap x, TextureWrap y, TextureWrap z)

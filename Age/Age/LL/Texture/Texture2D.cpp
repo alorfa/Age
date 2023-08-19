@@ -32,25 +32,23 @@ namespace a_game_engine
 		if (_id)
 			glDeleteTextures(1, &_id);
 
-		glGenTextures(1, &_id);
-		glBindTexture(GL_TEXTURE_2D, _id);
+		glCreateTextures(GL_TEXTURE_2D, 1, &_id);
 
 		_size = s.img.size;
 
-		int outerFormat = s.internal == TextureFormat::Depth24_Stencil8 ?
-			GL_DEPTH_STENCIL : TexEnums::toOglFormat(s.img.format);
-		glTexImage2D(GL_TEXTURE_2D, 0, TexEnums::toOglFormat(s.internal),
-			_size.x, _size.y, 0,
-			outerFormat, TexEnums::toOglType(s.img.type), s.img.data);
-		if (s.mipmaps)
-			glGenerateMipmap(GL_TEXTURE_2D);
+		int outerType, outerFormat;
+		int innerFormat = TexEnums::toOglFormat(s.internal);
+		TexEnums::toOglOuterFormat(s.img.format, outerFormat, outerType);
+		glTextureStorage2D(_id, 1, TexEnums::toOglFormat(s.internal), _size.x, _size.y);
+		glTextureSubImage2D(_id, 0, 0, 0, _size.x, _size.y, outerFormat, outerType, s.img.data);
+		//if (s.mipmaps)
+		//	glGenerateTextureMipmap(_id);
 	}
 
 	void Texture2D::setWrap(TextureWrap x, TextureWrap y)
 	{
-		glBindTexture(GL_TEXTURE_2D, _id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TexEnums::toOglWrap(x));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TexEnums::toOglWrap(y));
+		glTextureParameteri(_id, GL_TEXTURE_WRAP_S, TexEnums::toOglWrap(x));
+		glTextureParameteri(_id, GL_TEXTURE_WRAP_T, TexEnums::toOglWrap(y));
 	}
 	void Texture2D::setWrap(TextureWrap wrap)
 	{
@@ -58,9 +56,8 @@ namespace a_game_engine
 	}
 	void Texture2D::setFiltering(TextureFiltering min, TextureFiltering mag)
 	{
-		glBindTexture(GL_TEXTURE_2D, _id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexEnums::toOglFilter(min));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexEnums::toOglFilter(mag));
+		glTextureParameteri(_id, GL_TEXTURE_MIN_FILTER, TexEnums::toOglFilter(min));
+		glTextureParameteri(_id, GL_TEXTURE_MAG_FILTER, TexEnums::toOglFilter(mag));
 	}
 	void Texture2D::setFiltering(TextureFiltering filter)
 	{
@@ -68,8 +65,7 @@ namespace a_game_engine
 	}
 	void Texture2D::activate(int number) const
 	{
-		glActiveTexture(GL_TEXTURE0 + number);
-		glBindTexture(GL_TEXTURE_2D, _id);
+		glBindTextureUnit(number, _id);
 	}
 
 	Texture2D::Settings::Settings(const ImageInfo& img, TextureFormat internal, bool mipmaps)
