@@ -1,8 +1,10 @@
 #include "Application.hpp"
 #include <Age/LL/opengl.h>
-
+#include "egd.hpp"
 namespace a_game_engine
 {
+	Egd egd = Egd();
+
 	void Application::initEvents()
 	{
 		_eventHandler.setEvent("escape", [](const sf::Event& e)

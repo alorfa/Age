@@ -1,6 +1,8 @@
 #include "Texture2D.hpp"
 #include "Age/LL/opengl.h"
 #include <utility>
+#include <cmath>
+#include <algorithm>
 
 namespace a_game_engine
 {
@@ -37,12 +39,19 @@ namespace a_game_engine
 		_size = s.img.size;
 
 		int outerType, outerFormat;
-		int innerFormat = TexEnums::toOglFormat(s.internal);
+		const int innerFormat = TexEnums::toOglFormat(s.internal);
 		TexEnums::toOglOuterFormat(s.img.format, outerFormat, outerType);
-		glTextureStorage2D(_id, 1, TexEnums::toOglFormat(s.internal), _size.x, _size.y);
+		const int maxMipLevels = (int)std::floor(std::log2(std::max(s.img.size.x, s.img.size.y))) + 1;
+		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
+		glTextureStorage2D(_id, mipLevels, innerFormat, _size.x, _size.y);
 		glTextureSubImage2D(_id, 0, 0, 0, _size.x, _size.y, outerFormat, outerType, s.img.data);
-		//if (s.mipmaps)
-		//	glGenerateTextureMipmap(_id);
+		if (mipLevels > 1 and s.img.data != nullptr)
+			generateMipmaps();
+	}
+
+	void Texture2D::generateMipmaps()
+	{
+		glGenerateTextureMipmap(_id);
 	}
 
 	void Texture2D::setWrap(TextureWrap x, TextureWrap y)

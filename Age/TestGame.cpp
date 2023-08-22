@@ -14,6 +14,7 @@
 #include "Age/Light/Light.hpp"
 #include "Age/Game/Gdata.hpp"
 #include "Age/Resource/ShaderMaker.hpp"
+#include "Age/egd.hpp"
 
 namespace a_game
 {
@@ -61,16 +62,16 @@ namespace a_game
 
 	void TestGame::init()
 	{
-		world = std::make_unique<WorldScene>();
 		gdata = new Gdata();
-		gdata->camera.setFov(glm::radians(45.f));
-		gdata->camera.transform.changeRotation().x = glm::radians(90.f);
-		gdata->camera.setNearFar({ 0.1f, 100.f });
+		egd.camera.setFov(glm::radians(45.f));
+		egd.camera.transform.changeRotation().x = glm::radians(90.f);
+		egd.camera.setNearFar({ 0.1f, 100.f });
 		auto size = _window.getSize();
-		gdata->camera.setWindowSize({ size.x, size.y });
-		gdata->window = &_window;
-		gdata->res = "res";
-		gdata->user = "user";
+		egd.camera.setWindowSize({ size.x, size.y });
+		egd.window = &_window;
+		egd.res = "res";
+		egd.user = "user";
+		world = std::make_unique<WorldScene>();
 
 		std::cout << std::fixed;
 		std::cout.precision(2);
@@ -90,19 +91,19 @@ namespace a_game
 				return (e.type == sf::Event::KeyPressed && 
 					e.key.code == sf::Keyboard::Space);
 			});
-		_eventHandler.setEvent("left", [](const sf::Event& e)
+		_eventHandler.setEvent("a", [](const sf::Event& e)
 			{
 				return sf::Keyboard::isKeyPressed(sf::Keyboard::A);
 			});
-		_eventHandler.setEvent("right", [](const sf::Event& e)
+		_eventHandler.setEvent("d", [](const sf::Event& e)
 			{
 				return sf::Keyboard::isKeyPressed(sf::Keyboard::D);
 			});
-		_eventHandler.setEvent("forward", [](const sf::Event& e)
+		_eventHandler.setEvent("w", [](const sf::Event& e)
 			{
 				return sf::Keyboard::isKeyPressed(sf::Keyboard::W);
 			});
-		_eventHandler.setEvent("back", [](const sf::Event& e)
+		_eventHandler.setEvent("s", [](const sf::Event& e)
 			{
 				return sf::Keyboard::isKeyPressed(sf::Keyboard::S);
 			});
@@ -128,24 +129,24 @@ namespace a_game
 		if (ev.type == sf::Event::Resized)
 		{
 			uvec2 newSize = { ev.size.width ,ev.size.height };
-			gdata->camera.setWindowSize(newSize);
+			egd.camera.setWindowSize(newSize);
 		}
 
 		world->handleRawEvents(ev);
 	}
 	void TestGame::handleEvents(float delta)
 	{
-		const auto direction = Transform3D::getForwardDir(gdata->camera.transform.getRotation());
-		if (_eventHandler.getEvent("forward"))
-			gdata->camera.transform.changePosition() += direction * (delta * 4);
-		if (_eventHandler.getEvent("back"))
-			gdata->camera.transform.changePosition() -= direction * (delta * 4);
+		const auto direction = Transform3D::getForwardDir(egd.camera.transform.getRotation());
+		if (_eventHandler.getEvent("w"))
+			egd.camera.transform.changePosition() += direction * (delta * 4);
+		if (_eventHandler.getEvent("s"))
+			egd.camera.transform.changePosition() -= direction * (delta * 4);
 
-		const auto rightDir = Transform3D::getRightDir(gdata->camera.transform.getRotation());
-		if (_eventHandler.getEvent("left"))
-			gdata->camera.transform.changePosition() -= rightDir * (delta * 4);
-		if (_eventHandler.getEvent("right"))
-			gdata->camera.transform.changePosition() += rightDir * (delta * 4);
+		const auto rightDir = Transform3D::getRightDir(egd.camera.transform.getRotation());
+		if (_eventHandler.getEvent("a"))
+			egd.camera.transform.changePosition() -= rightDir * (delta * 4);
+		if (_eventHandler.getEvent("d"))
+			egd.camera.transform.changePosition() += rightDir * (delta * 4);
 
 		if (_eventHandler.getEvent("mouseLeft"))
 		{
@@ -171,7 +172,7 @@ namespace a_game
 				(float)mouseOffset.x / (float)windowSize.y * sensitivity,
 				(float)mouseOffset.y / (float)windowSize.y * sensitivity
 			};
-			vec3 rot = gdata->camera.transform.getRotation();
+			vec3 rot = egd.camera.transform.getRotation();
 			rot.x += cameraOffset.y;
 			rot.y -= cameraOffset.x;
 			float minrot = glm::radians(0.1f);
@@ -180,7 +181,7 @@ namespace a_game
 				rot.x = minrot;
 			if (rot.x >= maxrot)
 				rot.x = maxrot;
-			gdata->camera.transform.changeRotation() = rot;
+			egd.camera.transform.changeRotation() = rot;
 		}
 		world->handleEvents(_eventHandler, delta);
 	}

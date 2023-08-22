@@ -42,6 +42,7 @@
     <ClInclude Include="Age\Object\Node3D.hpp" />
     <ClInclude Include="Age\Object\Component.hpp" />
     <ClInclude Include="Age\Game\FollowToCamera.hpp" />
+    <ClInclude Include="Age\egd.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />

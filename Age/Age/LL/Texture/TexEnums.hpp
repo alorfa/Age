@@ -42,5 +42,11 @@ namespace a_game_engine
 		ImageInfo() = default;
 		inline ImageInfo(const uvec2& size, ubyte* data, TextureFormat format)
 			: size(size), data(data), format(format) {}
+		inline bool isValid() const {
+			return 
+				size.x != 0 and size.y != 0 and 
+				data != nullptr and 
+				format != TextureFormat::Undefined;
+		}
 	};
 }

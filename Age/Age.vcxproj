@@ -182,6 +182,7 @@
     <ClInclude Include="Age\Application.hpp" />
     <ClInclude Include="Age\Auxiliary\DEBUG.hpp" />
     <ClInclude Include="Age\Auxiliary\print_math.hpp" />
+    <ClInclude Include="Age\egd.hpp" />
     <ClInclude Include="Age\EventHandler.hpp" />
     <ClInclude Include="Age\Game\FollowToCamera.hpp" />
     <ClInclude Include="Age\Game\WorldScene.hpp" />

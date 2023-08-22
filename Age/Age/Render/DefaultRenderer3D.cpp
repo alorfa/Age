@@ -6,20 +6,13 @@
 #include "Age/Resource/ShaderLoader.hpp"
 #include "Age/LL/Buffers/VertexBuffer.hpp"
 #include "Age/Object/Object3D.hpp"
+#include "Age/egd.hpp"
 
 namespace a_game_engine
 {
-	namespace
-	{
-		std::unique_ptr<ShaderLoader> loader = nullptr;
-	}
 	DefaultRenderer3D::DefaultRenderer3D()
 	{
-		if (loader == nullptr)
-		{
-			loader = std::make_unique<ShaderLoader>();
-		}
-		shader = &loader->load("res/shader/framebuffer");
+		shader = &egd.shaders.load(egd.res / "shader/framebuffer");
 	}
 	void DefaultRenderer3D::updateSize(const uvec2& newSize)
 	{

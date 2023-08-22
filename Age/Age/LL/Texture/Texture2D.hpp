@@ -29,6 +29,7 @@ namespace a_game_engine
 		Texture2D& operator=(Texture2D&&) noexcept;
 		Texture2D(const Settings& s);
 		void create(const Settings& s);
+		void generateMipmaps();
 
 		void setWrap(TextureWrap x, TextureWrap y);
 		void setWrap(TextureWrap wrap);

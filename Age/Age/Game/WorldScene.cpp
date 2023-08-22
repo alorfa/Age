@@ -1,9 +1,9 @@
 #include "WorldScene.hpp"
-#include "Gdata.hpp"
 #include <Age/Light/LightSource.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Age/EventHandler.hpp>
 #include "FollowToCamera.hpp"
+#include "Age/egd.hpp"
 
 namespace a_game
 {
@@ -13,30 +13,30 @@ namespace a_game
 	}
 	void WorldScene::load()
 	{
-		auto nativeSize = gdata->window->getSize();
+		auto nativeSize = egd.window->getSize();
 		defRender.updateSize({ nativeSize.x, nativeSize.y });
 
-		activeCamera = &gdata->camera;
+		activeCamera = &egd.camera;
 
 		//ambient = vec3{ 0.2f, 0.2f, 0.5f };
 		std::unique_ptr<Object3D> objs[2] = {
 			std::make_unique<Object3D>(this),
 			std::make_unique<Object3D>(this)
 		};
-		objs[0]->model = &gdata->modelLoader.load(gdata->res / "model/daedric/scene.gltf",
+		objs[0]->model = &egd.models.load(egd.res / "model/daedric/scene.gltf",
 			ModelLoader::Settings{ vec3{5.f}, false, false, true });
-		objs[1]->model = &gdata->modelLoader.load(gdata->res / "model/kirara/scene.gltf",
+		objs[1]->model = &egd.models.load(egd.res / "model/kirara/scene.gltf",
 			ModelLoader::Settings{ vec3{10.f}, false});
-		objs[0]->shader = &gdata->shaderLoader.load(gdata->res / "shader/pbrNormal");
-		objs[1]->shader = &gdata->shaderLoader.load(gdata->res / "shader/default");
+		objs[0]->shader = &egd.shaders.load(egd.res / "shader/pbrNormal");
+		objs[1]->shader = &egd.shaders.load(egd.res / "shader/default");
 		auto flashLight = std::make_unique<SpotLightSource>(this);
 		std::unique_ptr<PointLightSource> lights[2] = { 
 			std::make_unique<PointLightSource>(this), 
 			std::make_unique<PointLightSource>(this) };
 		lights[0]->model = lights[1]->model = 
-			&gdata->modelLoader.load(gdata->res / "model/cube.obj");
+			&egd.models.load(egd.res / "model/cube.obj");
 		flashLight->shader = lights[0]->shader = lights[1]->shader = 
-			&gdata->shaderLoader.load(gdata->res / "shader/lightSource");
+			&egd.shaders.load(egd.res / "shader/lightSource");
 		flashLight->addComponent(std::make_unique<FollowToCamera>(*flashLight, *activeCamera));
 
 		lights[0]->transform.changePosition() = vec3(-1.f, 5, 2);
@@ -79,7 +79,7 @@ namespace a_game
 	void WorldScene::handleEvents(const EventHandler& ev, float delta)
 	{
 		if (ev.getEvent("escape"))
-			gdata->window->close();
+			egd.window->close();
 		Node3D::handleEvents(ev, delta);
 	}
 	void WorldScene::update(float delta)
