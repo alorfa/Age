@@ -8,22 +8,22 @@ namespace a_game_engine
 		: Node3D(parent)
 	{
 	}
-	void Object3D::draw(const mat4& t, const Node3D& sc, const Camera3D& camera,
+	void Object3D::draw(const mat4& parent, const Node3D& sc, const Camera3D& camera,
 		const Shader* s) const
 	{
-		if (model == nullptr)
-			return;
-
 		if (s == nullptr)
 			s = shader;
 
-		s->use();
-		s->setCamera(camera);
-		s->setLights(sc);
+		if (model)
+		{
+			s->use();
+			s->setCamera(camera);
+			s->setLights(sc);
 
-		mat4 curTransform = t * transform.getMatrix();
-		model->draw(curTransform, *s);
+			mat4 curTransform = parent * transform.getMatrix();
+			model->draw(curTransform, *s);
+		}
 
-		Node3D::draw(t, sc, camera, s);
+		Node3D::draw(parent, sc, camera, s);
 	}
 }

@@ -4,6 +4,7 @@
 #include <Age/EventHandler.hpp>
 #include "FollowToCamera.hpp"
 #include "Age/egd.hpp"
+#include "Age/Object/SkyBox.hpp"
 
 namespace a_game
 {
@@ -53,12 +54,26 @@ namespace a_game
 		flashLight->light.ambient = flashLight->light.color * 0.1f;
 		auto dirLight = std::make_unique<DirLightSource>(this);
 
+		auto cubemap = new CubeMap;
+		ImageInfo images[6];
+		const auto& img = egd.textures.getDefaultImage();
+		for (uint i = 0; i < 6; i++)
+		{
+			images[i].data = img.info.data;
+			images[i].format = img.info.format;
+		}
+		cubemap->create(CubeMap::Settings(images, img.info.size, TextureFormat::RGB_Float16, false));
+		auto skyBox = std::make_unique<SkyBox>(this);
+		skyBox->cubemap = cubemap;
+		skyBox->cube = egd.models.load(egd.res / "model/cube.obj").meshes[0].get();
+
 		addChild(std::move(objs[0]));
 		addChild(std::move(objs[1]));
 		addChild(std::move(lights[0]));
 		addChild(std::move(lights[1]));
 		addChild(std::move(flashLight));
 		addChild(std::move(dirLight));
+		addChild(std::move(skyBox));
 
 		//ambient = { 0.8f };
 

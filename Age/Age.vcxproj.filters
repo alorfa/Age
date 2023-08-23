@@ -43,6 +43,7 @@
     <ClInclude Include="Age\Object\Component.hpp" />
     <ClInclude Include="Age\Game\FollowToCamera.hpp" />
     <ClInclude Include="Age\egd.hpp" />
+    <ClInclude Include="Age\Object\SkyBox.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -76,5 +77,6 @@
     <ClCompile Include="Age\Object\Node3D.cpp" />
     <ClCompile Include="Age\Object\Component.cpp" />
     <ClCompile Include="Age\Game\FollowToCamera.cpp" />
+    <ClCompile Include="Age\Object\SkyBox.cpp" />
   </ItemGroup>
 </Project>

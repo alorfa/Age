@@ -2,6 +2,7 @@
 #include "Age/LL/opengl.h"
 #include <iostream>
 #include "Age/LL/Texture/Texture2D.hpp"
+#include "Age/LL/Texture/CubeMap.hpp"
 #include "Age/Math/mat3.hpp"
 #include "Age/Math/mat4.hpp"
 #include "Age/Resource/Logger.hpp"
@@ -192,6 +193,11 @@ namespace a_game_engine
 		return sampler;
 	}
 	void Shader::setUniform(const char* name, const Texture2D& value, uint number) const
+	{
+		value.activate(number);
+		glUniform1i(location(name), (int)number);
+	}
+	void Shader::setUniform(const char* name, const CubeMap& value, uint number) const
 	{
 		value.activate(number);
 		glUniform1i(location(name), (int)number);

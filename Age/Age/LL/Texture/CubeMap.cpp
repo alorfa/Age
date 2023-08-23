@@ -1,6 +1,8 @@
 #include "CubeMap.hpp"
 #include "Age/LL/opengl.h"
 #include <utility>
+#include <cmath>
+#include <algorithm>
 
 namespace a_game_engine
 {
@@ -24,21 +26,39 @@ namespace a_game_engine
 	}
 	void CubeMap::create(const Settings& s)
 	{
-		if (_id)
-			glDeleteTextures(1, &_id);
+		if (_id == 0)
+			glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_id);
 
-		glGenTextures(1, &_id);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
+		const int maxMipLevels = (int)std::floor(std::log2(std::max(s.imagesArea.x, s.imagesArea.y))) + 1;
+		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
+		glTextureStorage2D(_id, mipLevels, TexEnums::toOglFormat(s.internal), s.imagesArea.x, s.imagesArea.y);
+		//glTextureStorage3D(_id, mipLevels, TexEnums::toOglFormat(s.internal), s.imagesArea.x, s.imagesArea.y, 1);
 
+		bool hasData = false;
 		for (uint i = 0; i < 6; i++)
 		{
 			const auto& img = s.images[i];
-			int outerFormat, outerType;
-			int innerFormat = TexEnums::toOglFormat(s.internal);
-			TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-				innerFormat, img.size.x, img.size.y, 0, outerFormat, outerType, img.data);
+			if (img.data)
+			{
+				int outerType, outerFormat;
+				TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
+				glTextureSubImage3D(_id, 0,
+					img.size.x, img.size.y, i, 
+					s.imagesArea.x, s.imagesArea.y, 1,
+					outerFormat, outerType, img.data);
+				hasData = true;
+			}
 		}
+		if (hasData)
+			generateMipmaps();
+	}
+	void CubeMap::generateMipmaps()
+	{
+		glGenerateTextureMipmap(_id);
+	}
+	void CubeMap::activate(int number) const
+	{
+		glBindTextureUnit(number, _id);
 	}
 	void CubeMap::setWrap(TextureWrap x, TextureWrap y, TextureWrap z)
 	{

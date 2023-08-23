@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include "Node3D.hpp"
 
 namespace a_game_engine

@@ -7,6 +7,7 @@
 namespace a_game_engine
 {
 	class Texture2D;
+	class CubeMap;
 	struct mat3;
 	struct mat4;
 	struct ColorMaterial;
@@ -43,6 +44,7 @@ namespace a_game_engine
 		void setUniform(const char* name, const mat3& value) const;
 		void setUniform(const char* name, const mat4& value) const;
 		void setUniform(const char* name, const Texture2D& value, uint number) const;
+		void setUniform(const char* name, const CubeMap& value, uint number) const;
 		uint setUniform(const char* name, const TextureMaterial& mat, uint firstSampler) const;
 		void setUniform(const char* name, const DirLight& light) const;
 		void setUniform(const char* name, const PointLight& light) const;
