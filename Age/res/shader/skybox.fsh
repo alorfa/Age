@@ -1,11 +1,9 @@
-#version 330 core
-
 out vec4 FragColor;
 
 in vec3 fragUv;
-uniform sampler3D skybox;
+uniform samplerCube skybox;
 
 void main()
 {
-    FragColor = vec4(texture(skybox, fragUv), 1.f);
+    FragColor = vec4(texture(skybox, normalize(fragUv)).rgb, 1.f);
 }

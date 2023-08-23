@@ -22,6 +22,8 @@ namespace a_game_engine
 		}
 	}
 
+	const std::string ShaderCompiler::glslVersionString = "#version 330\n";
+
 	uint ShaderCompiler::loadFromMemory(const char* data, int type)
 	{
 		uint result = glCreateShader(toOglType(type));
@@ -53,6 +55,7 @@ namespace a_game_engine
 	uint ShaderCompiler::loadFromFile(const std::filesystem::path& path, int type)
 	{
 		auto shaderText = File::readAllText(path);
-		return loadFromMemory(shaderText.c_str(), type);
+		auto handledText = glslVersionString + shaderText;
+		return loadFromMemory(handledText.c_str(), type);
 	}
 }

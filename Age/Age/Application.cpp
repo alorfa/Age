@@ -66,8 +66,8 @@ namespace a_game_engine
 #ifdef _DEBUG
 		settings.attributeFlags |= sf::ContextSettings::Debug;
 #endif
-		settings.majorVersion = 3;
-		settings.minorVersion = 3;
+		settings.majorVersion = 4;
+		settings.minorVersion = 5;
 		settings.antialiasingLevel = antialiasing;
 		settings.depthBits = depthBits;
 		_window.create({ size.x, size.y }, title, style, settings);

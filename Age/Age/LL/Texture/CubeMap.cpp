@@ -27,14 +27,10 @@ namespace a_game_engine
 	void CubeMap::create(const Settings& s)
 	{
 		if (_id == 0)
-			glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_id);
+			glGenTextures(1, &_id);
 
-		const int maxMipLevels = (int)std::floor(std::log2(std::max(s.imagesArea.x, s.imagesArea.y))) + 1;
-		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
-		glTextureStorage2D(_id, mipLevels, TexEnums::toOglFormat(s.internal), s.imagesArea.x, s.imagesArea.y);
-		//glTextureStorage3D(_id, mipLevels, TexEnums::toOglFormat(s.internal), s.imagesArea.x, s.imagesArea.y, 1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
 
-		bool hasData = false;
 		for (uint i = 0; i < 6; i++)
 		{
 			const auto& img = s.images[i];
@@ -42,19 +38,11 @@ namespace a_game_engine
 			{
 				int outerType, outerFormat;
 				TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
-				glTextureSubImage3D(_id, 0,
-					img.size.x, img.size.y, i, 
-					s.imagesArea.x, s.imagesArea.y, 1,
-					outerFormat, outerType, img.data);
-				hasData = true;
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, outerFormat,
+					s.imageArea, s.imageArea, 0, outerFormat, outerType, img.data);
 			}
 		}
-		if (hasData)
-			generateMipmaps();
-	}
-	void CubeMap::generateMipmaps()
-	{
-		glGenerateTextureMipmap(_id);
+		setFiltering(TextureFiltering::Linear);
 	}
 	void CubeMap::activate(int number) const
 	{

@@ -20,6 +20,7 @@ namespace a_game_engine
 		{
 			s->use();
 			s->setCamera(camera);
+			//s->setUniform("projection", mat4::)
 			s->setUniform("skybox", *cubemap, 0);
 
 			mat4 curTransform = parent * transform.getMatrix();

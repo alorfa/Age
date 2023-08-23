@@ -13,12 +13,12 @@ namespace a_game_engine
 			// right, left, front, back, top, bottom. Actially size means displacement
 			const ImageInfo* images;
 			TextureFormat internal;
-			uvec2 imagesArea;
+			uint imageArea;
 			bool mipmaps = true;
 
-			inline Settings(const ImageInfo* images, uvec2 imagesArea,
-				TextureFormat internalFormat = TextureFormat::RGB, bool mipmaps = true)
-				: images(images), imagesArea(imagesArea), internal(internalFormat), mipmaps(mipmaps) {}
+			inline Settings(const ImageInfo* images, uint imageArea,
+				TextureFormat internalFormat = TextureFormat::SRGB, bool mipmaps = true)
+				: images(images), imageArea(imageArea), internal(internalFormat), mipmaps(mipmaps) {}
 		};
 
 		CubeMap();
@@ -28,7 +28,6 @@ namespace a_game_engine
 		CubeMap& operator=(CubeMap&& other);
 		~CubeMap();
 		void create(const Settings& s);
-		void generateMipmaps();
 		void activate(int number = 0) const;
 
 		void setWrap(TextureWrap x, TextureWrap y, TextureWrap z);

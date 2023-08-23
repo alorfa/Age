@@ -14,6 +14,7 @@ namespace a_game
 	}
 	void WorldScene::load()
 	{
+		TextureLoader::defaultImagePath = egd.res / "img/dirt.png";
 		auto nativeSize = egd.window->getSize();
 		defRender.updateSize({ nativeSize.x, nativeSize.y });
 
@@ -62,20 +63,20 @@ namespace a_game
 			images[i].data = img.info.data;
 			images[i].format = img.info.format;
 		}
-		cubemap->create(CubeMap::Settings(images, img.info.size, TextureFormat::RGB_Float16, false));
+		cubemap->create(CubeMap::Settings(images, 
+			std::min(img.info.size.x, img.info.size.y), TextureFormat::SRGB, false));
 		auto skyBox = std::make_unique<SkyBox>(this);
 		skyBox->cubemap = cubemap;
-		skyBox->cube = egd.models.load(egd.res / "model/cube.obj").meshes[0].get();
+		skyBox->cube = egd.models.load(egd.res / "model/skybox.obj").meshes[0].get();
+		skyBox->shader = &egd.shaders.load(egd.res / "shader/skybox");
 
+		addChild(std::move(skyBox));
 		addChild(std::move(objs[0]));
 		addChild(std::move(objs[1]));
 		addChild(std::move(lights[0]));
 		addChild(std::move(lights[1]));
 		addChild(std::move(flashLight));
 		addChild(std::move(dirLight));
-		addChild(std::move(skyBox));
-
-		//ambient = { 0.8f };
 
 		for (auto& light : infChildren)
 		{
@@ -100,14 +101,6 @@ namespace a_game
 	void WorldScene::update(float delta)
 	{
 		time += delta;
-
-		/*auto& dirl = *dirLights.begin();
-		dirl.dir = { 0.f, sinf(time), cosf(time) };
-
-		dirl.color = { 0.4f, 0.4f, 0.6f };
-		dirl.ambient = dirl.color * 0.1f;*/
-		/*dirl.color.z = -sinf(time);
-		dirl.color.x = std::max(-cosf(time), 0.f);*/
 
 		Node3D::update(delta);
 	}
