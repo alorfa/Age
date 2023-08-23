@@ -34,31 +34,28 @@ namespace a_game_engine
 	}
 	void Node3D::handleRawEvents(const sf::Event& ev)
 	{
+		for (auto& comp : components)
+			comp->handleRawEvents(ev);
+
 		forEach([&](Node3D& n) {
-			for (auto& comp : n.components)
-			{
-				comp->handleRawEvents(ev);
-			}
 			n.handleRawEvents(ev);
 		});
 	}
 	void Node3D::handleEvents(const EventHandler& ev, float delta)
 	{
+		for (auto& comp : components)
+			comp->handleEvents(ev, delta);
+
 		forEach([&](Node3D& n) {
-			for (auto& comp : n.components)
-			{
-				comp->handleEvents(ev, delta);
-			}
 			n.handleEvents(ev, delta);
 		});
 	}
 	void Node3D::update(float delta)
 	{
+		for (auto& comp : components)
+			comp->update(delta);
+
 		forEach([&](Node3D& n) {
-			for (auto& comp : n.components)
-			{
-				comp->update(delta);
-			}
 			n.update(delta);
 		});
 	}
