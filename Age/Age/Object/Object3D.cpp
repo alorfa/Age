@@ -1,6 +1,7 @@
 #include "Object3D.hpp"
 #include "Age/LL/Shader/Shader.hpp"
 #include "Age/Object/Model3D.hpp"
+#include "Age/LL/Pipeline.hpp"
 
 namespace a_game_engine
 {
@@ -16,6 +17,7 @@ namespace a_game_engine
 
 		if (model)
 		{
+			Pipeline::setDepthFunc(DepthFunc::Less);
 			s->use();
 			s->setCamera(camera);
 			s->setLights(sc);

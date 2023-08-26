@@ -2,7 +2,7 @@
 
 #include "DefaultRenderer3D.hpp"
 #include "Age/Resource/Logger.hpp"
-#include "Age/LL/opengl.h"
+#include "Age/LL/Pipeline.hpp"
 #include "Age/Resource/ShaderLoader.hpp"
 #include "Age/LL/Buffers/VertexBuffer.hpp"
 #include "Age/Object/Object3D.hpp"
@@ -28,17 +28,15 @@ namespace a_game_engine
 	}
 	void DefaultRenderer3D::drawScene(const Node3D& sc, const Camera3D& camera) const
 	{
-		set3DContext();
+		Pipeline::set3DContext();
 		mainFb.use();
-
-		glClearColor(0.1f, 0.1f, 0.1f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Pipeline::clear({ 0.1f, 0.1f, 0.1f });
 		sc.forEachConst([&](const Node3D& n) {
 			drawObject(n, sc, camera, nullptr); 
 			});
 
 		mainFb.useDefault(size);
-		set2DContext();
+		Pipeline::set2DContext();
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
 		shader->setUniform("tex", mainFb.texture, 0);

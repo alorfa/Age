@@ -44,6 +44,7 @@
     <ClInclude Include="Age\Game\FollowToCamera.hpp" />
     <ClInclude Include="Age\egd.hpp" />
     <ClInclude Include="Age\Object\SkyBox.hpp" />
+    <ClInclude Include="Age\LL\Pipeline.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -71,12 +72,12 @@
     <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
-    <ClCompile Include="Age\Render\Renderer.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
     <ClCompile Include="Age\Object\Node3D.cpp" />
     <ClCompile Include="Age\Object\Component.cpp" />
     <ClCompile Include="Age\Game\FollowToCamera.cpp" />
     <ClCompile Include="Age\Object\SkyBox.cpp" />
+    <ClCompile Include="Age\LL\Pipeline.cpp" />
   </ItemGroup>
 </Project>

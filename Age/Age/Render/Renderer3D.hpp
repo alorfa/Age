@@ -18,8 +18,5 @@ namespace a_game_engine
 		virtual void drawObject(const Node3D& o, const Node3D& scene,
 			const Camera3D& c, const Shader* s) const = 0;
 		virtual void drawScene(const Node3D& scene, const Camera3D& camera) const = 0;
-
-		static void set3DContext();
-		static void set2DContext();
 	};
 }

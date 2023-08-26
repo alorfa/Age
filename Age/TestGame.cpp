@@ -13,6 +13,7 @@
 #include "Age/Game/Gdata.hpp"
 #include "Age/Resource/ShaderMaker.hpp"
 #include "Age/egd.hpp"
+#include "Age/LL/Pipeline.hpp"
 
 namespace a_game
 {
@@ -75,9 +76,7 @@ namespace a_game
 		std::cout.precision(2);
 		_window.setFramerateLimit(60); 
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+		Pipeline::setUnpackAlignment(1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 		

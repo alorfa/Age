@@ -2,7 +2,7 @@
 #include "Age/LL/Shader/Shader.hpp"
 #include "Mesh3D.hpp"
 #include "Age/egd.hpp"
-#include "Age/LL/opengl.h"
+#include "Age/LL/Pipeline.hpp"
 
 namespace a_game_engine
 {
@@ -20,7 +20,7 @@ namespace a_game_engine
 
 		if (cubemap and cube)
 		{
-			glDepthFunc(GL_LEQUAL);
+			Pipeline::setDepthFunc(DepthFunc::LEqual);
 			s->use();
 			mat4 view = camera.transform.getMatrix();
 			view.data[12] = view.data[13] = view.data[14] = 0.f;
@@ -30,7 +30,6 @@ namespace a_game_engine
 
 			mat4 curTransform = parent * transform.getMatrix();
 			cube->buffer.draw();
-			glDepthFunc(GL_LESS);
 		}
 
 		Node3D::draw(parent, sc, camera, s);

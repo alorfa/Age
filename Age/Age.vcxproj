@@ -192,6 +192,7 @@
     <ClInclude Include="Age\LL\Buffers\FrameBuffer2D.hpp" />
     <ClInclude Include="Age\LL\Buffers\VertexBuffer.hpp" />
     <ClInclude Include="Age\LL\opengl.h" />
+    <ClInclude Include="Age\LL\Pipeline.hpp" />
     <ClInclude Include="Age\LL\Shader\Shader.hpp" />
     <ClInclude Include="Age\LL\Shader\ShaderCompiler.hpp" />
     <ClInclude Include="Age\LL\Texture\Image.hpp" />
@@ -232,6 +233,7 @@
     <ClCompile Include="Age\Light\LightSource.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\LL\Buffers\VertexBuffer.cpp" />
+    <ClCompile Include="Age\LL\Pipeline.cpp" />
     <ClCompile Include="Age\LL\Shader\Shader.cpp" />
     <ClCompile Include="Age\LL\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
@@ -252,7 +254,6 @@
     <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
     <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
-    <ClCompile Include="Age\Render\Renderer.cpp" />
     <ClCompile Include="Age\Transform\Camera3D.cpp" />
     <ClCompile Include="Age\Transform\Transform3D.cpp" />
     <ClCompile Include="TestGame.cpp" />
