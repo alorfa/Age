@@ -6,8 +6,6 @@
 #include <Age/LL/Texture/Texture2D.hpp>
 #include <iostream>
 #include <Age/Object/Object3D.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <Age/Auxiliary/print_math.hpp>
 #include <Age/Transform/Camera3D.hpp>
 #include <Age/Resource/Logger.hpp>

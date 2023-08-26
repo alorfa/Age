@@ -1,6 +1,8 @@
 #include "SkyBox.hpp"
 #include "Age/LL/Shader/Shader.hpp"
 #include "Mesh3D.hpp"
+#include "Age/egd.hpp"
+#include "Age/LL/opengl.h"
 
 namespace a_game_engine
 {
@@ -18,13 +20,17 @@ namespace a_game_engine
 
 		if (cubemap and cube)
 		{
+			glDepthFunc(GL_LEQUAL);
 			s->use();
-			s->setCamera(camera);
-			//s->setUniform("projection", mat4::)
+			mat4 view = camera.transform.getMatrix();
+			view.data[12] = view.data[13] = view.data[14] = 0.f;
+			s->setUniform("view", view);
+			s->setUniform("projection", camera.getProjection());
 			s->setUniform("skybox", *cubemap, 0);
 
 			mat4 curTransform = parent * transform.getMatrix();
 			cube->buffer.draw();
+			glDepthFunc(GL_LESS);
 		}
 
 		Node3D::draw(parent, sc, camera, s);

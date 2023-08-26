@@ -38,7 +38,7 @@ namespace a_game_engine
 			{
 				int outerType, outerFormat;
 				TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, outerFormat,
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, TexEnums::toOglFormat(s.internal),
 					s.imageArea, s.imageArea, 0, outerFormat, outerType, img.data);
 			}
 		}
