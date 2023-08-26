@@ -11,7 +11,6 @@
 #include <Age/Resource/Logger.hpp>
 #include "Age/Light/Light.hpp"
 #include "Age/Game/Gdata.hpp"
-#include "Age/Resource/ShaderMaker.hpp"
 #include "Age/egd.hpp"
 #include "Age/LL/Pipeline.hpp"
 
@@ -200,19 +199,6 @@ namespace a_game
 
 int main()
 {
-	/*try
-	{
-		VertexShaderMaker::Params3D params;
-		params.safeScaleNormals = true;
-		auto vert = VertexShaderMaker::create(params);
-		Logger::logDebug(vert);
-		return 0;
-	}
-	catch (std::exception& e)
-	{
-		Logger::logError(e.what());
-	}*/
-
 	auto game = std::make_unique<a_game::TestGame>();
 	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 8, 24);
 

@@ -214,7 +214,6 @@
     <ClInclude Include="Age\Resource\Logger.hpp" />
     <ClInclude Include="Age\Resource\ModelLoader.hpp" />
     <ClInclude Include="Age\Resource\ResourceLoader.hpp" />
-    <ClInclude Include="Age\Resource\ShaderMaker.hpp" />
     <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
     <ClInclude Include="Age\Resource\TextureLoader.hpp" />
     <ClInclude Include="Age\Render\DefaultRenderer3D.hpp" />
@@ -251,7 +250,6 @@
     <ClCompile Include="Age\Resource\Logger.cpp" />
     <ClCompile Include="Age\Resource\ModelLoader.cpp" />
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
-    <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
     <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
     <ClCompile Include="Age\Transform\Camera3D.cpp" />

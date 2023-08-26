@@ -33,7 +33,6 @@
     <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
     <ClInclude Include="Age\Game\WorldScene.hpp" />
     <ClInclude Include="Age\Game\Gdata.hpp" />
-    <ClInclude Include="Age\Resource\ShaderMaker.hpp" />
     <ClInclude Include="Age\LL\Buffers\FrameBuffer2D.hpp" />
     <ClInclude Include="Age\Render\Renderer3D.hpp" />
     <ClInclude Include="Age\Render\DefaultRenderer3D.hpp" />
@@ -69,7 +68,6 @@
     <ClCompile Include="Age\Light\LightSource.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
-    <ClCompile Include="Age\Resource\ShaderMaker.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
