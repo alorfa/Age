@@ -13,6 +13,7 @@
 #include "Age/Game/Gdata.hpp"
 #include "Age/egd.hpp"
 #include "Age/LL/Pipeline.hpp"
+#include "Age/Math/Math.hpp"
 
 namespace a_game
 {
@@ -65,7 +66,7 @@ namespace a_game
 		egd.camera.transform.changeRotation().x = glm::radians(90.f);
 		egd.camera.setNearFar({ 0.1f, 100.f });
 		auto size = _window.getSize();
-		egd.camera.setWindowSize({ size.x, size.y });
+		egd.camera.setAspectRatio({ size.x, size.y });
 		egd.window = &_window;
 		egd.res = "res";
 		egd.user = "user";
@@ -76,8 +77,6 @@ namespace a_game
 		_window.setFramerateLimit(60); 
 
 		Pipeline::setUnpackAlignment(1);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 		
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(message_callback, nullptr);
@@ -125,20 +124,20 @@ namespace a_game
 		if (ev.type == sf::Event::Resized)
 		{
 			uvec2 newSize = { ev.size.width ,ev.size.height };
-			egd.camera.setWindowSize(newSize);
+			egd.camera.setAspectRatio(newSize);
 		}
 
 		world->handleRawEvents(ev);
 	}
 	void TestGame::handleEvents(float delta)
 	{
-		const auto direction = Transform3D::getForwardDir(egd.camera.transform.getRotation());
+		const auto direction = Math::getForwardDir(egd.camera.transform.getRotation());
 		if (_eventHandler.getEvent("w"))
 			egd.camera.transform.changePosition() += direction * (delta * 4);
 		if (_eventHandler.getEvent("s"))
 			egd.camera.transform.changePosition() -= direction * (delta * 4);
 
-		const auto rightDir = Transform3D::getRightDir(egd.camera.transform.getRotation());
+		const auto rightDir = Math::getRightDir(egd.camera.transform.getRotation());
 		if (_eventHandler.getEvent("a"))
 			egd.camera.transform.changePosition() -= rightDir * (delta * 4);
 		if (_eventHandler.getEvent("d"))

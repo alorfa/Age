@@ -8,6 +8,7 @@
 #include "Age/Resource/ResourceLoader.hpp"
 #include "Age/Resource/Logger.hpp"
 #include "Age/Transform/Transform3D.hpp"
+#include "Age/Math/Math.hpp"
 
 namespace a_game_engine
 {
@@ -256,9 +257,11 @@ namespace a_game_engine
 	{}
 	ModelLoader::Settings::Settings(const vec3& scale, bool rotate, bool inverseUv, bool withNormalMap,
 		bool disableSrgb)
-		: rootNodeTransform(Transform3D::createMatrix({0.f}, 
-				rotate ? vec3{glm::radians(90.f), 0.f, 0.f} : vec3{0.f}, 
-				scale)),
-		inverseUV(inverseUv), withNormalMap(withNormalMap), disableSrgb(disableSrgb)
-	{}
+		: inverseUV(inverseUv), withNormalMap(withNormalMap), disableSrgb(disableSrgb)
+	{
+		rootNodeTransform.setModelMatrix(
+			{ 0.f }, 
+			rotate ? vec3{glm::radians(90.f), 0.f, 0.f} : vec3{ 0.f },
+			scale);
+	}
 }

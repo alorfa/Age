@@ -24,14 +24,7 @@ namespace a_game_engine
 		void setIsCamera(bool v = true);
 		inline bool isCamera() const { return _isCamera; }
 
-		static mat4 createMatrix(const vec3& position, const vec3& euler, const vec3& scale);
-		static mat4 createCameraMatrix(const vec3& position, const vec3& euler, const vec3& scale);
-
 		inline bool isNeedToUpdate() const { return _needToUpdate; }
 		const mat4& getMatrix() const;
-
-		static vec3 getForwardDir(const vec3& euler);
-		static vec3 getRightDir(const vec3& euler);
-		static vec3 getUpDir(const vec3& euler);
 	};
 }

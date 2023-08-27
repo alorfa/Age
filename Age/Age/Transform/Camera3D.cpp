@@ -1,5 +1,4 @@
 #include "Camera3D.hpp"
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace a_game_engine
 {
@@ -8,30 +7,23 @@ namespace a_game_engine
 		transform.setIsCamera();
 	}
 
-	mat4 Camera3D::createProjectionMatrix() const
-	{
-		mat4 result;
-		auto& res = reinterpret_cast<glm::mat4&>(result);
-		if (_isOrtho)
-		{
-			res = glm::ortho(-1.f, -1.f, 1.f, 1.f,
-				_nearFar.x, _nearFar.y);
-		}
-		else
-		{
-			res = glm::perspective(_fov, 
-				(float)_windowSize.x / (float)_windowSize.y, _nearFar.x, _nearFar.y);
-		}
-		return result;
-	}
 	void Camera3D::setFov(float fov)
 	{
 		_fov = fov;
 		_needUpdate = true;
 	}
-	void Camera3D::setWindowSize(uvec2 windowSize)
+	void Camera3D::setViewport(float viewport)
 	{
-		_windowSize = windowSize;
+		_viewport = viewport;
+		_needUpdate = true;
+	}
+	void Camera3D::setAspectRatio(uvec2 windowSize)
+	{
+		setAspectRatio((float)windowSize.x / (float)windowSize.y);
+	}
+	void Camera3D::setAspectRatio(float ratio)
+	{
+		_aspectRatio = ratio;
 		_needUpdate = true;
 	}
 	void Camera3D::setNearFar(vec2 nearFar)
@@ -49,13 +41,11 @@ namespace a_game_engine
 		if (_needUpdate)
 		{
 			_needUpdate = false;
-			_needUpdatePV = true;
-			_projection = createProjectionMatrix();
+			if (_isOrtho)
+				_projection.setOrtho(_viewport, _aspectRatio, _nearFar.x, _nearFar.y);
+			else
+				_projection.setPerspective(_fov, _aspectRatio, _nearFar.x, _nearFar.y);
 		}
 		return _projection;
-	}
-	const mat4& Camera3D::getPVMatrix() const
-	{
-		return _projectView = getProjection() * transform.getMatrix();
 	}
 }

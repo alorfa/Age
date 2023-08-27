@@ -1,5 +1,6 @@
 #include "LightSource.hpp"
 #include "Age/LL/Shader/Shader.hpp"
+#include "Age/Math/Math.hpp"
 
 namespace a_game_engine
 {
@@ -34,7 +35,7 @@ namespace a_game_engine
 	void SpotLightSource::update(float delta)
 	{
 		light.pos = transform.getPosition();
-		light.dir = Transform3D::getForwardDir(transform.getRotation());
+		light.dir = Math::getForwardDir(transform.getRotation());
 		Object3D::update(delta);
 	}
 

@@ -23,7 +23,7 @@ namespace a_game_engine
 			Pipeline::setDepthFunc(DepthFunc::LEqual);
 			s->use();
 			mat4 view = camera.transform.getMatrix();
-			view.data[12] = view.data[13] = view.data[14] = 0.f;
+			view.data[3][0] = view.data[3][1] = view.data[3][2] = 0.f;
 			s->setUniform("view", view);
 			s->setUniform("projection", camera.getProjection());
 			s->setUniform("skybox", *cubemap, 0);

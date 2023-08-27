@@ -44,6 +44,7 @@
     <ClInclude Include="Age\egd.hpp" />
     <ClInclude Include="Age\Object\SkyBox.hpp" />
     <ClInclude Include="Age\LL\Pipeline.hpp" />
+    <ClInclude Include="Age\Math\Math.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -63,7 +64,7 @@
     <ClCompile Include="Age\Object\Model3D.cpp" />
     <ClCompile Include="Age\Object\Object3D.cpp" />
     <ClCompile Include="Age\Resource\ModelLoader.cpp" />
-    <ClCompile Include="Age\Math\mat.cpp" />
+    <ClCompile Include="Age\Math\Math.cpp" />
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
     <ClCompile Include="Age\Light\LightSource.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />

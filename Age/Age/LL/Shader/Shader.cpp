@@ -106,7 +106,7 @@ namespace a_game_engine
 	}
 	void Shader::setUniform(const char* name, const mat4& value) const
 	{
-		glUniformMatrix4fv(location(name), 1, GL_FALSE, value.data);
+		glUniformMatrix4fv(location(name), 1, GL_FALSE, (const float*)value.data);
 	}
 	void Shader::setUniform(const char* name, const DirLight& light) const
 	{

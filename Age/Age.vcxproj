@@ -201,6 +201,7 @@
     <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
     <ClInclude Include="Age\Math\mat3.hpp" />
     <ClInclude Include="Age\Math\mat4.hpp" />
+    <ClInclude Include="Age\Math\Math.hpp" />
     <ClInclude Include="Age\Math\vec2.hpp" />
     <ClInclude Include="Age\Math\vec3.hpp" />
     <ClInclude Include="Age\Object\Component.hpp" />
@@ -239,7 +240,7 @@
     <ClCompile Include="Age\LL\Texture\Image.cpp" />
     <ClCompile Include="Age\LL\Texture\Texture2D.cpp" />
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
-    <ClCompile Include="Age\Math\mat.cpp" />
+    <ClCompile Include="Age\Math\Math.cpp" />
     <ClCompile Include="Age\Object\Component.cpp" />
     <ClCompile Include="Age\Object\Mesh3D.cpp" />
     <ClCompile Include="Age\Object\Model3D.cpp" />
