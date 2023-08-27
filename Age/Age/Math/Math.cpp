@@ -135,7 +135,7 @@ namespace a_game_engine
         cosy = cos(euler.y);
         sinx = sin(euler.x);
         siny = sin(euler.y);
-        return { -sinx * siny, sinx * cosy, -cosx };
+        return { -sinx * siny, sinx * cosy, -cosx }; //TODO: z-axis may not be processed correctly
     }
     vec3 Math::getRightDir(const vec3& euler)
     {
@@ -144,15 +144,17 @@ namespace a_game_engine
         cosy = cos(euler.y);
         sinz = sin(euler.z);
         siny = sin(euler.y);
-        return { cosz * cosy, siny * cosz, sinz };
+        return { cosz * cosy, siny * cosz, sinz }; //TODO: z-axis may not be processed correctly
     }
     vec3 Math::getUpDir(const vec3& euler)
     {
-        float cosz, cosx, sinz, sinx;
-        cosz = cos(euler.z);
+        float cosx, cosy, cosz, sinx, siny, sinz;
         cosx = cos(euler.x);
-        sinz = sin(euler.z);
+        cosy = cos(euler.y);
+        cosz = cos(euler.z);
         sinx = sin(euler.x);
-        return { 0, 0, 0 };
+        siny = sin(euler.y);
+        sinz = sin(euler.z);
+        return { -siny * cosx, cosx * cosy, sinx * cosz }; //TODO: z-axis may not be processed correctly
     }
 }

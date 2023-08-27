@@ -62,8 +62,8 @@ namespace a_game
 	void TestGame::init()
 	{
 		gdata = new Gdata();
-		egd.camera.setFov(glm::radians(45.f));
-		egd.camera.transform.changeRotation().x = glm::radians(90.f);
+		egd.camera.setFov(Math::rad(45.f));
+		egd.camera.transform.changeRotation().x = Math::rad(90.f);
 		egd.camera.setNearFar({ 0.1f, 100.f });
 		auto size = _window.getSize();
 		egd.camera.setAspectRatio({ size.x, size.y });
@@ -85,6 +85,14 @@ namespace a_game
 			{
 				return (e.type == sf::Event::KeyPressed && 
 					e.key.code == sf::Keyboard::Space);
+			});
+		_eventHandler.setEvent("left", [](const sf::Event& e)
+			{
+				return sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+			});
+		_eventHandler.setEvent("right", [](const sf::Event& e)
+			{
+				return sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
 			});
 		_eventHandler.setEvent("a", [](const sf::Event& e)
 			{
@@ -142,6 +150,14 @@ namespace a_game
 			egd.camera.transform.changePosition() -= rightDir * (delta * 4);
 		if (_eventHandler.getEvent("d"))
 			egd.camera.transform.changePosition() += rightDir * (delta * 4);
+
+		if (_eventHandler.getEvent("left"))
+			egd.camera.transform.changeRotation().z += delta = 0.05f;
+		if (_eventHandler.getEvent("right"))
+			egd.camera.transform.changeRotation().z -= delta = 0.05f;
+
+		const auto up = Math::getUpDir(egd.camera.transform.getRotation());
+		PRINT(up);
 
 		if (_eventHandler.getEvent("mouseLeft"))
 		{
