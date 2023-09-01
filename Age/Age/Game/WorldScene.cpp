@@ -14,7 +14,7 @@ namespace a_game
 	}
 	void WorldScene::load()
 	{
-		TextureLoader::defaultImagePath = egd.res / "img/dirt.png";
+		//TextureLoader::defaultImagePath = egd.res / "img/dirt.png";
 		auto nativeSize = egd.window->getSize();
 		defRender.updateSize({ nativeSize.x, nativeSize.y });
 
@@ -63,7 +63,8 @@ namespace a_game
 		cubePaths[3] = egd.res / "img/sky/-y.jpg";
 		cubePaths[4] = egd.res / "img/sky/+z.jpg";
 		cubePaths[5] = egd.res / "img/sky/-z.jpg";
-		skyBox->cubemap = &egd.textures.loadCubeMap(cubePaths);
+		skyBox->cubemap = &egd.textures.loadCubeMap(cubePaths, TextureLoader::CubemapSettings{
+			TextureFiltering::Near, TextureWrap::ClampToEdge, TextureFormat::SRGB, -1});
 		skyBox->cube = egd.models.load(egd.res / "model/skybox.obj").meshes[0].get();
 		skyBox->shader = &egd.shaders.load(egd.res / "shader/skybox");
 
