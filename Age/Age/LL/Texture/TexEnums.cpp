@@ -131,4 +131,33 @@ namespace a_game_engine
 		}
 		return GL_UNSIGNED_BYTE;
     }
+	TextureFormat TexEnums::toSRGB(TextureFormat f)
+	{
+		int comps = getComponentsCount(f);
+		if (comps == 4)
+			return TextureFormat::SRGB_Alpha;
+		return TextureFormat::SRGB;
+	}
+	int TexEnums::getComponentsCount(TextureFormat f)
+	{
+		switch (f)
+		{
+		case TextureFormat::R:
+			return 1;
+		case TextureFormat::RG:
+		case TextureFormat::Depth24_Stencil8:
+			return 2;
+		case TextureFormat::SRGB:
+		case TextureFormat::RGB:
+		case TextureFormat::RGB_Float16:
+		case TextureFormat::RGB_Float32:
+			return 3;
+		case TextureFormat::SRGB_Alpha:
+		case TextureFormat::RGBA:
+		case TextureFormat::RGBA_Float16:
+		case TextureFormat::RGBA_Float32:
+			return 4;
+		}
+		return 0;
+	}
 }

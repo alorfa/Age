@@ -31,9 +31,11 @@ namespace a_game_engine
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
 
+		static int indices[6] = { 0, 1, 5, 4, 2, 3 };
+
 		for (uint i = 0; i < 6; i++)
 		{
-			const auto& img = s.images[i];
+			const auto& img = s.images[indices[i]];
 			if (img.data)
 			{
 				int outerType, outerFormat;
@@ -42,7 +44,7 @@ namespace a_game_engine
 					s.imageArea, s.imageArea, 0, outerFormat, outerType, img.data);
 			}
 		}
-		setFiltering(TextureFiltering::Linear);
+		setWrap(TextureWrap::ClampToEdge);
 	}
 	void CubeMap::activate(int number) const
 	{

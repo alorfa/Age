@@ -55,18 +55,15 @@ namespace a_game
 		flashLight->light.ambient = flashLight->light.color * 0.1f;
 		auto dirLight = std::make_unique<DirLightSource>(this);
 
-		auto cubemap = new CubeMap;
-		ImageInfo images[6];
-		const auto& img = egd.textures.getDefaultImage();
-		for (uint i = 0; i < 6; i++)
-		{
-			images[i].data = img.info.data;
-			images[i].format = img.info.format;
-		}
-		cubemap->create(CubeMap::Settings(images, 
-			std::min(img.info.size.x, img.info.size.y), TextureFormat::SRGB, false));
 		auto skyBox = std::make_unique<SkyBox>(this);
-		skyBox->cubemap = cubemap;
+		std::filesystem::path cubePaths[6];
+		cubePaths[0] = egd.res / "img/sky/+x.jpg";
+		cubePaths[1] = egd.res / "img/sky/-x.jpg";
+		cubePaths[2] = egd.res / "img/sky/+y.jpg";
+		cubePaths[3] = egd.res / "img/sky/-y.jpg";
+		cubePaths[4] = egd.res / "img/sky/+z.jpg";
+		cubePaths[5] = egd.res / "img/sky/-z.jpg";
+		skyBox->cubemap = &egd.textures.loadCubeMap(cubePaths);
 		skyBox->cube = egd.models.load(egd.res / "model/skybox.obj").meshes[0].get();
 		skyBox->shader = &egd.shaders.load(egd.res / "shader/skybox");
 

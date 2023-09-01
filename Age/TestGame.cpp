@@ -157,7 +157,6 @@ namespace a_game
 			egd.camera.transform.changeRotation().z -= delta = 0.05f;
 
 		const auto up = Math::getUpDir(egd.camera.transform.getRotation());
-		PRINT(up);
 
 		if (_eventHandler.getEvent("mouseLeft"))
 		{

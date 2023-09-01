@@ -31,6 +31,8 @@ namespace a_game_engine
 		static int toOglFilter(TextureFiltering);
 		static int toOglWrap(TextureWrap);
 		static int toOglType(TextureDataType);
+		static TextureFormat toSRGB(TextureFormat);
+		static int getComponentsCount(TextureFormat);
 	};
 
 	struct ImageInfo

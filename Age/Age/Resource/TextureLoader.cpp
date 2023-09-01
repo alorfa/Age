@@ -30,7 +30,7 @@ namespace a_game_engine
 				if (not img.info.isValid())
 					return std::unique_ptr<Texture2D>(nullptr);
 					
-				bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear && 
+				const bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear && 
 					s.minFilter <= TextureFiltering::NearMipNear;
 				auto result = std::make_unique<Texture2D>();
 				Texture2D::Settings settings = { img.info, mipmaps };
@@ -48,6 +48,38 @@ namespace a_game_engine
 			},
 			getDefault);
 	}
+	CubeMap& TextureLoader::loadCubeMap(const std::filesystem::path* paths, const CubemapSettings& s)
+	{
+		std::wstring strPaths;
+		for (uint i = 0; i < 6; i++)
+			strPaths += std::format(L"{}\n", paths[i].native());
+
+		return ResourceLoader::defaultLoad<CubeMap, std::wstring>(cubeMaps, strPaths,
+			[&](const std::wstring& strPaths)
+			{
+				Image img[6];
+				ImageInfo images[6];
+				for (uint i = 0; i < 6; i++)
+				{
+					img[i].loadFromFile(paths[i]);
+					if (not img[i].info.isValid())
+						return std::unique_ptr<CubeMap>(nullptr);
+					images[i].data = img[i].info.data;
+					images[i].format = img[i].info.format;
+				}
+
+				const bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear &&
+					s.minFilter <= TextureFiltering::NearMipNear;
+				const uint imageSize = s.faceSize == -1 ? img[0].info.size.y : s.faceSize;
+				CubeMap::Settings cubeSettings{images, imageSize, s.internalFormat, mipmaps};
+				auto result = std::make_unique<CubeMap>();
+				result->create(cubeSettings);
+				result->setWrap(s.wrapX, s.wrapY, s.wrapZ);
+				result->setFiltering(s.minFilter, s.magFilter);
+				return result;
+			},
+			getDefaultCubeMap);
+	}
 	Texture2D& TextureLoader::getDefault()
 	{
 		if (defaultTexture == nullptr)
@@ -59,6 +91,25 @@ namespace a_game_engine
 			defaultTexture->setFiltering(TextureFiltering::Near);
 		}
 		return *defaultTexture;
+	}
+	CubeMap& TextureLoader::getDefaultCubeMap()
+	{
+		if (defCubemap == nullptr)
+		{
+			const auto& img = getDefaultImage();
+			ImageInfo info[6];
+			for (uint i = 0; i < 6; i++)
+			{
+				info[i].data = img.info.data;
+				info[i].format = img.info.format;
+			}
+			CubeMap::Settings s = { info, img.info.size.y, TextureFormat::SRGB, false };
+			defCubemap = std::make_unique<CubeMap>();
+			defCubemap->create(s);
+			defCubemap->setWrap(TextureWrap::ClampToEdge);
+			defCubemap->setFiltering(TextureFiltering::Near);
+		}
+		return *defCubemap;
 	}
 	Image& TextureLoader::getDefaultImage()
 	{
