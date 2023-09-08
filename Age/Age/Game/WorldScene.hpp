@@ -1,17 +1,16 @@
 #pragma once
 
 #include <Age/Render/DefaultRenderer3D.hpp>
-#include <Age/Object/Node3D.hpp>
+#include <Age/Scene/Scene3D.hpp>
 #include <Age/Light/LightSource.hpp>
 
 using namespace a_game_engine;
 
 namespace a_game
 {
-	class WorldScene : public Node3D
+	class WorldScene : public Scene3D
 	{
-		DefaultRenderer3D defRender;
-		DirLightSource* dirLight;
+		mutable DefaultRenderer3D defRender;
 	public:
 		WorldScene();
 
@@ -19,10 +18,10 @@ namespace a_game
 
 		float time = 0.f;
 
-		void load();
+		void load() override;
 		void handleRawEvents(const sf::Event& ev) override;
 		void handleEvents(const EventHandler& ev, float delta) override;
 		void update(float delta) override;
-		void draw(const mat4& transform, const Node3D&, const Camera3D&, const Shader* s) const override;
+		void draw(const Camera3D& c, const Shader* s) const override;
 	};
 }

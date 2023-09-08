@@ -7,6 +7,7 @@
 #include "Age/LL/Buffers/VertexBuffer.hpp"
 #include "Age/Object/Object3D.hpp"
 #include "Age/egd.hpp"
+#include "Age/Scene/Scene3D.hpp"
 
 namespace a_game_engine
 {
@@ -21,18 +22,18 @@ namespace a_game_engine
 		mainFb.texture.setFiltering(TextureFiltering::Linear);
 		mainFb.texture.setWrap(TextureWrap::ClampToEdge);
 	}
-	void DefaultRenderer3D::drawObject(const Node3D& o, const Node3D& sc,
-		const Camera3D& c, const Shader* s) const
+	void DefaultRenderer3D::drawObject(const Node3D& o, const Camera3D& c, const Shader* s)
 	{
-		o.draw(sc.transform.getMatrix(), sc, c, s);
+		static mat4 identity;
+		o.draw(identity, c, s);
 	}
-	void DefaultRenderer3D::drawScene(const Node3D& sc, const Camera3D& camera) const
+	void DefaultRenderer3D::drawScene(const Scene3D& sc, const Camera3D& camera)
 	{
 		Pipeline::set3DContext();
 		mainFb.use();
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f });
-		sc.forEachConst([&](const Node3D& n) {
-			drawObject(n, sc, camera, nullptr); 
+		sc.rootNode->forEachConst([&](const Node3D& n) {
+			drawObject(n, camera, nullptr); 
 			});
 
 		mainFb.useDefault(size);

@@ -4,18 +4,11 @@
 
 namespace a_game_engine
 {
-	PointLightSource::PointLightSource(Node3D* parent)
-		: Object3D(parent)
-	{
-		isInfluencing = true;
-	}
-	void PointLightSource::update(float delta)
-	{
-		light.pos = transform.getPosition();
-		Object3D::update(delta);
-	}
+	PointLightSource::PointLightSource(Scene3D& scene, Node3D* parent)
+		: Object3D(scene, parent, Node3D::Influencing)
+	{ }
 
-	void PointLightSource::draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const
+	void PointLightSource::draw(const mat4& parent, const Camera3D& c, const Shader* s) const
 	{
 		if (s == nullptr)
 			s = shader;
@@ -23,23 +16,14 @@ namespace a_game_engine
 		s->use();
 		s->setUniform("lightColor", light.color);
 
-		Object3D::draw(parent, scene, c, s);
+		Object3D::draw(parent, c, s);
 	}
 
-	SpotLightSource::SpotLightSource(Node3D* parent)
-		: Object3D(parent)
-	{
-		isInfluencing = true;
-	}
+	SpotLightSource::SpotLightSource(Scene3D& scene, Node3D* parent)
+		: Object3D(scene, parent, Node3D::Influencing)
+	{ }
 
-	void SpotLightSource::update(float delta)
-	{
-		light.pos = transform.getPosition();
-		light.dir = Math::getForwardDir(transform.getRotation());
-		Object3D::update(delta);
-	}
-
-	void SpotLightSource::draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const
+	void SpotLightSource::draw(const mat4& parent, const Camera3D& c, const Shader* s) const
 	{
 		if (s == nullptr)
 			s = shader;
@@ -47,12 +31,10 @@ namespace a_game_engine
 		s->use();
 		s->setUniform("lightColor", light.color);
 
-		Object3D::draw(parent, scene, c, s);
+		Object3D::draw(parent, c, s);
 	}
 
-	DirLightSource::DirLightSource(Node3D* parent)
-		: Node3D(parent)
-	{
-		isInfluencing = true;
-	}
+	DirLightSource::DirLightSource(Scene3D& scene, Node3D* parent)
+		: Node3D(scene, parent, Node3D::Influencing)
+	{}
 }

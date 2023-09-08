@@ -1,24 +1,25 @@
 #include "SkyBox.hpp"
 #include "Age/LL/Shader/Shader.hpp"
-#include "Mesh3D.hpp"
+#include "Age/Object/Mesh3D.hpp"
 #include "Age/egd.hpp"
 #include "Age/LL/Pipeline.hpp"
+#include "Age/LL/opengl.h"
 
 namespace a_game_engine
 {
 	const Mesh3D* SkyBox::cube = nullptr;
 
-	SkyBox::SkyBox(Node3D* parent)
-		: Node3D(parent)
+	SkyBox::SkyBox(Scene3D& scene)
+		: scene(&scene)
 	{
 	}
 
-	void SkyBox::draw(const mat4& parent, const Node3D& sc, const Camera3D& camera, const Shader* s) const
+	void SkyBox::draw(const Camera3D& camera, const Shader* s) const
 	{
 		if (s == nullptr)
 			s = shader;
 
-		if (cubemap and cube)
+		if (cubemap && cube)
 		{
 			Pipeline::setDepthFunc(DepthFunc::LEqual);
 			s->use();
@@ -27,12 +28,16 @@ namespace a_game_engine
 			s->setUniform("view", view);
 			s->setUniform("projection", camera.getProjection());
 			s->setUniform("skybox", *cubemap, 0);
-
-			mat4 curTransform = parent * transform.getMatrix();
 			cube->buffer.draw();
 		}
+	}
+	int SkyBox::getSlot()
+	{
+		static int maxSlots = 0;
+		if (maxSlots == 0)
+			glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxSlots);
 
-		Node3D::draw(parent, sc, camera, s);
+		return maxSlots - 1;
 	}
 }
 

@@ -2,15 +2,15 @@
 #include "Age/LL/Shader/Shader.hpp"
 #include "Age/Object/Model3D.hpp"
 #include "Age/LL/Pipeline.hpp"
+#include "Age/Scene/Scene3D.hpp"
 
 namespace a_game_engine
 {
-	Object3D::Object3D(Node3D* parent)
-		: Node3D(parent)
-	{
-	}
-	void Object3D::draw(const mat4& parent, const Node3D& sc, const Camera3D& camera,
-		const Shader* s) const
+	Object3D::Object3D(Scene3D& scene, Node3D* parent, Node3D::Type type)
+		: Node3D(scene, parent, type)
+	{ }
+
+	void Object3D::draw(const mat4& parent, const Camera3D& camera, const Shader* s) const
 	{
 		if (s == nullptr)
 			s = shader;
@@ -20,12 +20,12 @@ namespace a_game_engine
 			Pipeline::setDepthFunc(DepthFunc::Less);
 			s->use();
 			s->setCamera(camera);
-			s->setLights(sc);
+			s->setLights(*scene->rootNode);
 
 			mat4 curTransform = parent * transform.getMatrix();
 			model->draw(curTransform, *s);
 		}
 
-		Node3D::draw(parent, sc, camera, s);
+		Node3D::draw(parent, camera, s);
 	}
 }

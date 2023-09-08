@@ -16,22 +16,29 @@ namespace a_game_engine
 	class Camera3D;
 	class Shader;
 	class EventHandler;
+	class Scene3D;
 
 	class Node3D
 	{
 	public:
+		enum Type : unsigned int
+		{
+			Usual, Influencing
+		};
+
 		using Container = std::forward_list<std::unique_ptr<Node3D>>;
 
+		const Type type = Type::Usual;
+		Scene3D* const scene;
 		Node3D* const parent;
 		Container children;
 		Container infChildren;
-		bool isInfluencing = false;
 		std::vector<std::unique_ptr<Component>> components;
 
 		Transform3D transform;
 		const Shader* shader = nullptr;
 
-		Node3D(Node3D* parent);
+		Node3D(Scene3D& scene, Node3D* parent, Type type = Type::Usual);
 
 		void addComponent(std::unique_ptr<Component>&& comp);
 		void addChild(std::unique_ptr<Node3D>&& node);
@@ -46,11 +53,14 @@ namespace a_game_engine
 		T* as() {
 			return dynamic_cast<T*>(this);
 		}
+		bool isInfluencing() const {
+			return bool(type & Type::Influencing);
+		}
 
-		virtual void handleRawEvents(const sf::Event& ev);
-		virtual void handleEvents(const EventHandler& ev, float delta);
-		virtual void update(float delta);
-		virtual void draw(const mat4& parent, const Node3D& scene, const Camera3D& c, const Shader* s) const;
+		void handleRawEvents(const sf::Event& ev);
+		void handleEvents(const EventHandler& ev, float delta);
+		void update(float delta);
+		virtual void draw(const mat4& parent, const Camera3D& c, const Shader* s) const;
 
 		virtual ~Node3D() = default;
 	};

@@ -4,16 +4,17 @@
 
 namespace a_game_engine
 {
-	Node3D::Node3D(Node3D* parent)
-		: parent(parent)
-	{}
+	Node3D::Node3D(Scene3D& scene, Node3D* parent, Type type)
+		: scene(&scene), parent(parent), type(type)
+	{ }
+
 	void Node3D::addComponent(std::unique_ptr<Component>&& comp)
 	{
 		components.push_back(std::move(comp));
 	}
 	void Node3D::addChild(std::unique_ptr<Node3D>&& node)
 	{
-		if (node->isInfluencing)
+		if (node->isInfluencing())
 			infChildren.push_front(std::move(node));
 		else
 			children.push_front(std::move(node));
@@ -59,14 +60,14 @@ namespace a_game_engine
 			n.update(delta);
 		});
 	}
-	void Node3D::draw(const mat4& parent, const Node3D& sc, const Camera3D& c, const Shader* s) const
+	void Node3D::draw(const mat4& parent, const Camera3D& c, const Shader* s) const
 	{
 		if (s == nullptr)
 			s = shader;
 		mat4 curTransform = parent * transform.getMatrix();
 		forEachConst([&](const Node3D& n)
 			{
-				n.draw(curTransform, sc, c, s);
+				n.draw(curTransform, c, s);
 			});
 	}
 }

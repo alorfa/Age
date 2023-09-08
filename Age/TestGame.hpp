@@ -1,11 +1,6 @@
 #pragma once
 
 #include "Age/Application.hpp"
-#include "Age/Object/Object3D.hpp"
-#include "Age/Transform/Camera3D.hpp"
-#include "Age/Resource/TextureLoader.hpp"
-#include "Age/Resource/ModelLoader.hpp"
-#include "Age/Resource/ShaderLoader.hpp"
 #include "Age/Game/WorldScene.hpp"
 
 using namespace a_game_engine;

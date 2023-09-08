@@ -68,13 +68,10 @@ namespace a_game
 		auto size = _window.getSize();
 		egd.camera.setAspectRatio({ size.x, size.y });
 		egd.window = &_window;
-		egd.res = "res";
-		egd.user = "user";
-		world = std::make_unique<WorldScene>();
 
 		std::cout << std::fixed;
 		std::cout.precision(2);
-		_window.setFramerateLimit(60); 
+		_window.setFramerateLimit(60);
 
 		Pipeline::setUnpackAlignment(1);
 		
@@ -124,6 +121,7 @@ namespace a_game
 	void TestGame::loadResources()
 	{
 		sf::Clock clock;
+		world = std::make_unique<WorldScene>();
 		world->load();
 		Logger::logDebug("Resources load time: " + std::to_string(clock.restart().asSeconds()));
 	}
@@ -202,8 +200,7 @@ namespace a_game
 	}
 	void TestGame::draw() const
 	{
-		mat4 def;
-		world->draw(def, *world, *world->activeCamera, nullptr);
+		world->draw(*world->activeCamera, nullptr);
 	}
 	void TestGame::onExit()
 	{
@@ -213,8 +210,10 @@ namespace a_game
 
 int main()
 {
+	egd.res = "res";
+	egd.user = "user";
 	auto game = std::make_unique<a_game::TestGame>();
-	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 8, 24);
+	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 0, 24);
 
 	return 0;
 }

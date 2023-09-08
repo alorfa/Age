@@ -5,15 +5,16 @@
 
 namespace a_game_engine
 {
+	class Scene3D;
+
 	class PointLightSource : public Object3D
 	{
 	public:
 		PointLight light;
 
-		PointLightSource(Node3D* parent);
+		PointLightSource(Scene3D& scene, Node3D* parent);
 
-		void update(float delta) override;
-		void draw(const mat4& parent, const Node3D& scene, const Camera3D& c,
+		void draw(const mat4& parent, const Camera3D& c,
 			const Shader* s = nullptr) const override;
 	};
 
@@ -22,10 +23,9 @@ namespace a_game_engine
 	public:
 		SpotLight light;
 
-		SpotLightSource(Node3D* parent);
+		SpotLightSource(Scene3D& scene, Node3D* parent);
 
-		void update(float delta) override;
-		void draw(const mat4& parent, const Node3D& scene, const Camera3D& c,
+		void draw(const mat4& parent, const Camera3D& c,
 			const Shader* s = nullptr) const override;
 	};
 
@@ -34,6 +34,6 @@ namespace a_game_engine
 	public:
 		DirLight light;
 
-		DirLightSource(Node3D* parent);
+		DirLightSource(Scene3D& scene, Node3D* parent);
 	};
 }
