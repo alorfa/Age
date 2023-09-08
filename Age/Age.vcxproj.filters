@@ -46,6 +46,7 @@
     <ClInclude Include="Age\LL\Pipeline.hpp" />
     <ClInclude Include="Age\Math\Math.hpp" />
     <ClInclude Include="Age\Scene\Scene3D.hpp" />
+    <ClInclude Include="Age\Components\LightUpdaters.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -80,5 +81,6 @@
     <ClCompile Include="Age\Scene\SkyBox.cpp" />
     <ClCompile Include="Age\LL\Pipeline.cpp" />
     <ClCompile Include="Age\Scene\Scene3D.cpp" />
+    <ClCompile Include="Age\Components\LightUpdaters.cpp" />
   </ItemGroup>
 </Project>

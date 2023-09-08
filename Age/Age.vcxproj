@@ -182,6 +182,7 @@
     <ClInclude Include="Age\Application.hpp" />
     <ClInclude Include="Age\Auxiliary\DEBUG.hpp" />
     <ClInclude Include="Age\Auxiliary\print_math.hpp" />
+    <ClInclude Include="Age\Components\LightUpdaters.hpp" />
     <ClInclude Include="Age\egd.hpp" />
     <ClInclude Include="Age\EventHandler.hpp" />
     <ClInclude Include="Age\Game\FollowToCamera.hpp" />
@@ -227,6 +228,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Age\Application.cpp" />
+    <ClCompile Include="Age\Components\LightUpdaters.cpp" />
     <ClCompile Include="Age\EventHandler.cpp" />
     <ClCompile Include="Age\Game\FollowToCamera.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
