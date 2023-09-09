@@ -41,6 +41,7 @@ namespace a_game_engine
 	}
 	void Shader::create(uint vert, uint frag)
 	{
+		destroy();
 		_id = glCreateProgram();
 		glAttachShader(_id, vert);
 		glAttachShader(_id, frag);
@@ -51,6 +52,8 @@ namespace a_game_engine
 		glGetProgramiv(_id, GL_INFO_LOG_LENGTH, &log_length);
 		glGetProgramiv(_id, GL_LINK_STATUS, &link_status);
 
+		_isValid = true;
+
 		if (log_length > 0)
 		{
 			std::string shader_message;
@@ -59,6 +62,7 @@ namespace a_game_engine
 
 			if (link_status == GL_FALSE)
 			{
+				_isValid = false;
 				Logger::logError(shader_message);
 			}
 			else
@@ -66,7 +70,6 @@ namespace a_game_engine
 				Logger::logWarning(shader_message);
 			}
 		}
-		glValidateProgram(_id);
 
 		glDetachShader(_id, vert);
 		glDetachShader(_id, frag);
@@ -76,9 +79,7 @@ namespace a_game_engine
 	}
 	bool Shader::isValid() const
 	{
-		int result;
-		glGetProgramiv(_id, GL_VALIDATE_STATUS, &result);
-		return (bool)result;
+		return _isValid;
 	}
 	int Shader::location(const char* name) const
 	{

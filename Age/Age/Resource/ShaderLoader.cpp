@@ -47,7 +47,7 @@ namespace a_game_engine
 	{
 		if (not defShader)
 		{
-			defShader = readVertFrag("res/shader/light.vsh", "res/shader/light.fsh");
+			defShader = readVertFrag("res/shader/default.vsh", "res/shader/default.fsh");
 		}
 		return *defShader;
 	}

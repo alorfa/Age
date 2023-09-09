@@ -89,6 +89,7 @@ uniform SpotLight spotLightSources[32];
 uniform int pointLightsCount, dirLightsCount, spotLightsCount;
 uniform sampler2D textures[16];
 uniform vec3 sceneAmbient;
+uniform samplerCube skybox;
 
 const float gamma = 2.2f;
 
@@ -98,6 +99,7 @@ void main()
     vec3 diffuse = texture(textures[0], fragUv).rgb;
     vec3 specular = vec3(0.07f);
     vec3 realNormal = computeNormal(texture(textures[1], fragUv).rgb);
+    vec4 material = texture(textures[2], fragUv);
     float shininess = 4;
     for (int i = 0; i < pointLightsCount; i++)
         light += computePointLight(pointLightSources[i], diffuse, specular, shininess, realNormal);
@@ -108,5 +110,12 @@ void main()
 
     light += sceneAmbient * diffuse;
 
-    FragColor = vec4(light, 1.f);
+    vec3 viewDir = normalize(cameraPos - fragPos);
+    vec3 reflectDir = reflect(viewDir, realNormal);
+    vec3 coord = vec3(reflectDir.x, reflectDir.z, -reflectDir.y);
+    vec3 reflectedColor = texture(skybox, coord).rgb;
+    float mixValue = (1.f - material.b) * material.g;
+    vec3 finalColor = mix(light, reflectedColor, mixValue);
+
+    FragColor = vec4(finalColor, 1.f);
 }

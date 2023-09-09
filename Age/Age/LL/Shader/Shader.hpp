@@ -18,6 +18,7 @@ namespace a_game_engine
 	class Shader
 	{
 		uint _id = 0;
+		bool _isValid = false;
 
 		void destroy();
 

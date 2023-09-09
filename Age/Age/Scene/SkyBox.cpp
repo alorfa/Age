@@ -33,7 +33,7 @@ namespace a_game_engine
 	}
 	int SkyBox::getSlot()
 	{
-		static int maxSlots = 0;
+		static int maxSlots = 16;
 		if (maxSlots == 0)
 			glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxSlots);
 
