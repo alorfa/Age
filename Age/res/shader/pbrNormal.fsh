@@ -93,6 +93,16 @@ uniform samplerCube skybox;
 
 const float gamma = 2.2f;
 
+const float near = 0.1f;
+const float far = 100.f;
+
+float getDepth()
+{
+    float z = gl_FragCoord.z * 2.0 - 1.0;
+    float depth = (2.0 * near * far) / (far + near - z * (far - near));
+    return depth / far;
+}
+
 void main()
 {
     vec3 light = vec3(0.f);
@@ -115,7 +125,8 @@ void main()
     vec3 coord = vec3(reflectDir.x, reflectDir.z, -reflectDir.y);
     vec3 reflectedColor = texture(skybox, coord).rgb;
     float mixValue = (1.f - material.b) * material.g;
-    vec3 finalColor = mix(light, reflectedColor, mixValue);
+    vec3 pixelColor = mix(light, reflectedColor, mixValue);
+    vec3 finalColor = mix(pixelColor, vec3(0.2f, 0.3f, 0.3f), getDepth());
 
     FragColor = vec4(finalColor, 1.f);
 }
