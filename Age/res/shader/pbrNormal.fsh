@@ -122,11 +122,11 @@ void main()
 
     vec3 viewDir = normalize(cameraPos - fragPos);
     vec3 reflectDir = reflect(viewDir, realNormal);
-    vec3 coord = vec3(reflectDir.x, reflectDir.z, -reflectDir.y);
+    vec3 coord = vec3(-reflectDir.x, reflectDir.z, -reflectDir.y);
     vec3 reflectedColor = texture(skybox, coord).rgb;
     float mixValue = (1.f - material.b) * material.g;
-    vec3 pixelColor = mix(light, reflectedColor, mixValue);
-    vec3 finalColor = mix(pixelColor, vec3(0.2f, 0.3f, 0.3f), getDepth());
+    vec3 pixelColor = mix(light, reflectedColor, 1.0f);
+    //vec3 finalColor = mix(pixelColor, vec3(0.2f, 0.3f, 0.3f), getDepth());
 
-    FragColor = vec4(finalColor, 1.f);
+    FragColor = vec4(pixelColor, 1.f);
 }
