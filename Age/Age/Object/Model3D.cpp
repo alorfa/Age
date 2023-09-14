@@ -2,12 +2,12 @@
 
 namespace a_game_engine
 {
-    void Model3D::draw(const mat4& transform, const Shader& shader, uint textureOrder) const
+    void Model3D::draw(const mat4& transform, const ShaderProgram& shader, uint textureOrder) const
     {
         rootNode->draw(transform, shader, textureOrder);
     }
 
-    void Model3D::Node::draw(const mat4& parentTransform, const Shader& shader, uint textureOrder) const
+    void Model3D::Node::draw(const mat4& parentTransform, const ShaderProgram& shader, uint textureOrder) const
     {
         mat4 t = parentTransform * transform;
         shader.setUniform("model", t);

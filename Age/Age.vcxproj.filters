@@ -7,7 +7,7 @@
     <ClInclude Include="TestGame.hpp" />
     <ClInclude Include="Age\LL\Buffers\VertexBuffer.hpp" />
     <ClInclude Include="Age\Resource\File.hpp" />
-    <ClInclude Include="Age\LL\Shader\Shader.hpp" />
+    <ClInclude Include="Age\LL\Shader\ShaderProgram.hpp" />
     <ClInclude Include="Age\LL\Shader\ShaderCompiler.hpp" />
     <ClInclude Include="Age\LL\Texture\Image.hpp" />
     <ClInclude Include="Age\LL\Texture\Texture2D.hpp" />
@@ -52,7 +52,7 @@
     <ClCompile Include="TestGame.cpp" />
     <ClCompile Include="Age\LL\Buffers\VertexBuffer.cpp" />
     <ClCompile Include="Age\Resource\File.cpp" />
-    <ClCompile Include="Age\LL\Shader\Shader.cpp" />
+    <ClCompile Include="Age\LL\Shader\ShaderProgram.cpp" />
     <ClCompile Include="Age\LL\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Age\LL\Texture\Image.cpp" />
     <ClCompile Include="Age\LL\Texture\Texture2D.cpp" />

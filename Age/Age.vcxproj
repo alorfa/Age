@@ -194,7 +194,7 @@
     <ClInclude Include="Age\LL\Buffers\VertexBuffer.hpp" />
     <ClInclude Include="Age\LL\opengl.h" />
     <ClInclude Include="Age\LL\Pipeline.hpp" />
-    <ClInclude Include="Age\LL\Shader\Shader.hpp" />
+    <ClInclude Include="Age\LL\Shader\ShaderProgram.hpp" />
     <ClInclude Include="Age\LL\Shader\ShaderCompiler.hpp" />
     <ClInclude Include="Age\LL\Texture\Image.hpp" />
     <ClInclude Include="Age\LL\Texture\Texture2D.hpp" />
@@ -237,7 +237,7 @@
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\LL\Buffers\VertexBuffer.cpp" />
     <ClCompile Include="Age\LL\Pipeline.cpp" />
-    <ClCompile Include="Age\LL\Shader\Shader.cpp" />
+    <ClCompile Include="Age\LL\Shader\ShaderProgram.cpp" />
     <ClCompile Include="Age\LL\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
     <ClCompile Include="Age\LL\Texture\Image.cpp" />

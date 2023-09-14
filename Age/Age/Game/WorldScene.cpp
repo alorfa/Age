@@ -95,7 +95,7 @@ namespace a_game
 	{
 		rootNode->update(delta);
 	}
-	void WorldScene::draw(const Camera3D&, const Shader* s) const
+	void WorldScene::draw(const Camera3D&, const ShaderProgram* s) const
 	{
 		defRender.drawScene(*this, *activeCamera);
 	}

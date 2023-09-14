@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Age/LL/Shader/Shader.hpp"
+#include "Age/LL/Shader/ShaderProgram.hpp"
 #include <filesystem>
 #include <map>
 
@@ -8,17 +8,17 @@ namespace a_game_engine
 {
 	class ShaderLoader
 	{
-		static std::unique_ptr<Shader> defShader;
-		std::map<std::filesystem::path, std::unique_ptr<Shader>> shaders;
+		static std::unique_ptr<ShaderProgram> defShader;
+		std::map<std::filesystem::path, std::unique_ptr<ShaderProgram>> shaders;
 	public:
 		std::string vertexExt = ".vsh", fragmentExt = ".fsh";
 
 		~ShaderLoader();
 
-		Shader& load(const std::filesystem::path& path);
-		std::unique_ptr<Shader> readFromFile(const std::filesystem::path& path) const;
-		static std::unique_ptr<Shader> readVertFrag(const std::filesystem::path& vsh,
+		ShaderProgram& load(const std::filesystem::path& path);
+		std::unique_ptr<ShaderProgram> readFromFile(const std::filesystem::path& path) const;
+		static std::unique_ptr<ShaderProgram> readVertFrag(const std::filesystem::path& vsh,
 			const std::filesystem::path& fsh);
-		static Shader& getDefault();
+		static ShaderProgram& getDefault();
 	};
 }

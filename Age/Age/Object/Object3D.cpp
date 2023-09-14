@@ -1,5 +1,5 @@
 #include "Object3D.hpp"
-#include "Age/LL/Shader/Shader.hpp"
+#include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/Object/Model3D.hpp"
 #include "Age/LL/Pipeline.hpp"
 #include "Age/Scene/Scene3D.hpp"
@@ -10,7 +10,7 @@ namespace a_game_engine
 		: Node3D(scene, parent, type)
 	{ }
 
-	void Object3D::draw(const mat4& parent, const Camera3D& camera, const Shader* s) const
+	void Object3D::draw(const mat4& parent, const Camera3D& camera, const ShaderProgram* s) const
 	{
 		if (s == nullptr)
 			s = shader;

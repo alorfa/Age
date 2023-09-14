@@ -1,4 +1,4 @@
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 #include "Age/LL/opengl.h"
 #include <iostream>
 #include "Age/LL/Texture/Texture2D.hpp"
@@ -16,30 +16,30 @@ namespace a_game_engine
 {
 	using namespace std::string_literals;
 
-	void Shader::destroy()
+	void ShaderProgram::destroy()
 	{
 		if (_id)
 			glDeleteProgram(_id);
 		_id = 0;
 	}
-	Shader::Shader(uint vert, uint frag)
+	ShaderProgram::ShaderProgram(uint vert, uint frag)
 	{
 		create(vert, frag);
 	}
-	Shader::Shader(Shader&& other) noexcept
+	ShaderProgram::ShaderProgram(ShaderProgram&& other) noexcept
 	{
 		std::swap(other._id, _id);
 	}
-	Shader& Shader::operator=(Shader&& other) noexcept
+	ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other) noexcept
 	{
 		std::swap(other._id, _id);
 		return *this;
 	}
-	Shader::~Shader()
+	ShaderProgram::~ShaderProgram()
 	{
 		destroy();
 	}
-	void Shader::create(uint vert, uint frag)
+	void ShaderProgram::create(uint vert, uint frag)
 	{
 		destroy();
 		_id = glCreateProgram();
@@ -77,45 +77,45 @@ namespace a_game_engine
 		glDeleteShader(vert);
 		glDeleteShader(frag);
 	}
-	bool Shader::isValid() const
+	bool ShaderProgram::isValid() const
 	{
 		return _isValid;
 	}
-	int Shader::location(const char* name) const
+	int ShaderProgram::location(const char* name) const
 	{
 		return glGetUniformLocation(_id, name);
 	}
-	void Shader::setUniform(const char* name, int value) const
+	void ShaderProgram::setUniform(const char* name, int value) const
 	{
 		glUniform1i(location(name), value);
 	}
-	void Shader::setUniform(const char* name, float value) const
+	void ShaderProgram::setUniform(const char* name, float value) const
 	{
 		glUniform1f(location(name), value);
 	}
-	void Shader::setUniform(const char* name, vec2 value) const
+	void ShaderProgram::setUniform(const char* name, vec2 value) const
 	{
 		glUniform2f(location(name), value.x, value.y);
 	}
-	void Shader::setUniform(const char* name, vec3 value) const
+	void ShaderProgram::setUniform(const char* name, vec3 value) const
 	{
 		glUniform3f(location(name), value.x, value.y, value.z);
 	}
-	void Shader::setUniform(const char* name, const mat3& value) const
+	void ShaderProgram::setUniform(const char* name, const mat3& value) const
 	{
 		glUniformMatrix3fv(location(name), 1, GL_FALSE, value.data);
 	}
-	void Shader::setUniform(const char* name, const mat4& value) const
+	void ShaderProgram::setUniform(const char* name, const mat4& value) const
 	{
 		glUniformMatrix4fv(location(name), 1, GL_FALSE, (const float*)value.data);
 	}
-	void Shader::setUniform(const char* name, const DirLight& light) const
+	void ShaderProgram::setUniform(const char* name, const DirLight& light) const
 	{
 		setUniform((name + ".dir"s).c_str(), light.dir);
 		setUniform((name + ".ambient"s).c_str(), light.ambient);
 		setUniform((name + ".color"s).c_str(), light.color);
 	}
-	void Shader::setUniform(const char* name, const PointLight& light) const
+	void ShaderProgram::setUniform(const char* name, const PointLight& light) const
 	{
 		setUniform((name + ".pos"s).c_str(), light.pos);
 		setUniform((name + ".ambient"s).c_str(), light.ambient);
@@ -124,7 +124,7 @@ namespace a_game_engine
 		setUniform((name + ".linear"s).c_str(), light.linear);
 		setUniform((name + ".quadratic"s).c_str(), light.quadratic); 
 	}
-	void Shader::setUniform(const char* name, const SpotLight& light) const
+	void ShaderProgram::setUniform(const char* name, const SpotLight& light) const
 	{
 		setUniform((name + ".pos"s).c_str(), light.pos);
 		setUniform((name + ".dir"s).c_str(), light.dir);
@@ -136,14 +136,14 @@ namespace a_game_engine
 		setUniform((name + ".linear"s).c_str(), light.linear);
 		setUniform((name + ".quadratic"s).c_str(), light.quadratic);
 	}
-	void Shader::setUniform(const char* name, const ColorMaterial& mat) const
+	void ShaderProgram::setUniform(const char* name, const ColorMaterial& mat) const
 	{
 		setUniform((name + ".ambient"s).c_str(), mat.ambient);
 		setUniform((name + ".diffuse"s).c_str(), mat.diffuse);
 		setUniform((name + ".specular"s).c_str(), mat.specular);
 		setUniform((name + ".shininess"s).c_str(), mat.shininess);
 	}
-	void Shader::setLights(const Node3D& scene) const
+	void ShaderProgram::setLights(const Node3D& scene) const
 	{
 		int pointLightsCount = 0;
 		int dirLightsCount = 0;
@@ -174,13 +174,13 @@ namespace a_game_engine
 		setUniform("dirLightsCount", dirLightsCount);
 		setUniform("spotLightsCount", spotLightsCount);
 	}
-	void Shader::setCamera(const Camera3D& camera) const
+	void ShaderProgram::setCamera(const Camera3D& camera) const
 	{
 		setUniform("view", camera.transform.getMatrix());
 		setUniform("projection", camera.getProjection());
 		setUniform("cameraPos", camera.transform.getPosition());
 	}
-	uint Shader::setUniform(const char* name, const TextureMaterial& mat, uint sampler) const
+	uint ShaderProgram::setUniform(const char* name, const TextureMaterial& mat, uint sampler) const
 	{
 		for (size_t i = 0; i < mat.textures.size(); i++)
 		{
@@ -193,21 +193,21 @@ namespace a_game_engine
 
 		return sampler;
 	}
-	void Shader::setUniform(const char* name, const Texture2D& value, uint number) const
+	void ShaderProgram::setUniform(const char* name, const Texture2D& value, uint number) const
 	{
 		value.activate(number);
 		glUniform1i(location(name), (int)number);
 	}
-	void Shader::setUniform(const char* name, const CubeMap& value, uint number) const
+	void ShaderProgram::setUniform(const char* name, const CubeMap& value, uint number) const
 	{
 		value.activate(number);
 		glUniform1i(location(name), (int)number);
 	}
-	void Shader::use() const
+	void ShaderProgram::use() const
 	{
 		glUseProgram(_id);
 	}
-	void Shader::use(uint id)
+	void ShaderProgram::use(uint id)
 	{
 		glUseProgram(id);
 	}

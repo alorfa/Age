@@ -5,7 +5,7 @@
 
 namespace a_game_engine
 {
-	std::unique_ptr<Shader> ShaderLoader::defShader = nullptr;
+	std::unique_ptr<ShaderProgram> ShaderLoader::defShader = nullptr;
 
 	ShaderLoader::~ShaderLoader()
 	{
@@ -16,19 +16,19 @@ namespace a_game_engine
 		}
 	}
 
-	Shader& ShaderLoader::load(const std::filesystem::path& path)
+	ShaderProgram& ShaderLoader::load(const std::filesystem::path& path)
 	{
-		return ResourceLoader::defaultLoad<Shader, std::filesystem::path>(shaders, path,
+		return ResourceLoader::defaultLoad<ShaderProgram, std::filesystem::path>(shaders, path,
 			[&](const std::filesystem::path& p) { return readFromFile(p); }, getDefault);
 	}
-	std::unique_ptr<Shader> ShaderLoader::readFromFile(const std::filesystem::path& path) const
+	std::unique_ptr<ShaderProgram> ShaderLoader::readFromFile(const std::filesystem::path& path) const
 	{
 		auto result = readVertFrag(path.string() + vertexExt, path.string() + fragmentExt);
 		if (result)
 			Logger::logInfo("Shader " + path.string() + " was loaded");
 		return result;
 	}
-	std::unique_ptr<Shader> ShaderLoader::readVertFrag(const std::filesystem::path& vsh,
+	std::unique_ptr<ShaderProgram> ShaderLoader::readVertFrag(const std::filesystem::path& vsh,
 		const std::filesystem::path& fsh)
 	{
 		uint vert = ShaderCompiler::loadFromFile(vsh, ShaderCompiler::Vertex);
@@ -37,13 +37,13 @@ namespace a_game_engine
 		uint frag = ShaderCompiler::loadFromFile(fsh, ShaderCompiler::Fragment);
 		if (frag == 0)
 			return nullptr;
-		std::unique_ptr<Shader> result = std::make_unique<Shader>(vert, frag);
+		std::unique_ptr<ShaderProgram> result = std::make_unique<ShaderProgram>(vert, frag);
 		if (result->isValid())
 			return result;
 
 		return nullptr;
 	}
-	Shader& ShaderLoader::getDefault()
+	ShaderProgram& ShaderLoader::getDefault()
 	{
 		if (not defShader)
 		{

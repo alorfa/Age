@@ -14,7 +14,7 @@ namespace sf
 namespace a_game_engine
 {
 	class Camera3D;
-	class Shader;
+	class ShaderProgram;
 	class EventHandler;
 	class Scene3D;
 
@@ -36,7 +36,7 @@ namespace a_game_engine
 		std::vector<std::unique_ptr<Component>> components;
 
 		Transform3D transform;
-		const Shader* shader = nullptr;
+		const ShaderProgram* shader = nullptr;
 
 		Node3D(Scene3D& scene, Node3D* parent, Type type = Type::Usual);
 
@@ -60,7 +60,7 @@ namespace a_game_engine
 		void handleRawEvents(const sf::Event& ev);
 		void handleEvents(const EventHandler& ev, float delta);
 		void update(float delta);
-		virtual void draw(const mat4& parent, const Camera3D& c, const Shader* s) const;
+		virtual void draw(const mat4& parent, const Camera3D& c, const ShaderProgram* s) const;
 
 		virtual ~Node3D() = default;
 	};

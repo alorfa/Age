@@ -22,6 +22,6 @@ namespace a_game
 		void handleRawEvents(const sf::Event& ev) override;
 		void handleEvents(const EventHandler& ev, float delta) override;
 		void update(float delta) override;
-		void draw(const Camera3D& c, const Shader* s) const override;
+		void draw(const Camera3D& c, const ShaderProgram* s) const override;
 	};
 }

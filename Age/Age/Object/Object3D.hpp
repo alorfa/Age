@@ -4,7 +4,7 @@
 
 namespace a_game_engine
 {
-	class Shader;
+	class ShaderProgram;
 	class Model3D;
 	class Scene3D;
 
@@ -16,6 +16,6 @@ namespace a_game_engine
 		const Model3D* model;
 
 		virtual void draw(const mat4& parent, const Camera3D& c,
-			const Shader* s = nullptr) const;
+			const ShaderProgram* s = nullptr) const;
 	};
 }

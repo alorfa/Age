@@ -1,5 +1,5 @@
 #include "LightSource.hpp"
-#include "Age/LL/Shader/Shader.hpp"
+#include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/Math/Math.hpp"
 #include "Age/Components/LightUpdaters.hpp"
 
@@ -11,7 +11,7 @@ namespace a_game_engine
 		components.push_back(std::make_unique<PointLightUpdater>(*this));
 	}
 
-	void PointLightSource::draw(const mat4& parent, const Camera3D& c, const Shader* s) const
+	void PointLightSource::draw(const mat4& parent, const Camera3D& c, const ShaderProgram* s) const
 	{
 		if (s == nullptr)
 			s = shader;
@@ -28,7 +28,7 @@ namespace a_game_engine
 		components.push_back(std::make_unique<SpotLightUpdater>(*this));
 	}
 
-	void SpotLightSource::draw(const mat4& parent, const Camera3D& c, const Shader* s) const
+	void SpotLightSource::draw(const mat4& parent, const Camera3D& c, const ShaderProgram* s) const
 	{
 		if (s == nullptr)
 			s = shader;

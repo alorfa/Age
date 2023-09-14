@@ -9,12 +9,12 @@ namespace a_game_engine
 	{
 		mutable FrameBuffer2D mainFb;
 
-		Shader* shader;
+		ShaderProgram* shader;
 	public:
 		DefaultRenderer3D();
 
 		void updateSize(const uvec2& newSize);
-		void drawObject(const Node3D& o, const Camera3D& c, const Shader* s) override;
+		void drawObject(const Node3D& o, const Camera3D& c, const ShaderProgram* s) override;
 		void drawScene(const Scene3D& scene, const Camera3D& camera) override;
 	};
 }

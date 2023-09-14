@@ -20,12 +20,12 @@ namespace a_game_engine
 			std::string name;
 			std::vector<std::unique_ptr<Node>> children;
 
-			void draw(const mat4& parentTransform, const Shader& shader, uint textureOrder) const;
+			void draw(const mat4& parentTransform, const ShaderProgram& shader, uint textureOrder) const;
 		};
 
 		std::vector<std::unique_ptr<Mesh3D>> meshes;
 		std::unique_ptr<Node> rootNode;
 
-		void draw(const mat4& transform, const Shader& shader, uint textureOrder = 0) const;
+		void draw(const mat4& transform, const ShaderProgram& shader, uint textureOrder = 0) const;
 	};
 }

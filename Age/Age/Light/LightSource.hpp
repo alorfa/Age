@@ -15,7 +15,7 @@ namespace a_game_engine
 		PointLightSource(Scene3D& scene, Node3D* parent);
 
 		void draw(const mat4& parent, const Camera3D& c,
-			const Shader* s = nullptr) const override;
+			const ShaderProgram* s = nullptr) const override;
 	};
 
 	class SpotLightSource : public Object3D
@@ -26,7 +26,7 @@ namespace a_game_engine
 		SpotLightSource(Scene3D& scene, Node3D* parent);
 
 		void draw(const mat4& parent, const Camera3D& c,
-			const Shader* s = nullptr) const override;
+			const ShaderProgram* s = nullptr) const override;
 	};
 
 	class DirLightSource : public Node3D

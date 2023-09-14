@@ -15,7 +15,7 @@ namespace a_game_engine
 	class Camera3D;
 	class Node3D;
 
-	class Shader
+	class ShaderProgram
 	{
 		uint _id = 0;
 		bool _isValid = false;
@@ -26,13 +26,13 @@ namespace a_game_engine
 	public:
 		static const uint MAX_LIGHT_SOURCES = 32;
 
-		Shader() = default;
-		Shader(uint vert, uint frag);
-		Shader(const Shader&) = delete;
-		Shader& operator=(const Shader&) = delete;
-		Shader(Shader&&) noexcept;
-		Shader& operator=(Shader&&) noexcept;
-		~Shader();
+		ShaderProgram() = default;
+		ShaderProgram(uint vert, uint frag);
+		ShaderProgram(const ShaderProgram&) = delete;
+		ShaderProgram& operator=(const ShaderProgram&) = delete;
+		ShaderProgram(ShaderProgram&&) noexcept;
+		ShaderProgram& operator=(ShaderProgram&&) noexcept;
+		~ShaderProgram();
 
 		void create(uint vert, uint frag);
 		inline uint getId() const { return _id; }

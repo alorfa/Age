@@ -60,7 +60,7 @@ namespace a_game_engine
 			n.update(delta);
 		});
 	}
-	void Node3D::draw(const mat4& parent, const Camera3D& c, const Shader* s) const
+	void Node3D::draw(const mat4& parent, const Camera3D& c, const ShaderProgram* s) const
 	{
 		if (s == nullptr)
 			s = shader;

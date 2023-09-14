@@ -1,5 +1,5 @@
 #include "SkyBox.hpp"
-#include "Age/LL/Shader/Shader.hpp"
+#include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/Object/Mesh3D.hpp"
 #include "Age/egd.hpp"
 #include "Age/LL/Pipeline.hpp"
@@ -14,7 +14,7 @@ namespace a_game_engine
 	{
 	}
 
-	void SkyBox::draw(const Camera3D& camera, const Shader* s) const
+	void SkyBox::draw(const Camera3D& camera, const ShaderProgram* s) const
 	{
 		if (s == nullptr)
 			s = shader;

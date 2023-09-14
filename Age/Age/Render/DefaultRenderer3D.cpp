@@ -22,7 +22,7 @@ namespace a_game_engine
 		mainFb.texture.setFiltering(TextureFiltering::Linear);
 		mainFb.texture.setWrap(TextureWrap::ClampToEdge);
 	}
-	void DefaultRenderer3D::drawObject(const Node3D& o, const Camera3D& c, const Shader* s)
+	void DefaultRenderer3D::drawObject(const Node3D& o, const Camera3D& c, const ShaderProgram* s)
 	{
 		static mat4 identity;
 		o.draw(identity, c, s);

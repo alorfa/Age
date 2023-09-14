@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Age/LL/Buffers/VertexBuffer.hpp"
-#include "Age/LL/Shader/Shader.hpp"
+#include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/Object/Material.hpp"
 
 namespace a_game_engine
@@ -18,6 +18,6 @@ namespace a_game_engine
 		VertexBuffer buffer;
 		TextureMaterial material;
 
-		void draw(const Shader& s, uint textureOrder) const;
+		void draw(const ShaderProgram& s, uint textureOrder) const;
 	};
 }
