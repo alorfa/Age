@@ -10,7 +10,7 @@ namespace a_game_engine
     void Model3D::Node::draw(const mat4& parentTransform, const ShaderProgram& shader, uint textureOrder) const
     {
         mat4 t = parentTransform * transform;
-        shader.setUniform("model", t);
+        shader.setUniform(shader.getLocation("model"), t);
 
         for (const auto& mesh : meshes)
             mesh->draw(shader, textureOrder);

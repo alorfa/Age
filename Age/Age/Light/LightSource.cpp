@@ -17,7 +17,7 @@ namespace a_game_engine
 			s = shader;
 
 		s->use();
-		s->setUniform("lightColor", light.color);
+		s->setUniform(s->getLocation("emission"), light.color);
 
 		Object3D::draw(parent, c, s);
 	}
@@ -34,7 +34,7 @@ namespace a_game_engine
 			s = shader;
 
 		s->use();
-		s->setUniform("lightColor", light.color);
+		s->setUniform(s->getLocation("emission"), light.color);
 
 		Object3D::draw(parent, c, s);
 	}

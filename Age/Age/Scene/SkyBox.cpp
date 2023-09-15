@@ -25,9 +25,9 @@ namespace a_game_engine
 			s->use();
 			mat4 view = camera.transform.getMatrix();
 			view.data[3][0] = view.data[3][1] = view.data[3][2] = 0.f;
-			s->setUniform("view", view);
-			s->setUniform("projection", camera.getProjection());
-			s->setUniform("skybox", *cubemap, 0);
+			s->setUniform(s->getLocation("view"), view);
+			s->setUniform(s->getLocation("projection"), camera.getProjection());
+			s->setUniform(s->getLocation("skybox"), *cubemap, 0);
 			cube->buffer.draw();
 		}
 	}

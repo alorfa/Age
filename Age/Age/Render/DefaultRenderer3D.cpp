@@ -42,7 +42,7 @@ namespace a_game_engine
 		Pipeline::set2DContext();
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
-		shader->setUniform("tex", mainFb.texture, 0);
+		shader->setUniform(shader->getLocation("tex"), mainFb.texture, 0);
 		verts->draw();
 	}
 }

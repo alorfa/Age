@@ -22,9 +22,8 @@ namespace a_game_engine
 
 		void destroy();
 
-		int location(const char* name) const;
 	public:
-		static const uint MAX_LIGHT_SOURCES = 32;
+		int getLocation(const char* name) const;
 
 		ShaderProgram() = default;
 		ShaderProgram(uint vert, uint frag);
@@ -38,19 +37,18 @@ namespace a_game_engine
 		inline uint getId() const { return _id; }
 		bool isValid() const;
 
-		void setUniform(const char* name, int value) const;
-		void setUniform(const char* name, float value) const;
-		void setUniform(const char* name, vec2 value) const;
-		void setUniform(const char* name, vec3 value) const;
-		void setUniform(const char* name, const mat3& value) const;
-		void setUniform(const char* name, const mat4& value) const;
-		void setUniform(const char* name, const Texture2D& value, uint number) const;
-		void setUniform(const char* name, const CubeMap& value, uint number) const;
+		void setUniform(int location, int value) const;
+		void setUniform(int location, float value) const;
+		void setUniform(int location, vec2 value) const;
+		void setUniform(int location, vec3 value) const;
+		void setUniform(int location, const mat3& value) const;
+		void setUniform(int location, const mat4& value) const;
+		void setUniform(int location, const Texture2D& value, uint number) const;
+		void setUniform(int location, const CubeMap& value, uint number) const;
 		uint setUniform(const char* name, const TextureMaterial& mat, uint firstSampler) const;
 		void setUniform(const char* name, const DirLight& light) const;
 		void setUniform(const char* name, const PointLight& light) const;
 		void setUniform(const char* name, const SpotLight& light) const;
-		void setUniform(const char* name, const ColorMaterial& mat) const;
 		void setLights(const Node3D& scene) const;
 		void setCamera(const Camera3D& camera) const;
 

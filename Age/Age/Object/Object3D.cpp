@@ -21,7 +21,7 @@ namespace a_game_engine
 			s->use();
 			s->setCamera(camera);
 			s->setLights(*scene->rootNode);
-			s->setUniform("skybox", SkyBox::getSlot());
+			s->setUniform(s->getLocation("skybox"), SkyBox::getSlot());
 
 			mat4 curTransform = parent * transform.getMatrix();
 			model->draw(curTransform, *s);
