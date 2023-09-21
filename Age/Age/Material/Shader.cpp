@@ -9,65 +9,57 @@ namespace a_game_engine
     {
     }
 
-    const ShaderProgram& Shader::getForward(const ForwardSettings& s) const
+    const ShaderProgram& Shader::getForward(const ShaderSettings::Forward& s) const
     {
         auto it = _forward.find(s);
         if (it != _forward.end())
             return *it->second;
 
-        const auto constants = std::format(
+        ShaderSettings::Detailed settings{ShaderSettings::include};
+        settings.bindings = { 4 };
+        settings.defines = std::format(
             "#define AGE_MAX_DIR_LIGHTS {}\n"
             "#define AGE_MAX_POINT_LIGHTS {}\n"
             "#define AGE_MAX_SPOT_LIGHTS {}\n"
             "#define AGE_RENDERING_MODE_FORWARD\n", s.dirLights, s.pointLights, s.spotLights);
-        DetailedSettings settings;
-        settings.bindings = { 4 };
-        settings.defines = constants;
-        settings.commonLib = "common lib\n";
-        settings.vertexLib = "vertex lib\n";
-        settings.fragmentLib = "fragment lib\n";
-        settings.mainFunc = "main function\n";
+        
         auto& shader = _forward[s];
         shader = createProgram(settings, _source);
         return *shader;
     }
 
-    const ShaderProgram& Shader::getDeferred(const DeferredSettings& s) const
+    const ShaderProgram& Shader::getDeferred(const ShaderSettings::Deferred& s) const
     {
         auto it = _deferred.find(s);
         if (it != _deferred.end())
             return *it->second;
 
-        DetailedSettings settings;
+        ShaderSettings::Detailed settings{ShaderSettings::include};
         settings.bindings = s.bindings;
         settings.defines = "#define AGE_RENDERING_MODE_DEFERRED\n";
-        settings.commonLib = "common lib\n";
-        settings.vertexLib = "vertex lib\n";
-        settings.fragmentLib = "fragment lib\n";
-        settings.mainFunc = "main function\n";
         settings.forcePaintingOver = s.paintingFunc;
         auto& shader = _deferred[s];
         shader = createProgram(settings, _source);
         return *shader;
     }
-    std::unique_ptr<ShaderProgram> Shader::createProgram(const DetailedSettings& s, const std::string& source)
+    std::unique_ptr<ShaderProgram> Shader::createProgram(const ShaderSettings::Detailed& s, const std::string& source)
     {
         std::string bindings;
         for (uint i = 0; i < (uint)s.bindings.size(); i++)
             bindings += generateBinding(s.bindings[i], i);
         
         const std::string vertex = std::format("#define AGE_VERTEX\n{}{}{}{}", 
-            s.defines, s.commonLib, s.vertexLib, source);
+            s.defines, s.include->common, s.include->vertex, source);
         std::string fragment;
         if (s.forcePaintingOver.size() == 0)
         {
             fragment = std::format("#define AGE_FRAGMENT\n{}{}{}{}{}{}",
-                s.defines, bindings, s.commonLib, s.fragmentLib, source, s.mainFunc);
+                s.defines, bindings, s.include->common, s.include->fragment, source, s.include->main);
         }
         else
         {
             fragment = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n{}{}{}{}{}{}{}",
-                s.defines, bindings, s.commonLib, s.fragmentLib, source, s.forcePaintingOver, s.mainFunc);
+                s.defines, bindings, s.include->common, s.include->fragment, source, s.forcePaintingOver, s.include->main);
         }
         auto vsh = ShaderCompiler::loadFromMemory(vertex.c_str(), ShaderCompiler::Vertex);
         auto fsh = ShaderCompiler::loadFromMemory(fragment.c_str(), ShaderCompiler::Fragment);
@@ -101,19 +93,19 @@ namespace a_game_engine
             return "vec4";
         }
     }
-    const ShaderProgram& Shader::getProgram(const Settings& s) const
+    const ShaderProgram& Shader::getProgram(const ShaderSettings::Common& s) const
     {
         if (_lastSettings == s)
             return *_lastShader;
 
         _lastSettings = s;
-        if (s.type == s.Forward)
+        if (s.type == ShaderSettings::Common::Type::Forward)
         {
             const auto& temp = getForward(s.settings.forward);
             if (temp.isValid())
                 _lastShader = &temp;
         }
-        if (s.type == s.Deferred)
+        if (s.type == ShaderSettings::Common::Type::Deferred)
         {
             const auto& temp = getDeferred(s.settings.deferred);
             if (temp.isValid())
@@ -122,75 +114,4 @@ namespace a_game_engine
         return *_lastShader;
     }
 
-    bool Shader::ForwardSettings::operator<(const ForwardSettings& other) const
-    {
-        if (dirLights < other.dirLights)
-            return true;
-        if (pointLights < other.pointLights)
-            return true;
-        if (spotLights < other.spotLights)
-            return true;
-        return false;
-    }
-    bool Shader::ForwardSettings::operator==(const ForwardSettings& other) const
-    {
-        return
-            dirLights == other.dirLights &&
-            pointLights == other.pointLights &&
-            spotLights == other.spotLights;
-    }
-    bool Shader::DeferredSettings::operator<(const DeferredSettings& other) const
-    {
-        if (bindings.size() < other.bindings.size())
-            return true;
-        for (uint i = 0; i < (uint)bindings.size(); i++)
-        {
-            if (bindings[i] < other.bindings[i])
-                return true;
-        }
-        return paintingFunc < other.paintingFunc;
-    }
-
-    bool Shader::DeferredSettings::operator==(const DeferredSettings& other) const
-    {
-        return 
-            bindings == other.bindings &&
-            paintingFunc == other.paintingFunc;
-    }
-
-    Shader::Settings::Settings()
-        : type(Settings::Undefined)
-    {
-    }
-    Shader::Settings::Settings(const ForwardSettings& s)
-        : type(Settings::Forward)
-    {
-        settings.forward = s;
-    }
-
-    Shader::Settings::Settings(const DeferredSettings& s)
-        : type(Settings::Deferred)
-    {
-        settings.deferred = s;
-    }
-
-    bool Shader::Settings::operator==(const Settings& other) const
-    {
-        if (type != other.type)
-            return false;
-        if (type == Type::Forward)
-            return settings.forward == other.settings.forward;
-        if (type == Type::Deferred)
-            return settings.deferred == other.settings.deferred;
-        return false;
-    }
-    Shader::Settings& Shader::Settings::operator=(const Settings& s)
-    {
-        type = s.type;
-        if (type == Forward)
-            settings.forward = s.settings.forward;
-        if (type == Deferred)
-            settings.deferred = s.settings.deferred;
-        return *this;
-    }
 }

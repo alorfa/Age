@@ -1,18 +1,3 @@
-//defines
-#define AGE_FRAGMENT
-#define AGE_RENDERING_MODE_FORWARD
-#define AGE_MAX_DIR_LIGHTS 1
-#define AGE_MAX_POINT_LIGHTS 2
-#define AGE_MAX_SPOT_LIGHTS 1
-
-//bindings
-layout(location = 0) out vec4 age_FragColor;
-layout(location = 1) out vec4 age_FragColor1;
-layout(location = 2) out vec4 age_FragColor2;
-layout(location = 3) out vec4 age_FragColor3;
-
-//begin include
-
 struct DirectionalLight
 {
     vec3 dir, ambient, color;
@@ -147,45 +132,4 @@ void phong_paintOver()
     light += sceneAmbient * age_base_color;
 
     age_FragColor = vec4(light, 1.f);
-}
-
-//end include
-
-//user's code
-
-uniform sampler2D textures[16];
-
-void control()
-{
-    age_base_color = texture(textures[0], fragUv).rgb;
-    age_specular = vec3(0.07f);
-    age_normal = computeNormal(texture(textures[1], fragUv).rgb);
-    //age_normal = normalize(fragTBN[2]);
-    vec4 material = texture(textures[2], fragUv);
-    age_roughness = material.g;
-    age_shininess = 4.f;
-    age_metalness = material.b;
-}
-#define AGE_LIGHT_MODE_PHONG
-
-//main
-void age_paintOver()
-{
-    #if defined(AGE_LIGHT_MODE_FORCE)
-    force_paintOver();
-    #elif defined(AGE_LIGHT_MODE_CUSTOM)
-    paintOver();
-    #elif defined(AGE_RENDERING_MODE_FORWARD) && defined(AGE_LIGHT_MODE_PBR)
-    pbr_paintOver();
-    #elif defined(AGE_RENDERING_MODE_FORWARD) && defined(AGE_LIGHT_MODE_PHONG)
-    phong_paintOver();
-    #else
-    age_FragColor = vec4(1.f);
-    #endif
-}
-
-void main()
-{
-    control();
-    age_paintOver();
 }

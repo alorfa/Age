@@ -48,6 +48,7 @@
     <ClInclude Include="Age\Scene\Scene3D.hpp" />
     <ClInclude Include="Age\Components\LightUpdaters.hpp" />
     <ClInclude Include="Age\Material\Shader.hpp" />
+    <ClInclude Include="Age\Material\ShaderSettings.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -84,5 +85,6 @@
     <ClCompile Include="Age\Scene\Scene3D.cpp" />
     <ClCompile Include="Age\Components\LightUpdaters.cpp" />
     <ClCompile Include="Age\Material\Shader.cpp" />
+    <ClCompile Include="Age\Material\ShaderSettings.cpp" />
   </ItemGroup>
 </Project>
