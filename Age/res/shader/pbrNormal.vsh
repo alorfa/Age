@@ -7,7 +7,7 @@ uniform mat4 model, view, projection;
 
 out vec2 fragUv;
 out vec3 fragPos;
-out mat3 TBN;
+out mat3 fragTBN;
 
 void main()
 {
@@ -17,6 +17,6 @@ void main()
 	vec3 T = mat3(model) * inTangent;
 	T = normalize(T - dot(T, N) * N);
 	vec3 B = cross(N, T);
-	TBN = mat3(T, B, N);
+	fragTBN = mat3(T, B, N);
     gl_Position = projection * view * model * vec4(inPosition, 1.0);
 }

@@ -26,8 +26,8 @@ out vec4 age_FragColor;
 in vec3 fragUv;
 uniform samplerCube skybox;
 
-vec3 age_emission, age_base_color, age_normal;
-float age_metalness, age_roughness;
+vec3 age_emission, age_base_color, age_specular, age_normal;
+float age_metalness, age_roughness, age_shininess;
 
 vec4 sampleCubemap(samplerCube cubemap, vec3 texCoord)
 {

@@ -1,10 +1,17 @@
-out vec4 FragColor;
+//defines
+#define AGE_FRAGMENT
+#define AGE_RENDERING_MODE_FORWARD
+#define AGE_MAX_DIR_LIGHTS 1
+#define AGE_MAX_POINT_LIGHTS 2
+#define AGE_MAX_SPOT_LIGHTS 1
 
-in vec2 fragUv;
-in vec3 fragPos;
-in mat3 TBN;
+//bindings
+layout(location = 0) out vec4 age_FragColor;
+layout(location = 1) out vec4 age_FragColor1;
+layout(location = 2) out vec4 age_FragColor2;
+layout(location = 3) out vec4 age_FragColor3;
 
-uniform vec3 cameraPos;
+//begin include
 
 struct DirectionalLight
 {
@@ -12,7 +19,7 @@ struct DirectionalLight
 };
 struct PointLight
 {
-	vec3 pos, ambient, color;
+    vec3 pos, ambient, color;
     float constant, linear, quadratic;
 };
 struct SpotLight
@@ -22,7 +29,39 @@ struct SpotLight
     float constant, linear, quadratic;
 };
 
-vec3 computePointLight(in PointLight light, vec3 dif, vec3 spec, float shininess, vec3 norm)
+in vec2 fragUv;
+in vec3 fragPos;
+in mat3 fragTBN;
+
+uniform vec3 cameraPos;
+
+uniform sampler2D textures[16];
+uniform vec3 sceneAmbient;
+uniform samplerCube skybox;
+
+const float near = 0.1f;
+const float far = 100.f;
+
+vec3 age_emission, age_base_color, age_specular, age_normal;
+float age_metalness, age_roughness, age_shininess;
+
+#if defined(AGE_MAX_POINT_LIGHTS) && AGE_MAX_POINT_LIGHTS != 0
+uniform PointLight pointLightSources[AGE_MAX_POINT_LIGHTS];
+#endif
+#if defined(AGE_MAX_DIR_LIGHTS) && AGE_MAX_DIR_LIGHTS != 0
+uniform DirectionalLight dirLightSources[AGE_MAX_DIR_LIGHTS];
+#endif
+#if defined(AGE_MAX_SPOT_LIGHTS) && AGE_MAX_SPOT_LIGHTS != 0
+uniform SpotLight spotLightSources[AGE_MAX_SPOT_LIGHTS];
+#endif
+
+vec4 sampleCubemap(samplerCube cubemap, vec3 texCoord)
+{
+    vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
+    return texture(cubemap, coord);
+}
+
+vec3 phong_computePointLight(in PointLight light, vec3 dif, vec3 spec, float shininess, vec3 norm)
 {
     vec3 lightDir = normalize(light.pos - fragPos);
     vec3 viewDir = normalize(cameraPos - fragPos);
@@ -40,7 +79,7 @@ vec3 computePointLight(in PointLight light, vec3 dif, vec3 spec, float shininess
     return lightColor * attenuation;
 }
 
-vec3 computeDirectionalLight(in DirectionalLight light, vec3 dif, vec3 spec, float shininess, vec3 norm)
+vec3 phong_computeDirectionalLight(in DirectionalLight light, vec3 dif, vec3 spec, float shininess, vec3 norm)
 {
     vec3 viewDir = normalize(cameraPos - fragPos);
     vec3 reflectDir = reflect(light.dir, norm); 
@@ -51,7 +90,7 @@ vec3 computeDirectionalLight(in DirectionalLight light, vec3 dif, vec3 spec, flo
     vec3 specular = spec * specFactor;
     return (diffuse + specular) * light.color + ambientCol;
 }
-vec3 computeSpotLight(in SpotLight light, vec3 dif, vec3 spec, float shininess, vec3 norm)
+vec3 phong_computeSpotLight(in SpotLight light, vec3 dif, vec3 spec, float shininess, vec3 norm)
 {
     vec3 ambientCol = dif * light.ambient;
 
@@ -80,22 +119,8 @@ vec3 computeSpotLight(in SpotLight light, vec3 dif, vec3 spec, float shininess, 
 vec3 computeNormal(in vec3 normal)
 {
     vec3 realNormal = normal * 2.f - 1.f;
-    return normalize(TBN * realNormal);
+    return normalize(fragTBN * realNormal);
 }
-
-uniform PointLight pointLightSources[32];
-uniform DirectionalLight dirLightSources[32];
-uniform SpotLight spotLightSources[32];
-uniform int pointLightsCount, dirLightsCount, spotLightsCount;
-uniform sampler2D textures[16];
-uniform vec3 sceneAmbient;
-uniform samplerCube skybox;
-
-const float gamma = 2.2f;
-
-const float near = 0.1f;
-const float far = 100.f;
-
 float getDepth()
 {
     float z = gl_FragCoord.z * 2.0 - 1.0;
@@ -103,30 +128,63 @@ float getDepth()
     return depth / far;
 }
 
-void main()
+void pbr_paintOver()
+{
+    vec3 viewDir = normalize(fragPos - cameraPos);
+    vec3 reflectDir = reflect(viewDir, age_normal);
+    vec3 reflectedColor = sampleCubemap(skybox, reflectDir).rgb;
+
+    age_FragColor = vec4(reflectedColor, 1.f);
+}
+void phong_paintOver()
 {
     vec3 light = vec3(0.f);
-    vec3 diffuse = texture(textures[0], fragUv).rgb;
-    vec3 specular = vec3(0.07f);
-    vec3 realNormal = computeNormal(texture(textures[1], fragUv).rgb);
+    for (int i = 0; i < AGE_MAX_POINT_LIGHTS; i++)
+        light += phong_computePointLight(pointLightSources[i], age_base_color, age_specular, age_shininess, age_normal);
+    for (int i = 0; i < AGE_MAX_DIR_LIGHTS; i++)
+        light += phong_computeDirectionalLight(dirLightSources[i], age_base_color, age_specular, age_shininess, age_normal);
+    for (int i = 0; i < AGE_MAX_SPOT_LIGHTS; i++)
+        light += phong_computeSpotLight(spotLightSources[i], age_base_color, age_specular, age_shininess, age_normal);
+    light += sceneAmbient * age_base_color;
+
+    age_FragColor = vec4(light, 1.f);
+}
+
+//end include
+
+//user's code
+
+void control()
+{
+    age_base_color = texture(textures[0], fragUv).rgb;
+    age_specular = vec3(0.07f);
+    age_normal = computeNormal(texture(textures[1], fragUv).rgb);
+    //age_normal = normalize(fragTBN[2]);
     vec4 material = texture(textures[2], fragUv);
-    float shininess = 4;
-    for (int i = 0; i < pointLightsCount; i++)
-        light += computePointLight(pointLightSources[i], diffuse, specular, shininess, realNormal);
-    for (int i = 0; i < dirLightsCount; i++)
-        light += computeDirectionalLight(dirLightSources[i], diffuse, specular, shininess, realNormal);
-    for (int i = 0; i < spotLightsCount; i++)
-        light += computeSpotLight(spotLightSources[i], diffuse, specular, shininess, realNormal);
+    age_roughness = material.g;
+    age_shininess = 4.f;
+    age_metalness = material.b;
+}
+#define AGE_LIGHT_MODE_PHONG
 
-    light += sceneAmbient * diffuse;
+//main
+void age_paintOver()
+{
+    #if defined(AGE_LIGHT_MODE_FORCE)
+    force_paintOver();
+    #elif defined(AGE_LIGHT_MODE_CUSTOM)
+    paintOver();
+    #elif defined(AGE_RENDERING_MODE_FORWARD) && defined(AGE_LIGHT_MODE_PBR)
+    pbr_paintOver();
+    #elif defined(AGE_RENDERING_MODE_FORWARD) && defined(AGE_LIGHT_MODE_PHONG)
+    phong_paintOver();
+    #else
+    age_FragColor = vec4(1.f);
+    #endif
+}
 
-    vec3 viewDir = normalize(cameraPos - fragPos);
-    vec3 reflectDir = reflect(viewDir, realNormal);
-    vec3 coord = vec3(-reflectDir.x, reflectDir.z, -reflectDir.y);
-    vec3 reflectedColor = texture(skybox, coord).rgb;
-    float mixValue = (1.f - material.b) * material.g;
-    vec3 pixelColor = mix(light, reflectedColor, 1.0f);
-    //vec3 finalColor = mix(pixelColor, vec3(0.2f, 0.3f, 0.3f), getDepth());
-
-    FragColor = vec4(pixelColor, 1.f);
+void main()
+{
+    control();
+    age_paintOver();
 }

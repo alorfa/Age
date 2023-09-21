@@ -21,7 +21,7 @@ void main()
 
 #define AGE_CUSTOM_PAINTING_OVER
 
-out vec4 age_FragColor;
+layout(location = 0) out vec4 age_FragColor;
 
 in vec3 fragUv;
 uniform samplerCube skybox;
