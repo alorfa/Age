@@ -4,6 +4,7 @@
 namespace a_game_engine
 {
     ShaderSettings::Include ShaderSettings::include;
+    std::vector<std::string> ShaderSettings::paintingFunctions;
 
     bool ShaderSettings::Forward::operator<(const Forward& other) const
     {
@@ -31,14 +32,14 @@ namespace a_game_engine
             if (bindings[i] < other.bindings[i])
                 return true;
         }
-        return paintingFunc < other.paintingFunc;
+        return paintingFuncIndex < other.paintingFuncIndex;
     }
 
     bool ShaderSettings::Deferred::operator==(const Deferred& other) const
     {
         return
             bindings == other.bindings &&
-            paintingFunc == other.paintingFunc;
+            paintingFuncIndex == other.paintingFuncIndex;
     }
 
     ShaderSettings::Common::Common()
@@ -108,7 +109,7 @@ namespace a_game_engine
     {
         bindings = d.bindings;
         defines = "#define AGE_RENDERING_MODE_DEFERRED\n";
-        forcePaintingOver = d.paintingFunc;
+        paintingFuncIndex = d.paintingFuncIndex;
     }
     void ShaderSettings::Detailed::create(const Common& f)
     {

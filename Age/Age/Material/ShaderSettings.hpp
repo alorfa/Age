@@ -24,7 +24,7 @@ namespace a_game_engine
 		struct Deferred
 		{
 			std::vector<uint> bindings;
-			std::string paintingFunc;
+			int paintingFuncIndex = -1;
 
 			bool operator<(const Deferred& other) const;
 			bool operator==(const Deferred& other) const;
@@ -53,7 +53,8 @@ namespace a_game_engine
 		struct Detailed
 		{
 			const Include* include;
-			std::string defines, forcePaintingOver;
+			std::string defines;
+			int paintingFuncIndex = -1;
 			std::vector<uint> bindings;
 
 			Detailed(const Include& include);
@@ -66,6 +67,7 @@ namespace a_game_engine
 		};
 
 		static Include include;
+		static std::vector<std::string> paintingFunctions;
 	private:
 	};
 }

@@ -14,7 +14,7 @@ namespace a_game_engine
         result.vert = std::format("#define AGE_VERTEX\n{}\n{}\n{}\n{}\n",
             s.defines, s.include->common, s.include->vertex, source);
         std::string fragment;
-        if (s.forcePaintingOver.size() == 0)
+        if (s.paintingFuncIndex < 0)
         {
             result.frag = std::format("#define AGE_FRAGMENT\n{}\n{}\n{}\n{}\n{}\n{}",
                 s.defines, bindings, s.include->common, s.include->fragment, source, s.include->fragMain);
@@ -24,7 +24,7 @@ namespace a_game_engine
             result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n"
                 "{}\n{}\n{}\n{}\n{}\nvoid force_paintOver(){}\n{}",
                 s.defines, bindings, s.include->common, s.include->fragment, source, 
-                '{' + s.forcePaintingOver + '}', s.include->fragMain);
+                '{' + ShaderSettings::paintingFunctions[s.paintingFuncIndex] + '}', s.include->fragMain);
         }
         return result;
     }

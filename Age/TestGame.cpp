@@ -129,12 +129,7 @@ namespace a_game
 
 		ShaderSettings::Deferred settings;
 		settings.bindings = { 4, 4, 3 };
-		settings.paintingFunc =
-			"age_FragColor.rgb = age_base_color.rgb;\n"
-			"age_FragColor.a = age_roughness;\n"
-			"age_FragColor1.rgb = age_normal.rgb;\n"
-			"age_FragColor1.a = age_metalness;\n"
-			"age_FragColor2.rgb = fragPos;\n";
+		settings.paintingFuncIndex = 0;
 		const std::string shader = File::readAllText(egd.res / "shader/pbrNormal.asl");
 		Shader testShader(shader);
 		auto [vert, frag] = testShader.translateToGlsl({ ShaderSettings::include, settings }, shader);
@@ -228,6 +223,12 @@ int main()
 {
 	egd.res = "res";
 	egd.user = "user";
+	ShaderSettings::paintingFunctions.push_back(
+		"\nage_FragColor.rgb = age_base_color.rgb;\n"
+		"age_FragColor.a = age_roughness;\n"
+		"age_FragColor1.rgb = age_normal.rgb;\n"
+		"age_FragColor1.a = age_metalness;\n"
+		"age_FragColor2.rgb = fragPos;\n");
 	ShaderSettings::include.common = File::readAllText(egd.res / "shader/lib/common.hasl");
 	ShaderSettings::include.vertex = File::readAllText(egd.res / "shader/lib/vertex.hasl");
 	ShaderSettings::include.fragment = File::readAllText(egd.res / "shader/lib/fragment.hasl");
