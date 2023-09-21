@@ -23,10 +23,12 @@ namespace a_game_engine
 		static std::string toVecType(uint vecComponents);
 	public:
 		Shader(const std::string& source);
+		struct GlslCode { std::string vert, frag; };
 
 		const ShaderProgram& getForward(const ShaderSettings::Forward& s) const;
 		const ShaderProgram& getDeferred(const ShaderSettings::Deferred& s) const;
 		const ShaderProgram& getProgram(const ShaderSettings::Common& s) const;
 		static std::unique_ptr<ShaderProgram> createProgram(const ShaderSettings::Detailed& s, const std::string& source);
+		static GlslCode translateToGlsl(const ShaderSettings::Detailed& s, const std::string& source);
 	};
 }

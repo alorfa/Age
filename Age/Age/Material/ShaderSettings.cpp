@@ -1,4 +1,5 @@
 #include "ShaderSettings.hpp"
+#include <format>
 
 namespace a_game_engine
 {
@@ -78,5 +79,46 @@ namespace a_game_engine
     ShaderSettings::Detailed::Detailed(const Include& inc)
     {
         include = &inc;
+    }
+    ShaderSettings::Detailed::Detailed(const Include& inc, const Forward& f)
+    {
+        include = &inc;
+        create(f);
+    }
+    ShaderSettings::Detailed::Detailed(const Include& inc, const Deferred& d)
+    {
+        include = &inc;
+        create(d);
+    }
+    ShaderSettings::Detailed::Detailed(const Include& inc, const Common& c)
+    {
+        include = &inc;
+        create(c);
+    }
+    void ShaderSettings::Detailed::create(const Forward& f)
+    {
+        bindings = { 4 };
+        defines = std::format(
+            "#define AGE_MAX_DIR_LIGHTS {}\n"
+            "#define AGE_MAX_POINT_LIGHTS {}\n"
+            "#define AGE_MAX_SPOT_LIGHTS {}\n"
+            "#define AGE_RENDERING_MODE_FORWARD\n", f.dirLights, f.pointLights, f.spotLights);
+    }
+    void ShaderSettings::Detailed::create(const Deferred& d)
+    {
+        bindings = d.bindings;
+        defines = "#define AGE_RENDERING_MODE_DEFERRED\n";
+        forcePaintingOver = d.paintingFunc;
+    }
+    void ShaderSettings::Detailed::create(const Common& f)
+    {
+        if (f.type == ShaderSettings::Common::Type::Forward)
+        {
+            create(f.settings.forward);
+        }
+        if (f.type == ShaderSettings::Common::Type::Deferred)
+        {
+            create(f.settings.deferred);
+        }
     }
 }

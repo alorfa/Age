@@ -14,6 +14,8 @@
 #include "Age/egd.hpp"
 #include "Age/LL/Pipeline.hpp"
 #include "Age/Math/Math.hpp"
+#include "Age/Material/Shader.hpp"
+#include "Age/Resource/File.hpp"
 
 namespace a_game
 {
@@ -124,6 +126,21 @@ namespace a_game
 		world = std::make_unique<WorldScene>();
 		world->load();
 		Logger::logDebug("Resources load time: " + std::to_string(clock.restart().asSeconds()));
+
+		ShaderSettings::Deferred settings;
+		settings.bindings = { 4, 4, 3 };
+		settings.paintingFunc = "void force_paintOver(){"
+			"age_FragColor.rgb = age_base_color.rgb;"
+			"age_FragColor.a = age_roughness;"
+			"age_FragColor1.rgb = age_normal.rgb;"
+			"age_FragColor1.a = age_metalness;"
+			"age_FragColor2.rgb = fragPos;"
+		"}";
+		const std::string shader = File::readAllText(egd.res / "shader/pbrNormal.asl");
+		Shader testShader(shader);
+		auto [vert, frag] = testShader.translateToGlsl({ ShaderSettings::include, settings }, shader);
+		Logger::logInfo(vert);
+		Logger::logInfo(frag);
 	}
 	void TestGame::handleRawEvents(const sf::Event& ev)
 	{
@@ -212,6 +229,10 @@ int main()
 {
 	egd.res = "res";
 	egd.user = "user";
+	ShaderSettings::include.common = File::readAllText(egd.res / "shader/lib/common.hasl");
+	ShaderSettings::include.vertex = File::readAllText(egd.res / "shader/lib/vertex.hasl");
+	ShaderSettings::include.fragment = File::readAllText(egd.res / "shader/lib/fragment.hasl");
+	ShaderSettings::include.fragMain = File::readAllText(egd.res / "shader/lib/fragMain.hasl");
 	auto game = std::make_unique<a_game::TestGame>();
 	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 0, 24);
 

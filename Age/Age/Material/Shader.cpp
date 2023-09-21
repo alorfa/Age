@@ -4,6 +4,28 @@
 
 namespace a_game_engine
 {
+    Shader::GlslCode Shader::translateToGlsl(const ShaderSettings::Detailed& s, const std::string& source)
+    {
+        std::string bindings;
+        for (uint i = 0; i < (uint)s.bindings.size(); i++)
+            bindings += generateBinding(s.bindings[i], i);
+
+        GlslCode result;
+        result.vert = std::format("#define AGE_VERTEX\n{}{}{}{}",
+            s.defines, s.include->common, s.include->vertex, source);
+        std::string fragment;
+        if (s.forcePaintingOver.size() == 0)
+        {
+            result.frag = std::format("#define AGE_FRAGMENT\n{}{}{}{}{}{}",
+                s.defines, bindings, s.include->common, s.include->fragment, source, s.include->fragMain);
+        }
+        else
+        {
+            result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n{}{}{}{}{}{}{}",
+                s.defines, bindings, s.include->common, s.include->fragment, source, s.forcePaintingOver, s.include->fragMain);
+        }
+        return result;
+    }
     Shader::Shader(const std::string& source)
         : _source(source)
     {
@@ -15,13 +37,7 @@ namespace a_game_engine
         if (it != _forward.end())
             return *it->second;
 
-        ShaderSettings::Detailed settings{ShaderSettings::include};
-        settings.bindings = { 4 };
-        settings.defines = std::format(
-            "#define AGE_MAX_DIR_LIGHTS {}\n"
-            "#define AGE_MAX_POINT_LIGHTS {}\n"
-            "#define AGE_MAX_SPOT_LIGHTS {}\n"
-            "#define AGE_RENDERING_MODE_FORWARD\n", s.dirLights, s.pointLights, s.spotLights);
+        ShaderSettings::Detailed settings{ShaderSettings::include, s};
         
         auto& shader = _forward[s];
         shader = createProgram(settings, _source);
@@ -34,35 +50,17 @@ namespace a_game_engine
         if (it != _deferred.end())
             return *it->second;
 
-        ShaderSettings::Detailed settings{ShaderSettings::include};
-        settings.bindings = s.bindings;
-        settings.defines = "#define AGE_RENDERING_MODE_DEFERRED\n";
-        settings.forcePaintingOver = s.paintingFunc;
+        ShaderSettings::Detailed settings{ShaderSettings::include, s};
+        
         auto& shader = _deferred[s];
         shader = createProgram(settings, _source);
         return *shader;
     }
     std::unique_ptr<ShaderProgram> Shader::createProgram(const ShaderSettings::Detailed& s, const std::string& source)
     {
-        std::string bindings;
-        for (uint i = 0; i < (uint)s.bindings.size(); i++)
-            bindings += generateBinding(s.bindings[i], i);
-        
-        const std::string vertex = std::format("#define AGE_VERTEX\n{}{}{}{}", 
-            s.defines, s.include->common, s.include->vertex, source);
-        std::string fragment;
-        if (s.forcePaintingOver.size() == 0)
-        {
-            fragment = std::format("#define AGE_FRAGMENT\n{}{}{}{}{}{}",
-                s.defines, bindings, s.include->common, s.include->fragment, source, s.include->main);
-        }
-        else
-        {
-            fragment = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n{}{}{}{}{}{}{}",
-                s.defines, bindings, s.include->common, s.include->fragment, source, s.forcePaintingOver, s.include->main);
-        }
-        auto vsh = ShaderCompiler::loadFromMemory(vertex.c_str(), ShaderCompiler::Vertex);
-        auto fsh = ShaderCompiler::loadFromMemory(fragment.c_str(), ShaderCompiler::Fragment);
+        auto [vert, frag] = translateToGlsl(s, source);
+        auto vsh = ShaderCompiler::loadFromMemory(vert.c_str(), ShaderCompiler::Vertex);
+        auto fsh = ShaderCompiler::loadFromMemory(frag.c_str(), ShaderCompiler::Fragment);
         auto result = std::make_unique<ShaderProgram>(vsh, fsh);
         if (result->isValid())
             return result;
@@ -99,6 +97,7 @@ namespace a_game_engine
             return *_lastShader;
 
         _lastSettings = s;
+        ShaderSettings::Detailed detailed(ShaderSettings::include, s);
         if (s.type == ShaderSettings::Common::Type::Forward)
         {
             const auto& temp = getForward(s.settings.forward);
@@ -111,6 +110,7 @@ namespace a_game_engine
             if (temp.isValid())
                 _lastShader = &temp;
         }
+
         return *_lastShader;
     }
 

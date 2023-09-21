@@ -12,7 +12,7 @@ namespace a_game_engine
 	public:
 		struct Include
 		{
-			std::string common, vertex, fragment, main;
+			std::string common, vertex, fragment, fragMain;
 		};
 		struct Forward
 		{
@@ -28,14 +28,6 @@ namespace a_game_engine
 
 			bool operator<(const Deferred& other) const;
 			bool operator==(const Deferred& other) const;
-		};
-		struct Detailed
-		{
-			const Include* include;
-			std::string defines, forcePaintingOver;
-			std::vector<uint> bindings;
-
-			Detailed(const Include& include);
 		};
 		struct Common
 		{
@@ -57,6 +49,20 @@ namespace a_game_engine
 
 			bool operator==(const Common& other) const;
 			Common& operator=(const Common& s);
+		};
+		struct Detailed
+		{
+			const Include* include;
+			std::string defines, forcePaintingOver;
+			std::vector<uint> bindings;
+
+			Detailed(const Include& include);
+			Detailed(const Include& include, const Forward& f);
+			Detailed(const Include& include, const Deferred& d);
+			Detailed(const Include& include, const Common& c);
+			void create(const Forward& f);
+			void create(const Deferred& f);
+			void create(const Common& f);
 		};
 
 		static Include include;
