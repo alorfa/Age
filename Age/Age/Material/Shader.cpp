@@ -11,18 +11,20 @@ namespace a_game_engine
             bindings += generateBinding(s.bindings[i], i);
 
         GlslCode result;
-        result.vert = std::format("#define AGE_VERTEX\n{}{}{}{}",
+        result.vert = std::format("#define AGE_VERTEX\n{}\n{}\n{}\n{}\n",
             s.defines, s.include->common, s.include->vertex, source);
         std::string fragment;
         if (s.forcePaintingOver.size() == 0)
         {
-            result.frag = std::format("#define AGE_FRAGMENT\n{}{}{}{}{}{}",
+            result.frag = std::format("#define AGE_FRAGMENT\n{}\n{}\n{}\n{}\n{}\n{}",
                 s.defines, bindings, s.include->common, s.include->fragment, source, s.include->fragMain);
         }
         else
         {
-            result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n{}{}{}{}{}{}{}",
-                s.defines, bindings, s.include->common, s.include->fragment, source, s.forcePaintingOver, s.include->fragMain);
+            result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n"
+                "{}\n{}\n{}\n{}\n{}\nvoid force_paintOver(){}\n{}",
+                s.defines, bindings, s.include->common, s.include->fragment, source, 
+                '{' + s.forcePaintingOver + '}', s.include->fragMain);
         }
         return result;
     }
