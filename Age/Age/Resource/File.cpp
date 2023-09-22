@@ -31,7 +31,7 @@ namespace a_game_engine
 	{
 		std::string result;
 
-		std::ifstream stream(path, std::ios_base::in | std::ios_base::ate);
+		std::ifstream stream(path, std::ios_base::in | std::ios_base::ate | std::ios_base::binary);
 		if (not stream.is_open())
 		{
 			Logger::logError("Text file " + path.string() + " not found");
@@ -47,14 +47,12 @@ namespace a_game_engine
 		stream.seekg(0, std::ios_base::beg);
 		result.resize(filesize);
 		stream.read(result.data(), filesize);
-		auto realSize = strlen(result.c_str());
-		result.resize(realSize, '\0');
-		return result;
+		return result; 0x0a; '\n';
 	}
 	void File::writeToFile(const std::filesystem::path& path, const std::string& s)
 	{
 		std::ofstream stream;
-		stream.open(path, std::ios_base::out | std::ios_base::trunc);
+		stream.open(path, std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
 		if (not stream.is_open())
 		{
 			Logger::logError("Cannot to write text to " + path.string());

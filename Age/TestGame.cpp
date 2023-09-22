@@ -224,7 +224,6 @@ int main()
 	ShaderSettings::include.vertex = File::readAllText(egd.res / "shader/lib/vertex.hasl");
 	ShaderSettings::include.fragment = File::readAllText(egd.res / "shader/lib/fragment.hasl");
 	ShaderSettings::include.fragMain = File::readAllText(egd.res / "shader/lib/fragMain.hasl");
-	File::writeToFile(egd.res / "shader/temp.txt", ShaderSettings::include.fragment);
 	auto game = std::make_unique<a_game::TestGame>();
 	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 0, 24);
 
