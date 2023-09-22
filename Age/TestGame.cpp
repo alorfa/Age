@@ -126,15 +126,6 @@ namespace a_game
 		world = std::make_unique<WorldScene>();
 		world->load();
 		Logger::logDebug("Resources load time: " + std::to_string(clock.restart().asSeconds()));
-
-		ShaderSettings::Deferred settings;
-		settings.bindings = { 4, 4, 3 };
-		settings.paintingFuncIndex = 0;
-		const std::string shader = File::readAllText(egd.res / "shader/pbrNormal.asl");
-		Shader testShader(shader);
-		auto [vert, frag] = testShader.translateToGlsl({ ShaderSettings::include, settings }, shader);
-		Logger::logInfo(vert);
-		Logger::logInfo(frag);
 	}
 	void TestGame::handleRawEvents(const sf::Event& ev)
 	{
@@ -224,7 +215,7 @@ int main()
 	egd.res = "res";
 	egd.user = "user";
 	ShaderSettings::paintingFunctions.push_back(
-		"\nage_FragColor.rgb = age_base_color.rgb;\n"
+		"age_FragColor.rgb = age_base_color.rgb;\n"
 		"age_FragColor.a = age_roughness;\n"
 		"age_FragColor1.rgb = age_normal.rgb;\n"
 		"age_FragColor1.a = age_metalness;\n"
@@ -233,6 +224,7 @@ int main()
 	ShaderSettings::include.vertex = File::readAllText(egd.res / "shader/lib/vertex.hasl");
 	ShaderSettings::include.fragment = File::readAllText(egd.res / "shader/lib/fragment.hasl");
 	ShaderSettings::include.fragMain = File::readAllText(egd.res / "shader/lib/fragMain.hasl");
+	File::writeToFile(egd.res / "shader/temp.txt", ShaderSettings::include.fragment);
 	auto game = std::make_unique<a_game::TestGame>();
 	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 0, 24);
 

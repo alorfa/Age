@@ -49,13 +49,13 @@ namespace a_game_engine
     ShaderSettings::Common::Common(const Forward& s)
         : type(Common::Type::Forward)
     {
-        settings.forward = s;
+        settings = s;
     }
 
     ShaderSettings::Common::Common(const Deferred& s)
         : type(Common::Type::Deferred)
     {
-        settings.deferred = s;
+        settings = s;
     }
 
     bool ShaderSettings::Common::operator==(const Common& other) const
@@ -63,18 +63,18 @@ namespace a_game_engine
         if (type != other.type)
             return false;
         if (type == Type::Forward)
-            return settings.forward == other.settings.forward;
+            return std::get<Forward>(settings) == std::get<Forward>(other.settings);
         if (type == Type::Deferred)
-            return settings.deferred == other.settings.deferred;
+            return std::get<Deferred>(settings) == std::get<Deferred>(other.settings);
         return false;
     }
     ShaderSettings::Common& ShaderSettings::Common::operator=(const Common& s)
     {
         type = s.type;
         if (type == Type::Forward)
-            settings.forward = s.settings.forward;
+            settings = s.settings;
         if (type == Type::Deferred)
-            settings.deferred = s.settings.deferred;
+            settings = s.settings;
         return *this;
     }
     ShaderSettings::Detailed::Detailed(const Include& inc)
@@ -115,11 +115,11 @@ namespace a_game_engine
     {
         if (f.type == ShaderSettings::Common::Type::Forward)
         {
-            create(f.settings.forward);
+            create(std::get<Forward>(f.settings));
         }
         if (f.type == ShaderSettings::Common::Type::Deferred)
         {
-            create(f.settings.deferred);
+            create(std::get<Deferred>(f.settings));
         }
     }
 }

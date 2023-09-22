@@ -4,6 +4,8 @@
 #include <Age/EventHandler.hpp>
 #include "FollowToCamera.hpp"
 #include "Age/egd.hpp"
+#include "Age/Material/Shader.hpp"
+#include "Age/Resource/File.hpp"
 
 namespace a_game
 {
@@ -16,6 +18,14 @@ namespace a_game
 		defRender.updateSize({ nativeSize.x, nativeSize.y });
 
 		activeCamera = &egd.camera;
+
+		ShaderSettings::Deferred settings;
+		settings.bindings = { 4, 4, 3 };
+		settings.paintingFuncIndex = 0;
+		const std::string shader = File::readAllText(egd.res / "shader/pbrNormal.asl");
+		Shader testShader(shader);
+		const auto& s = testShader.getProgram(settings);
+		Logger::logDebug(std::format("Shader is valid: {}", s.isValid() ? "true" : "false"));
 
 		//ambient = vec3{ 0.2f, 0.2f, 0.5f };
 		std::unique_ptr<Object3D> objs[2] = {

@@ -1,6 +1,7 @@
 #include "Age/types.hpp"
 #include <vector>
 #include <string>
+#include <variant>
 
 namespace a_game_engine
 {
@@ -35,13 +36,7 @@ namespace a_game_engine
 			{
 				Undefined, Forward, Deferred
 			} type = Type::Undefined;
-			union AnySettings {
-				Forward forward;
-				Deferred deferred;
-
-				inline AnySettings() {}
-				inline ~AnySettings() {}
-			} settings;
+			std::variant<Forward, Deferred> settings;
 
 			Common();
 			Common(const Forward& s);

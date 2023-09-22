@@ -24,10 +24,12 @@ namespace a_game_engine
 
 	const std::string ShaderCompiler::glslVersionString = "#version 330\n";
 
-	uint ShaderCompiler::loadFromMemory(const char* data, int type)
+	uint ShaderCompiler::loadFromMemory(const std::string& data, int type)
 	{
+		std::string resultData = glslVersionString + data;
+		const char* toGlData = resultData.c_str();
 		uint result = glCreateShader(toOglType(type));
-		glShaderSource(result, 1, &data, nullptr);
+		glShaderSource(result, 1, &toGlData, nullptr);
 		glCompileShader(result);
 
 		GLint log_length = 0;
@@ -54,8 +56,7 @@ namespace a_game_engine
 	}
 	uint ShaderCompiler::loadFromFile(const std::filesystem::path& path, int type)
 	{
-		auto shaderText = File::readAllText(path);
-		auto handledText = glslVersionString + shaderText;
-		return loadFromMemory(handledText.c_str(), type);
+		const auto shaderText = File::readAllText(path);
+		return loadFromMemory(shaderText, type);
 	}
 }

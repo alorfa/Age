@@ -26,6 +26,8 @@ void main()
 #endif
 #ifdef AGE_FRAGMENT
 
+uniform sampler2D textures[8];
+
 void control()
 {
     age_base_color = texture(textures[0], fragUv).rgb;

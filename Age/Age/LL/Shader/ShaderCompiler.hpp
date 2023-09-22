@@ -12,7 +12,7 @@ namespace a_game_engine
 
 		enum Type { Vertex, Fragment };
 
-		static uint loadFromMemory(const char* data, int type);
+		static uint loadFromMemory(const std::string& data, int type);
 		static uint loadFromFile(const std::filesystem::path& path, int type);
 	};
 }

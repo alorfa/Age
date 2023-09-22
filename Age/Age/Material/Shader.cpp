@@ -1,6 +1,8 @@
 #include "Shader.hpp"
 #include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/LL/Shader/ShaderCompiler.hpp"
+#include "Age/Resource/Logger.hpp"
+#include "Age/Resource/File.hpp"
 
 namespace a_game_engine
 {
@@ -21,11 +23,19 @@ namespace a_game_engine
         }
         else
         {
+            const std::string fullFunctionCode =
+                "void force_paintOver()\n{\n" +
+                ShaderSettings::paintingFunctions[s.paintingFuncIndex] + "}";
             result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n"
-                "{}\n{}\n{}\n{}\n{}\nvoid force_paintOver(){}\n{}",
-                s.defines, bindings, s.include->common, s.include->fragment, source, 
-                '{' + ShaderSettings::paintingFunctions[s.paintingFuncIndex] + '}', s.include->fragMain);
+                "{}\n{}{}\n{}\n{}\n",
+                s.defines, bindings, s.include->common, s.include->fragment, source);
+            result.frag += fullFunctionCode;
+            result.frag += s.include->fragMain;
         }
+        Logger::logInfo(result.vert);
+        Logger::logInfo(result.frag);
+        File::writeToFile("res/shader/tmp.vsh", result.vert);
+        File::writeToFile("res/shader/tmp.fsh", result.frag);
         return result;
     }
     Shader::Shader(const std::string& source)
@@ -102,13 +112,13 @@ namespace a_game_engine
         ShaderSettings::Detailed detailed(ShaderSettings::include, s);
         if (s.type == ShaderSettings::Common::Type::Forward)
         {
-            const auto& temp = getForward(s.settings.forward);
+            const auto& temp = getForward(std::get<ShaderSettings::Forward>(s.settings));
             if (temp.isValid())
                 _lastShader = &temp;
         }
         if (s.type == ShaderSettings::Common::Type::Deferred)
         {
-            const auto& temp = getDeferred(s.settings.deferred);
+            const auto& temp = getDeferred(std::get<ShaderSettings::Deferred>(s.settings));
             if (temp.isValid())
                 _lastShader = &temp;
         }
