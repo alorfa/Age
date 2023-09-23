@@ -1,3 +1,21 @@
+#define AGE_VERTEX
+#define AGE_RENDERING_MODE_DEFERRED
+
+
+uniform mat4 model, view, projection;
+
+out vec2 fragUv;
+out vec3 fragPos;
+out mat3 fragTBN;
+
+void computeTBN(in vec3 normal, in vec3 tangent)
+{
+	vec3 N = mat3(model) * normal;
+    vec3 T = mat3(model) * tangent;
+    T = normalize(T - dot(T, N) * N);
+    vec3 B = cross(N, T);
+    fragTBN = mat3(T, B, N);
+}
 #ifdef AGE_VERTEX
 
 layout (location = 0) in vec3 inPosition;
@@ -32,3 +50,7 @@ void fragmentControl()
 #define AGE_LIGHT_MODE_PHONG
 
 #endif
+void main()
+{
+	gl_Position = vertexProcess();
+}

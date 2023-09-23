@@ -11,6 +11,7 @@ namespace a_game_engine
 	class Shader
 	{
 		std::string _source;
+		const ShaderSettings::Include* _include;
 
 		using ShaderPtr = const ShaderProgram*;
 		mutable ShaderSettings::Common _lastSettings;
@@ -22,6 +23,7 @@ namespace a_game_engine
 		static std::string generateBinding(uint vecComponents, uint number);
 		static std::string toVecType(uint vecComponents);
 	public:
+		Shader(const std::string& source, const ShaderSettings::Include& include);
 		Shader(const std::string& source);
 		struct GlslCode { std::string vert, frag; };
 

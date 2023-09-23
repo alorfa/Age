@@ -47,7 +47,7 @@ namespace a_game_engine
 		stream.seekg(0, std::ios_base::beg);
 		result.resize(filesize);
 		stream.read(result.data(), filesize);
-		return result; 0x0a; '\n';
+		return result;
 	}
 	void File::writeToFile(const std::filesystem::path& path, const std::string& s)
 	{

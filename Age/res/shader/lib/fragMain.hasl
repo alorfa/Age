@@ -15,6 +15,6 @@ void age_paintOver()
 
 void main()
 {
-    control();
+    fragmentControl();
     age_paintOver();
 }

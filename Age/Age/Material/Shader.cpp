@@ -13,24 +13,22 @@ namespace a_game_engine
             bindings += generateBinding(s.bindings[i], i);
 
         GlslCode result;
-        result.vert = std::format("#define AGE_VERTEX\n{}\n{}\n{}\n{}\n",
-            s.defines, s.include->common, s.include->vertex, source);
+        result.vert = std::format("#define AGE_VERTEX\n{}\n{}\n{}\n{}\n{}",
+            s.defines, s.include->common, s.include->vertInc, source, s.include->vertMain);
         std::string fragment;
         if (s.paintingFuncIndex < 0)
         {
             result.frag = std::format("#define AGE_FRAGMENT\n{}\n{}\n{}\n{}\n{}\n{}",
-                s.defines, bindings, s.include->common, s.include->fragment, source, s.include->fragMain);
+                s.defines, bindings, s.include->common, s.include->fragInc, source, s.include->fragMain);
         }
         else
         {
             const std::string fullFunctionCode =
                 "void force_paintOver()\n{\n" +
-                ShaderSettings::paintingFunctions[s.paintingFuncIndex] + "}";
+                ShaderSettings::paintingFunctions[s.paintingFuncIndex] + "}\n";
             result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n"
-                "{}\n{}{}\n{}\n{}\n",
-                s.defines, bindings, s.include->common, s.include->fragment, source);
-            result.frag += fullFunctionCode;
-            result.frag += s.include->fragMain;
+                "{}\n{}{}\n{}\n{}\n{}{}",
+                s.defines, bindings, s.include->common, s.include->fragInc, source, fullFunctionCode, s.include->fragMain);
         }
         Logger::logInfo(result.vert);
         Logger::logInfo(result.frag);
@@ -38,9 +36,15 @@ namespace a_game_engine
         File::writeToFile("res/shader/tmp.fsh", result.frag);
         return result;
     }
+    Shader::Shader(const std::string& source, const ShaderSettings::Include& include)
+        : _source(source), _include(&include)
+    {
+    }
+
     Shader::Shader(const std::string& source)
         : _source(source)
     {
+        _include = &ShaderSettings::include;
     }
 
     const ShaderProgram& Shader::getForward(const ShaderSettings::Forward& s) const
@@ -49,7 +53,7 @@ namespace a_game_engine
         if (it != _forward.end())
             return *it->second;
 
-        ShaderSettings::Detailed settings{ShaderSettings::include, s};
+        ShaderSettings::Detailed settings{*_include, s};
         
         auto& shader = _forward[s];
         shader = createProgram(settings, _source);
@@ -62,7 +66,7 @@ namespace a_game_engine
         if (it != _deferred.end())
             return *it->second;
 
-        ShaderSettings::Detailed settings{ShaderSettings::include, s};
+        ShaderSettings::Detailed settings{*_include, s};
         
         auto& shader = _deferred[s];
         shader = createProgram(settings, _source);
