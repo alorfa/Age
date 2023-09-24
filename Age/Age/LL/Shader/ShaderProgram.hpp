@@ -3,6 +3,7 @@
 #include "Age/types.hpp"
 #include "Age/Math/vec2.hpp"
 #include "Age/Light/Light.hpp"
+#include "ShaderModule.hpp"
 
 namespace a_game_engine
 {
@@ -26,14 +27,14 @@ namespace a_game_engine
 		int getLocation(const char* name) const;
 
 		ShaderProgram() = default;
-		ShaderProgram(uint vert, uint frag);
+		ShaderProgram(const ShaderModule& vert, const ShaderModule& frag);
 		ShaderProgram(const ShaderProgram&) = delete;
 		ShaderProgram& operator=(const ShaderProgram&) = delete;
 		ShaderProgram(ShaderProgram&&) noexcept;
 		ShaderProgram& operator=(ShaderProgram&&) noexcept;
 		~ShaderProgram();
 
-		void create(uint vert, uint frag);
+		void create(const ShaderModule& vert, const ShaderModule& frag);
 		inline uint getId() const { return _id; }
 		bool isValid() const;
 

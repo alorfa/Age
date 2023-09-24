@@ -1,7 +1,8 @@
 #include "ShaderLoader.hpp"
-#include "Age/LL/Shader/ShaderCompiler.hpp"
+#include "Age/LL/Shader/ShaderModule.hpp"
 #include "Age/Resource/ResourceLoader.hpp"
 #include "Age/Resource/Logger.hpp"
+#include "Age/Resource/File.hpp"
 
 namespace a_game_engine
 {
@@ -31,11 +32,11 @@ namespace a_game_engine
 	std::unique_ptr<ShaderProgram> ShaderLoader::readVertFrag(const std::filesystem::path& vsh,
 		const std::filesystem::path& fsh)
 	{
-		uint vert = ShaderCompiler::loadFromFile(vsh, ShaderCompiler::Vertex);
-		if (vert == 0)
+		ShaderModule vert{ File::readAllText(vsh), ShaderModule::Vertex };
+		if (not vert.isValid())
 			return nullptr;
-		uint frag = ShaderCompiler::loadFromFile(fsh, ShaderCompiler::Fragment);
-		if (frag == 0)
+		ShaderModule frag{ File::readAllText(fsh), ShaderModule::Fragment };
+		if (not vert.isValid())
 			return nullptr;
 		std::unique_ptr<ShaderProgram> result = std::make_unique<ShaderProgram>(vert, frag);
 		if (result->isValid())

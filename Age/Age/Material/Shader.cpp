@@ -1,6 +1,6 @@
 #include "Shader.hpp"
 #include "Age/LL/Shader/ShaderProgram.hpp"
-#include "Age/LL/Shader/ShaderCompiler.hpp"
+#include "Age/LL/Shader/ShaderModule.hpp"
 #include "Age/Resource/Logger.hpp"
 #include "Age/Resource/File.hpp"
 
@@ -75,8 +75,12 @@ namespace a_game_engine
     std::unique_ptr<ShaderProgram> Shader::createProgram(const ShaderSettings::Detailed& s, const std::string& source)
     {
         auto [vert, frag] = translateToGlsl(s, source);
-        auto vsh = ShaderCompiler::loadFromMemory(vert.c_str(), ShaderCompiler::Vertex);
-        auto fsh = ShaderCompiler::loadFromMemory(frag.c_str(), ShaderCompiler::Fragment);
+        ShaderModule vsh{ vert, ShaderModule::Vertex };
+        if (not vsh.isValid())
+            return nullptr;
+        ShaderModule fsh{ frag, ShaderModule::Fragment };
+        if (not fsh.isValid())
+            return nullptr;
         auto result = std::make_unique<ShaderProgram>(vsh, fsh);
         if (result->isValid())
             return result;

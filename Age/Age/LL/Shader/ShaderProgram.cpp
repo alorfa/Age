@@ -22,7 +22,7 @@ namespace a_game_engine
 			glDeleteProgram(_id);
 		_id = 0;
 	}
-	ShaderProgram::ShaderProgram(uint vert, uint frag)
+	ShaderProgram::ShaderProgram(const ShaderModule& vert, const ShaderModule& frag)
 	{
 		create(vert, frag);
 	}
@@ -39,12 +39,12 @@ namespace a_game_engine
 	{
 		destroy();
 	}
-	void ShaderProgram::create(uint vert, uint frag)
+	void ShaderProgram::create(const ShaderModule& vert, const ShaderModule& frag)
 	{
 		destroy();
 		_id = glCreateProgram();
-		glAttachShader(_id, vert);
-		glAttachShader(_id, frag);
+		glAttachShader(_id, vert.getId());
+		glAttachShader(_id, frag.getId());
 		glLinkProgram(_id);
 
 		GLint log_length = 0;
@@ -71,11 +71,8 @@ namespace a_game_engine
 			}
 		}
 
-		glDetachShader(_id, vert);
-		glDetachShader(_id, frag);
-
-		glDeleteShader(vert);
-		glDeleteShader(frag);
+		glDetachShader(_id, vert.getId());
+		glDetachShader(_id, frag.getId());
 	}
 	bool ShaderProgram::isValid() const
 	{

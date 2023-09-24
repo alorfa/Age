@@ -1,7 +1,6 @@
 #include "TestGame.hpp"
 #include <Age/LL/opengl.h>
 #include <Age/LL/Buffers/VertexBuffer.hpp>
-#include <Age/LL/Shader/ShaderCompiler.hpp>
 #include <Age/LL/Texture/Image.hpp>
 #include <Age/LL/Texture/Texture2D.hpp>
 #include <iostream>
