@@ -4,7 +4,9 @@
 namespace a_game_engine
 {
     ShaderSettings::Include ShaderSettings::include;
+    ShaderSettings::Include ShaderSettings::rawInclude;
     std::vector<std::string> ShaderSettings::paintingFunctions;
+    std::string ShaderSettings::postprocVsh;
 
     bool ShaderSettings::Forward::operator<(const Forward& other) const
     {

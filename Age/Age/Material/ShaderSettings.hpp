@@ -61,8 +61,9 @@ namespace a_game_engine
 			void create(const Common& f);
 		};
 
-		static Include include;
+		static Include include, rawInclude;
 		static std::vector<std::string> paintingFunctions;
+		static std::string postprocVsh;
 	private:
 	};
 }

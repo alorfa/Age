@@ -219,11 +219,14 @@ int main()
 		"age_FragColor1.rgb = age_normal.rgb;\n"
 		"age_FragColor1.a = age_metalness;\n"
 		"age_FragColor2.rgb = fragPos;\n");
-	//ShaderSettings::include.common = File::readAllText(egd.res / "shader/lib/common.hasl");
 	ShaderSettings::include.vertInc = File::readAllText(egd.res / "shader/lib/vertInc.hasl");
 	ShaderSettings::include.fragInc = File::readAllText(egd.res / "shader/lib/fragInc.hasl");
-	ShaderSettings::include.vertMain = File::readAllText(egd.res / "shader/lib/vertMain.hasl");
-	ShaderSettings::include.fragMain = File::readAllText(egd.res / "shader/lib/fragMain.hasl");
+	ShaderSettings::rawInclude.vertMain =
+		ShaderSettings::include.vertMain = File::readAllText(egd.res / "shader/lib/vertMain.hasl");
+	ShaderSettings::rawInclude.fragMain = 
+		ShaderSettings::include.fragMain = File::readAllText(egd.res / "shader/lib/fragMain.hasl");
+	ShaderSettings::postprocVsh = File::readAllText(egd.res / "shader/lib/postproc.vsh");
+	
 	auto game = std::make_unique<a_game::TestGame>();
 	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 0, 24);
 
