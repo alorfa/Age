@@ -6,9 +6,9 @@ layout (location = 2) in vec2 texCoord;
 
 uniform mat4 model, view, projection;
 
-void main()
+vec4 vertexProcess()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0);
+    return projection * view * model * vec4(position, 1.0);
 }
 #endif
 #ifdef AGE_FRAGMENT

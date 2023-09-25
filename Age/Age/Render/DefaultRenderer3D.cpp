@@ -13,7 +13,7 @@ namespace a_game_engine
 {
 	DefaultRenderer3D::DefaultRenderer3D()
 	{
-		shader = &egd.shaders.load(egd.res / "shader/framebuffer");
+		shader = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
 	}
 	void DefaultRenderer3D::updateSize(const uvec2& newSize)
 	{
