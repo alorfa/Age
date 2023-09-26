@@ -22,19 +22,26 @@ namespace a_game_engine
 		mainFb.texture.setFiltering(TextureFiltering::Linear);
 		mainFb.texture.setWrap(TextureWrap::ClampToEdge);
 	}
-	void DefaultRenderer3D::drawObject(const Node3D& o, const Camera3D& c, const ShaderProgram* s)
+	void DefaultRenderer3D::drawObject(const Node3D& o, const Scene3DInfo& info)
 	{
 		static mat4 identity;
-		o.draw(identity, c, s);
+		o.draw(identity, info);
+		o.forEachConst([&](const Node3D& n)
+			{
+				drawObject(n, info);
+			});
 	}
 	void DefaultRenderer3D::drawScene(const Scene3D& sc, const Camera3D& camera)
 	{
+		Scene3DInfo info;
+		info.camera = &camera;
+
 		Pipeline::set3DContext();
 		mainFb.use();
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f });
 		sc.skyBox.cubemap->activate(SkyBox::getSlot());
 		sc.rootNode->forEachConst([&](const Node3D& n) {
-			drawObject(n, camera, nullptr); 
+			drawObject(n, info);
 			});
 		sc.skyBox.draw(camera, nullptr);
 

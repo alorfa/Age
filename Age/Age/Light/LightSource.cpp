@@ -11,15 +11,13 @@ namespace a_game_engine
 		components.push_back(std::make_unique<PointLightUpdater>(*this));
 	}
 
-	void PointLightSource::draw(const mat4& parent, const Camera3D& c, const ShaderProgram* s) const
+	void PointLightSource::draw(const mat4& parent, const Scene3DInfo& info) const
 	{
-		if (s == nullptr)
-			s = shader;
-
+		const ShaderProgram* s = info.shader ? info.shader : shader;
 		s->use();
 		s->setUniform(s->getLocation("emission"), light.color);
 
-		Object3D::draw(parent, c, s);
+		Object3D::draw(parent, info);
 	}
 
 	SpotLightSource::SpotLightSource(Scene3D& scene, Node3D* parent)
@@ -28,15 +26,13 @@ namespace a_game_engine
 		components.push_back(std::make_unique<SpotLightUpdater>(*this));
 	}
 
-	void SpotLightSource::draw(const mat4& parent, const Camera3D& c, const ShaderProgram* s) const
+	void SpotLightSource::draw(const mat4& parent, const Scene3DInfo& info) const
 	{
-		if (s == nullptr)
-			s = shader;
-
+		const ShaderProgram* s = info.shader ? info.shader : shader;
 		s->use();
 		s->setUniform(s->getLocation("emission"), light.color);
 
-		Object3D::draw(parent, c, s);
+		Object3D::draw(parent, info);
 	}
 
 	DirLightSource::DirLightSource(Scene3D& scene, Node3D* parent)

@@ -9,6 +9,7 @@ namespace a_game_engine
 	class ShaderProgram;
 	class Node3D;
 	class Scene3D;
+	struct Scene3DInfo;
 
 	class Renderer3D
 	{
@@ -16,7 +17,7 @@ namespace a_game_engine
 		uvec2 size;
 	public:
 		virtual void updateSize(const uvec2& newSize) = 0;
-		virtual void drawObject(const Node3D& o, const Camera3D& c, const ShaderProgram* s) = 0;
+		virtual void drawObject(const Node3D& o, const Scene3DInfo& info) = 0;
 		virtual void drawScene(const Scene3D& scene, const Camera3D& camera) = 0;
 	};
 }

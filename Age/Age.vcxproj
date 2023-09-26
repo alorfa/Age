@@ -214,6 +214,7 @@
     <ClInclude Include="Age\Object\Node3D.hpp" />
     <ClInclude Include="Age\Object\Object3D.hpp" />
     <ClInclude Include="Age\Scene\Scene3D.hpp" />
+    <ClInclude Include="Age\Scene\Scene3DInfo.hpp" />
     <ClInclude Include="Age\Scene\SkyBox.hpp" />
     <ClInclude Include="Age\Resource\File.hpp" />
     <ClInclude Include="Age\Resource\Logger.hpp" />

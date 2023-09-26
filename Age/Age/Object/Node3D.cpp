@@ -60,14 +60,12 @@ namespace a_game_engine
 			n.update(delta);
 		});
 	}
-	void Node3D::draw(const mat4& parent, const Camera3D& c, const ShaderProgram* s) const
+	void Node3D::draw(const mat4& parent, const Scene3DInfo& info) const
 	{
-		if (s == nullptr)
-			s = shader;
 		mat4 curTransform = parent * transform.getMatrix();
 		forEachConst([&](const Node3D& n)
 			{
-				n.draw(curTransform, c, s);
+				n.draw(curTransform, info);
 			});
 	}
 }

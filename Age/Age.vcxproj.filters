@@ -49,6 +49,7 @@
     <ClInclude Include="Age\Components\LightUpdaters.hpp" />
     <ClInclude Include="Age\Material\Shader.hpp" />
     <ClInclude Include="Age\Material\ShaderSettings.hpp" />
+    <ClInclude Include="Age\Scene\Scene3DInfo.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />

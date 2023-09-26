@@ -15,7 +15,6 @@ namespace a_game_engine
 
 		const Model3D* model;
 
-		virtual void draw(const mat4& parent, const Camera3D& c,
-			const ShaderProgram* s = nullptr) const;
+		virtual void draw(const mat4& parent, const Scene3DInfo& info) const override;
 	};
 }

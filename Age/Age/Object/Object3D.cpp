@@ -10,16 +10,14 @@ namespace a_game_engine
 		: Node3D(scene, parent, type)
 	{ }
 
-	void Object3D::draw(const mat4& parent, const Camera3D& camera, const ShaderProgram* s) const
+	void Object3D::draw(const mat4& parent, const Scene3DInfo& info) const
 	{
-		if (s == nullptr)
-			s = shader;
-
+		const ShaderProgram* s = info.shader ? info.shader : shader;
 		if (model)
 		{
 			Pipeline::setDepthFunc(DepthFunc::Less);
 			s->use();
-			s->setCamera(camera);
+			s->setCamera(*info.camera);
 			s->setLights(*scene->rootNode);
 			s->setUniform(s->getLocation("skybox"), SkyBox::getSlot());
 
@@ -27,6 +25,6 @@ namespace a_game_engine
 			model->draw(curTransform, *s);
 		}
 
-		Node3D::draw(parent, camera, s);
+		Node3D::draw(parent, info);
 	}
 }
