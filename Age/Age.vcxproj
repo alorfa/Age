@@ -200,8 +200,11 @@
     <ClInclude Include="Age\LL\Texture\Texture2D.hpp" />
     <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
     <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
+    <ClInclude Include="Age\Material\ShaderProps.hpp" />
     <ClInclude Include="Age\Material\Shader.hpp" />
+    <ClInclude Include="Age\Material\ShaderProperty.hpp" />
     <ClInclude Include="Age\Material\ShaderSettings.hpp" />
+    <ClInclude Include="Age\Material\TransformProps.hpp" />
     <ClInclude Include="Age\Math\mat3.hpp" />
     <ClInclude Include="Age\Math\mat4.hpp" />
     <ClInclude Include="Age\Math\Math.hpp" />

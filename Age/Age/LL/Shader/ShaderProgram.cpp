@@ -11,6 +11,7 @@
 #include "Age/Transform/Camera3D.hpp"
 #include "Age/Light/LightSource.hpp"
 #include <format>
+#include "Age/Material/ShaderProperty.hpp"
 
 namespace a_game_engine
 {
@@ -193,6 +194,33 @@ namespace a_game_engine
 	{
 		value.activate(number);
 		glUniform1i(location, (int)number);
+	}
+	void ShaderProgram::setUniform(int location, const ShaderProperty& value) const
+	{
+		const auto type = value.getType();
+		const ShaderProperty::Texture2DProp* tex2D;
+		const ShaderProperty::CubeMapProp* cubemap;
+		switch (type)
+		{
+		case ShaderProperty::Type::Int:
+			setUniform(location, std::get<int>(value.value)); break;
+		case ShaderProperty::Type::Float:
+			setUniform(location, std::get<float>(value.value)); break;
+		case ShaderProperty::Type::Vec2:
+			setUniform(location, std::get<vec2>(value.value)); break;
+		case ShaderProperty::Type::Vec3:
+			setUniform(location, std::get<vec3>(value.value)); break;
+		case ShaderProperty::Type::Mat3:
+			setUniform(location, std::get<mat3>(value.value)); break;
+		case ShaderProperty::Type::Mat4:
+			setUniform(location, std::get<mat4>(value.value)); break;
+		case ShaderProperty::Type::Texture2D:
+			tex2D = &std::get<ShaderProperty::Texture2DProp>(value.value);
+			setUniform(location, *tex2D->texture, tex2D->slot); break;
+		case ShaderProperty::Type::CubeMap:
+			cubemap = &std::get<ShaderProperty::CubeMapProp>(value.value);
+			setUniform(location, *cubemap->cubemap, cubemap->slot); break;
+		}
 	}
 	void ShaderProgram::use() const
 	{

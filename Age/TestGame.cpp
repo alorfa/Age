@@ -15,6 +15,7 @@
 #include "Age/Math/Math.hpp"
 #include "Age/Material/Shader.hpp"
 #include "Age/Resource/File.hpp"
+#include "Age/Material/ShaderProperty.hpp"
 
 namespace a_game
 {
@@ -121,6 +122,7 @@ namespace a_game
 	}
 	void TestGame::loadResources()
 	{
+		ShaderProperty prop;
 		sf::Clock clock;
 		world = std::make_unique<WorldScene>();
 		world->load();

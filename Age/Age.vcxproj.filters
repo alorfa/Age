@@ -50,6 +50,9 @@
     <ClInclude Include="Age\Material\Shader.hpp" />
     <ClInclude Include="Age\Material\ShaderSettings.hpp" />
     <ClInclude Include="Age\Scene\Scene3DInfo.hpp" />
+    <ClInclude Include="Age\Material\ShaderProps.hpp" />
+    <ClInclude Include="Age\Material\ShaderProperty.hpp" />
+    <ClInclude Include="Age\Material\TransformProps.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
