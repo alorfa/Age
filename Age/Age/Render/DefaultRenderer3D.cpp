@@ -35,6 +35,7 @@ namespace a_game_engine
 	{
 		Scene3DInfo info;
 		info.camera = &camera;
+		info.props.push_back({ "skybox", SkyBox::getSlot() });
 
 		Pipeline::set3DContext();
 		mainFb.use();

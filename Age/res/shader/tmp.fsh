@@ -1,10 +1,11 @@
 #define AGE_FRAGMENT
-#define AGE_LIGHT_MODE_FORCE
-#define AGE_RENDERING_MODE_DEFERRED
+#define AGE_MAX_DIR_LIGHTS 1
+#define AGE_MAX_POINT_LIGHTS 2
+#define AGE_MAX_SPOT_LIGHTS 1
+#define AGE_RENDERING_MODE_FORWARD
 
 layout(location = 0) out vec4 age_FragColor;
-layout(location = 1) out vec4 age_FragColor1;
-layout(location = 2) out vec3 age_FragColor2;
+
 
 struct DirectionalLight
 {
@@ -184,17 +185,9 @@ void fragmentControl()
     age_shininess = 4.f;
     age_metalness = material.b;
 }
-#define AGE_LIGHT_MODE_PHONG
+#define AGE_LIGHT_MODE_PBR
 
 #endif
-void force_paintOver()
-{
-age_FragColor.rgb = age_base_color.rgb;
-age_FragColor.a = age_roughness;
-age_FragColor1.rgb = age_normal.rgb;
-age_FragColor1.a = age_metalness;
-age_FragColor2.rgb = fragPos;
-}
 void age_paintOver()
 {
     #if defined(AGE_LIGHT_MODE_FORCE)

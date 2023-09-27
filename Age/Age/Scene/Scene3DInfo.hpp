@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Age/Material/ShaderProps.hpp"
+
 namespace a_game_engine
 {
 	class Camera3D;
@@ -9,5 +11,6 @@ namespace a_game_engine
 	{
 		const Camera3D* camera = nullptr;
 		const ShaderProgram* shader = nullptr;
+		SceneProps props;
 	};
 }

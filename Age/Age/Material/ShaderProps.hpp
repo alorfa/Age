@@ -6,15 +6,12 @@
 
 namespace a_game_engine
 {
-	class MaterialProps
+	struct MaterialProperty
 	{
-	public:
-		struct Property
-		{
-			std::string name;
-			ShaderProperty property;
-		};
-		std::vector<Property> props;
+		std::string name;
+		ShaderProperty property;
 	};
-	using SceneProps = MaterialProps;
+	using SceneProperty = MaterialProperty;
+	using MaterialProps = std::vector<MaterialProperty>;
+	using SceneProps = std::vector<SceneProperty>;
 }

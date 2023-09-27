@@ -19,7 +19,10 @@ namespace a_game_engine
 			s->use();
 			s->setCamera(*info.camera);
 			s->setLights(*scene->rootNode);
-			s->setUniform(s->getLocation("skybox"), SkyBox::getSlot());
+			for (const auto& prop : info.props)
+				s->setUniform(s->getLocation(prop.name.c_str()), prop.property);
+
+			//s->setUniform(s->getLocation("skybox"), SkyBox::getSlot());
 
 			mat4 curTransform = parent * transform.getMatrix();
 			model->draw(curTransform, *s);

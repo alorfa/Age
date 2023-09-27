@@ -19,13 +19,9 @@ namespace a_game
 
 		activeCamera = &egd.camera;
 
-		ShaderSettings::Deferred settings;
-		settings.bindings = { 4, 4, 3 };
-		settings.paintingFuncIndex = 0;
-		const std::string shader = File::readAllText(egd.res / "shader/pbrNormal.asl");
-		Shader testShader(shader);
-		const auto& s = testShader.getProgram(settings);
-		Logger::logDebug(std::format("Shader is valid: {}", s.isValid() ? "true" : "false"));
+		ShaderSettings::Forward settings;
+		settings.dirLights = settings.spotLights = 1;
+		settings.pointLights = 2;		
 
 		//ambient = vec3{ 0.2f, 0.2f, 0.5f };
 		std::unique_ptr<Object3D> objs[2] = {
@@ -36,8 +32,10 @@ namespace a_game
 			ModelLoader::Settings{ vec3{5.f}, false, false, true });
 		objs[1]->model = &egd.models.load(egd.res / "model/kirara/scene.gltf",
 			ModelLoader::Settings{ vec3{10.f}, false});
-		objs[0]->shader = &egd.shaders.load(egd.res / "shader/pbrNormal");
-		objs[1]->shader = &egd.shaders.load(egd.res / "shader/default");
+		//objs[0]->shader = &egd.shaders.load(egd.res / "shader/pbrNormal");
+		//objs[1]->shader = &egd.shaders.load(egd.res / "shader/default");
+		objs[0]->shader = &egd.shaders.loadShader(egd.res / "shader/pbrNormal.asl").getProgram(settings);
+		objs[1]->shader = &egd.shaders.loadShader(egd.res / "shader/pbrNormal.asl").getProgram(settings);
 		auto flashLight = std::make_unique<SpotLightSource>(*this, &*rootNode);
 		std::unique_ptr<PointLightSource> lights[2] = { 
 			std::make_unique<PointLightSource>(*this, &*rootNode),
