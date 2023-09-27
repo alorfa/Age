@@ -26,16 +26,13 @@ namespace a_game_engine
 	{
 		static mat4 identity;
 		o.draw(identity, info);
-		o.forEachConst([&](const Node3D& n)
-			{
-				drawObject(n, info);
-			});
 	}
 	void DefaultRenderer3D::drawScene(const Scene3D& sc, const Camera3D& camera)
 	{
 		Scene3DInfo info;
 		info.camera = &camera;
 		info.props.push_back({ "skybox", SkyBox::getSlot() });
+		info.addLights(*sc.rootNode);
 
 		Pipeline::set3DContext();
 		mainFb.use();

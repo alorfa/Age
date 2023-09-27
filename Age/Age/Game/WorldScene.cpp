@@ -21,7 +21,8 @@ namespace a_game
 
 		ShaderSettings::Forward settings;
 		settings.dirLights = settings.spotLights = 1;
-		settings.pointLights = 2;		
+		settings.pointLights = 0;
+		settings.dirLights = 0;
 
 		//ambient = vec3{ 0.2f, 0.2f, 0.5f };
 		std::unique_ptr<Object3D> objs[2] = {

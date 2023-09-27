@@ -258,6 +258,7 @@
     <ClCompile Include="Age\Object\Node3D.cpp" />
     <ClCompile Include="Age\Object\Object3D.cpp" />
     <ClCompile Include="Age\Scene\Scene3D.cpp" />
+    <ClCompile Include="Age\Scene\Scene3DInfo.cpp" />
     <ClCompile Include="Age\Scene\SkyBox.cpp" />
     <ClCompile Include="Age\Resource\File.cpp" />
     <ClCompile Include="Age\Resource\Logger.cpp" />

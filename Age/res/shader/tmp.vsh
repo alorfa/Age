@@ -1,6 +1,6 @@
 #define AGE_VERTEX
-#define AGE_MAX_DIR_LIGHTS 1
-#define AGE_MAX_POINT_LIGHTS 2
+#define AGE_MAX_DIR_LIGHTS 0
+#define AGE_MAX_POINT_LIGHTS 0
 #define AGE_MAX_SPOT_LIGHTS 1
 #define AGE_RENDERING_MODE_FORWARD
 
@@ -50,7 +50,7 @@ void fragmentControl()
     age_shininess = 4.f;
     age_metalness = material.b;
 }
-#define AGE_LIGHT_MODE_PBR
+#define AGE_LIGHT_MODE_PHONG
 
 #endif
 void main()

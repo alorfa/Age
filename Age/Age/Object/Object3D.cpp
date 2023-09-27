@@ -18,7 +18,7 @@ namespace a_game_engine
 			Pipeline::setDepthFunc(DepthFunc::Less);
 			s->use();
 			s->setCamera(*info.camera);
-			s->setLights(*scene->rootNode);
+			//s->setLights(*scene->rootNode);
 			for (const auto& prop : info.props)
 				s->setUniform(s->getLocation(prop.name.c_str()), prop.property);
 
