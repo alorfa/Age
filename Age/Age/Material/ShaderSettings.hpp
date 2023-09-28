@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Age/types.hpp"
 #include <vector>
 #include <string>

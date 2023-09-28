@@ -2,6 +2,7 @@
 
 #include "Age/Material/ShaderProps.hpp"
 #include "Age/types.hpp"
+#include "Age/Material/ShaderSettings.hpp"
 
 namespace a_game_engine
 {
@@ -20,6 +21,7 @@ namespace a_game_engine
 		const ShaderProgram* shader = nullptr;
 		SceneProps props;
 		LightsInfo lights;
+		ShaderSettings::Common settings;
 
 		void addLights(const Node3D& node);
 	};

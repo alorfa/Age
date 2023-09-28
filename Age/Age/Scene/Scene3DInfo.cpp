@@ -9,7 +9,7 @@ namespace a_game_engine
 	void Scene3DInfo::addLights(const Node3D& node)
 	{
 		for (const auto& light : node.infChildren)
-		{/*
+		{
 			auto* pointLight = light->as<PointLightSource>();
 			if (pointLight)
 			{
@@ -30,7 +30,7 @@ namespace a_game_engine
 				props.push_back({ std::format("dirLightSources[{}].dir", lights.dir), dirLight->light.dir });
 				lights.dir++;
 				continue;
-			}*/
+			}
 			auto* spotLight = light->as<SpotLightSource>();
 			if (spotLight)
 			{
@@ -40,7 +40,7 @@ namespace a_game_engine
 				props.push_back({ std::format("spotLightSources[{}].constant", lights.spot), spotLight->light.constant });
 				props.push_back({ std::format("spotLightSources[{}].linear", lights.spot), spotLight->light.linear });
 				props.push_back({ std::format("spotLightSources[{}].quadratic", lights.spot), spotLight->light.quadratic });
-				//TODO: ????????? fix this shit
+				props.push_back({ std::format("spotLightSources[{}].dir", lights.spot), spotLight->light.dir });
 				props.push_back({ std::format("spotLightSources[{}].cutOff", lights.spot), Math::cos(spotLight->light.cutOff) });
 				props.push_back({ std::format("spotLightSources[{}].outerCutOff", lights.spot), Math::cos(spotLight->light.outerCutOff) });
 				lights.spot++;

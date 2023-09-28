@@ -30,8 +30,6 @@ namespace a_game_engine
                 "{}\n{}{}\n{}\n{}\n{}{}",
                 s.defines, bindings, s.include->common, s.include->fragInc, source, fullFunctionCode, s.include->fragMain);
         }
-        File::writeToFile("res/shader/tmp.vsh", result.vert);
-        File::writeToFile("res/shader/tmp.fsh", result.frag);
         return result;
     }
     Shader::Shader(const std::string& source, const ShaderSettings::Include& include)
