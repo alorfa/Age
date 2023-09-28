@@ -43,7 +43,7 @@ namespace a_game
 		lights[0]->model = lights[1]->model = 
 			&egd.models.load(egd.res / "model/cube.obj");
 		flashLight->shader = lights[0]->shader = lights[1]->shader = 
-			&egd.shaders.load(egd.res / "shader/lightSource");
+			&egd.shaders.loadShader(egd.res / "shader/lightSource.asl").getProgram(settings);
 		flashLight->addComponent(std::make_unique<FollowToCamera>(*flashLight, *activeCamera));
 
 		lights[0]->transform.changePosition() = vec3(-1.f, 5, 2);
@@ -70,7 +70,7 @@ namespace a_game
 		SkyBox::cube = egd.models.load(egd.res / "model/skybox.obj").meshes[0].get();
 		skyBox.cubemap = &egd.textures.loadCubeMap(cubePaths, TextureLoader::CubemapSettings{
 			TextureFiltering::Near, TextureWrap::ClampToEdge, TextureFormat::SRGB, -1});
-		skyBox.shader = &egd.shaders.load(egd.res / "shader/skybox");
+		skyBox.shader = &egd.shaders.loadRawShader(egd.res / "shader/skybox.rasl");
 
 		rootNode->addChild(std::move(objs[0]));
 		rootNode->addChild(std::move(objs[1]));
