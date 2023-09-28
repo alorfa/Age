@@ -7,12 +7,22 @@
 
 namespace a_game_engine
 {
-	std::unique_ptr<ShaderProgram> ShaderLoader::defShader = nullptr;
+	std::unique_ptr<ShaderProgram> ShaderLoader::defRawShader = nullptr;
 	std::unique_ptr<ShaderProgram> ShaderLoader::defPostproc = nullptr;
-	std::unique_ptr<Shader> ShaderLoader::defShaderTemplate = nullptr;
+	std::unique_ptr<Shader> ShaderLoader::defShader = nullptr;
 
 	ShaderLoader::~ShaderLoader()
 	{
+		for (const auto& s : rawShaders)
+		{
+			if (s.second)
+				Logger::logInfo("Raw shader " + s.first.string() + " was unloaded");
+		}
+		for (const auto& s : postp)
+		{
+			if (s.second)
+				Logger::logInfo("Postprocessing " + s.first.string() + " was unloaded");
+		}
 		for (const auto& s : shaders)
 		{
 			if (s.second)
@@ -20,27 +30,29 @@ namespace a_game_engine
 		}
 	}
 
-	Shader& ShaderLoader::loadShader(const std::filesystem::path& path)
+	Shader& ShaderLoader::load(const std::filesystem::path& path)
 	{
-		return ResourceLoader::defaultLoad<Shader, std::filesystem::path>(shaderTemplates, path,
+		return ResourceLoader::defaultLoad<Shader, std::filesystem::path>(shaders, path,
 			[&](const std::filesystem::path& p) -> std::unique_ptr<Shader> {
 				auto result = std::make_unique<Shader>(File::readAllText(p));
+				Logger::logInfo("Shader " + p.string() + " was loaded");
 				return result; //TODO: nullptr if there are errors in the shader
-			}, getDefaultShader);
+			}, getDefault);
 	}
 
-	Shader& ShaderLoader::loadShader(const std::filesystem::path& path, const ShaderSettings::Include& inc)
+	Shader& ShaderLoader::load(const std::filesystem::path& path, const ShaderSettings::Include& inc)
 	{
-		return ResourceLoader::defaultLoad<Shader, std::filesystem::path>(shaderTemplates, path,
+		return ResourceLoader::defaultLoad<Shader, std::filesystem::path>(shaders, path,
 			[&](const std::filesystem::path& p) -> std::unique_ptr<Shader> {
 				auto result = std::make_unique<Shader>(File::readAllText(p), inc);
+				Logger::logInfo("Shader " + p.string() + " was loaded");
 				return result; //TODO: nullptr if there are errors in the shader
-			}, getDefaultShader);
+			}, getDefault);
 	}
 
-	ShaderProgram& ShaderLoader::loadRawShader(const std::filesystem::path& path)
+	ShaderProgram& ShaderLoader::loadRaw(const std::filesystem::path& path)
 	{
-		return ResourceLoader::defaultLoad<ShaderProgram, std::filesystem::path>(shaders, path,
+		return ResourceLoader::defaultLoad<ShaderProgram, std::filesystem::path>(rawShaders, path,
 			[&](const std::filesystem::path& p) -> std::unique_ptr<ShaderProgram> {
 
 				std::string source = File::readAllText(p);
@@ -56,9 +68,12 @@ namespace a_game_engine
 
 				auto result = std::make_unique<ShaderProgram>(vert, frag);
 				if (result->isValid())
+				{
+					Logger::logInfo("Raw shader " + p.string() + " was loaded");
 					return result;
+				}
 				return nullptr;
-			}, getDefault);
+			}, getDefaultRaw);
 	}
 
 	ShaderProgram& ShaderLoader::loadPostproc(const std::filesystem::path& path)
@@ -77,45 +92,28 @@ namespace a_game_engine
 
 				auto result = std::make_unique<ShaderProgram>(vert, frag);
 				if (result->isValid())
+				{
+					Logger::logInfo("Postprocessing " + p.string() + " was loaded");
 					return result;
+				}
 				return nullptr;
-			}, getDefault);
+			}, getDefaultRaw);
 	}
 
-	ShaderProgram& ShaderLoader::load(const std::filesystem::path& path)
+	ShaderProgram& ShaderLoader::getDefaultRaw()
 	{
-		return ResourceLoader::defaultLoad<ShaderProgram, std::filesystem::path>(shaders, path,
-			[&](const std::filesystem::path& p) { return readFromFile(p); }, getDefault);
-	}
-	std::unique_ptr<ShaderProgram> ShaderLoader::readFromFile(const std::filesystem::path& path) const
-	{
-		auto result = readVertFrag(path.string() + vertexExt, path.string() + fragmentExt);
-		if (result)
-			Logger::logInfo("Shader " + path.string() + " was loaded");
-		return result;
-	}
-	std::unique_ptr<ShaderProgram> ShaderLoader::readVertFrag(const std::filesystem::path& vsh,
-		const std::filesystem::path& fsh)
-	{
-		ShaderModule vert{ File::readAllText(vsh), ShaderModule::Vertex };
-		if (not vert.isValid())
-			return nullptr;
-		ShaderModule frag{ File::readAllText(fsh), ShaderModule::Fragment };
-		if (not vert.isValid())
-			return nullptr;
-		std::unique_ptr<ShaderProgram> result = std::make_unique<ShaderProgram>(vert, frag);
-		if (result->isValid())
-			return result;
-
-		return nullptr;
-	}
-	ShaderProgram& ShaderLoader::getDefault()
-	{
-		if (not defShader)
+		if (not defRawShader)
 		{
-			defShader = readVertFrag(egd.res / "shader/default.vsh", egd.res / "shader/default.fsh");
+			std::string source = File::readAllText(egd.res / "shader/skybox.rasl");
+
+			ShaderSettings::Detailed settings{ShaderSettings::rawInclude};
+			auto [vsh, fsh] = Shader::translateToGlsl(settings, source);
+			ShaderModule vert{ vsh, ShaderModule::Vertex };
+			ShaderModule frag{ fsh, ShaderModule::Fragment };
+
+			defRawShader = std::make_unique<ShaderProgram>(vert, frag);
 		}
-		return *defShader;
+		return *defRawShader;
 	}
 	ShaderProgram& ShaderLoader::getDefaultPostproc()
 	{
@@ -130,12 +128,12 @@ namespace a_game_engine
 		}
 		return *defPostproc;
 	}
-	Shader& ShaderLoader::getDefaultShader()
+	Shader& ShaderLoader::getDefault()
 	{
-		if (not defShaderTemplate)
+		if (not defShader)
 		{
-			defShaderTemplate = std::make_unique<Shader>(File::readAllText(egd.res / "shader/pbrNormal.asl"));
+			defShader = std::make_unique<Shader>(File::readAllText(egd.res / "shader/pbrNormal.asl"));
 		}
-		return *defShaderTemplate;
+		return *defShader;
 	}
 }

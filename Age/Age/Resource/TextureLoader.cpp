@@ -43,7 +43,7 @@ namespace a_game_engine
 				}
 				result->create(settings);
 				result->setWrap(s.wrapX, s.wrapY);
-				result->setFiltering(s.minFilter, s.magFilter);
+				result->setFiltering(s.minFilter, s.magFilter); //TODO: log
 				return result;
 			},
 			getDefault);
