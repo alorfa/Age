@@ -13,20 +13,20 @@ namespace a_game_engine
 
 	ShaderLoader::~ShaderLoader()
 	{
-		for (const auto& s : rawShaders)
+		for (const auto& s : shaders)
 		{
 			if (s.second)
-				Logger::logInfo("Raw shader " + s.first.string() + " was unloaded");
+				Logger::logInfo("Shader " + s.first.string() + " was unloaded");
 		}
 		for (const auto& s : postp)
 		{
 			if (s.second)
 				Logger::logInfo("Postprocessing " + s.first.string() + " was unloaded");
 		}
-		for (const auto& s : shaders)
+		for (const auto& s : rawShaders)
 		{
 			if (s.second)
-				Logger::logInfo("Shader " + s.first.string() + " was unloaded");
+				Logger::logInfo("Raw shader " + s.first.string() + " was unloaded");
 		}
 	}
 

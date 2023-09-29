@@ -2,6 +2,9 @@
 #include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/Math/Math.hpp"
 #include "Age/Components/LightUpdaters.hpp"
+#include "Age/Material/Shader.hpp"
+#include "Age/LL/Pipeline.hpp"
+#include "Age/Object/Model3D.hpp"
 
 namespace a_game_engine
 {
@@ -13,11 +16,22 @@ namespace a_game_engine
 
 	void PointLightSource::draw(const mat4& parent, const Scene3DInfo& info) const
 	{
-		const ShaderProgram* s = info.shader ? info.shader : shader;
-		s->use();
-		s->setUniform(s->getLocation("emission"), light.color);
+		const Shader* shTemplate = info.shader ? info.shader : shader;
+		const ShaderProgram& s = shTemplate->getProgram(info.shaderSettings);
+		if (model)
+		{
+			Pipeline::setDepthFunc(DepthFunc::Less);
+			s.use();
+			s.setCamera(*info.camera);
+			for (const auto& prop : info.props)
+				s.setUniform(s.getLocation(prop.name.c_str()), prop.property);
+			s.setUniform(s.getLocation("emission"), light.color);
 
-		Object3D::draw(parent, info);
+			mat4 curTransform = parent * transform.getMatrix();
+			model->draw(curTransform, s);
+		}
+
+		Node3D::draw(parent, info);
 	}
 
 	SpotLightSource::SpotLightSource(Scene3D& scene, Node3D* parent)
@@ -28,11 +42,22 @@ namespace a_game_engine
 
 	void SpotLightSource::draw(const mat4& parent, const Scene3DInfo& info) const
 	{
-		const ShaderProgram* s = info.shader ? info.shader : shader;
-		s->use();
-		s->setUniform(s->getLocation("emission"), light.color);
+		const Shader* shTemplate = info.shader ? info.shader : shader;
+		const ShaderProgram& s = shTemplate->getProgram(info.shaderSettings);
+		if (model)
+		{
+			Pipeline::setDepthFunc(DepthFunc::Less);
+			s.use();
+			s.setCamera(*info.camera);
+			for (const auto& prop : info.props)
+				s.setUniform(s.getLocation(prop.name.c_str()), prop.property);
+			s.setUniform(s.getLocation("emission"), light.color);
 
-		Object3D::draw(parent, info);
+			mat4 curTransform = parent * transform.getMatrix();
+			model->draw(curTransform, s);
+		}
+
+		Node3D::draw(parent, info);
 	}
 
 	DirLightSource::DirLightSource(Scene3D& scene, Node3D* parent)

@@ -7,7 +7,7 @@
 namespace a_game_engine
 {
 	class Camera3D;
-	class ShaderProgram;
+	class Shader;
 	class Node3D;
 
 	struct Scene3DInfo
@@ -18,10 +18,10 @@ namespace a_game_engine
 		};
 
 		const Camera3D* camera = nullptr;
-		const ShaderProgram* shader = nullptr;
+		const Shader* shader = nullptr;
 		SceneProps props;
 		LightsInfo lights;
-		ShaderSettings::Common settings;
+		ShaderSettings::Common shaderSettings;
 
 		void addLights(const Node3D& node);
 	};

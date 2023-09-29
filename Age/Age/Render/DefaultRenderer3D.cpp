@@ -33,6 +33,14 @@ namespace a_game_engine
 		info.camera = &camera;
 		info.props.push_back({ "skybox", SkyBox::getSlot() });
 		info.addLights(*sc.rootNode);
+		ShaderSettings::Deferred deferred;
+		deferred.bindings = { 4, 4, 3 };
+		deferred.paintingFuncIndex = 0;
+		ShaderSettings::Forward settings;
+		settings.dirLights = info.lights.dir;
+		settings.pointLights = info.lights.point;
+		settings.spotLights = info.lights.spot;
+		info.shaderSettings = settings;
 
 		Pipeline::set3DContext();
 		mainFb.use();

@@ -15,7 +15,7 @@ namespace sf
 namespace a_game_engine
 {
 	class Camera3D;
-	class ShaderProgram;
+	class Shader;
 	class EventHandler;
 	class Scene3D;
 
@@ -37,7 +37,7 @@ namespace a_game_engine
 		std::vector<std::unique_ptr<Component>> components;
 
 		Transform3D transform;
-		const ShaderProgram* shader = nullptr;
+		const Shader* shader = nullptr;
 
 		Node3D(Scene3D& scene, Node3D* parent, Type type = Type::Usual);
 
