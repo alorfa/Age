@@ -30,6 +30,6 @@ void fragmentControl()
     age_shininess = 4.f;
     age_metalness = material.b;
 }
-#define AGE_LIGHT_MODE_PHONG
+#define AGE_LIGHT_MODE_PBR
 
 #endif

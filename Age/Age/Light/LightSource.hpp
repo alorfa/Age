@@ -13,8 +13,6 @@ namespace a_game_engine
 		PointLight light;
 
 		PointLightSource(Scene3D& scene, Node3D* parent);
-
-		void draw(const mat4& parent, const Scene3DInfo& info) const override;
 	};
 
 	class SpotLightSource : public Object3D
@@ -23,8 +21,6 @@ namespace a_game_engine
 		SpotLight light;
 
 		SpotLightSource(Scene3D& scene, Node3D* parent);
-
-		void draw(const mat4& parent, const Scene3DInfo& info) const override;
 	};
 
 	class DirLightSource : public Node3D

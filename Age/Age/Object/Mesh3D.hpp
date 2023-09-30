@@ -3,19 +3,26 @@
 #include "Age/LL/Buffers/VertexBuffer.hpp"
 #include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/Material/Material.hpp"
+#include "Age/Material/ShaderSettings.hpp"
 
 namespace a_game_engine
 {
 	class Mesh3D
 	{
 	public:
-		struct RenderInfo //not yed used
+		struct RenderInfo
 		{
 			const TransformProps* transform = nullptr;
 			const SceneProps* external = nullptr;
 			const Shader* shader = nullptr;
+			const ShaderSettings::Common* shaderSettings = nullptr;
 
-			RenderInfo(const TransformProps& t, const SceneProps& e);
+			inline RenderInfo(
+				const TransformProps& t,
+				const SceneProps& e,
+				const Shader& s,
+				const ShaderSettings::Common& settings)
+				: transform(&t), external(&e), shader(&s), shaderSettings(&settings) {}
 		};
 
 		Mesh3D() = default;
@@ -27,6 +34,6 @@ namespace a_game_engine
 		VertexBuffer buffer;
 		Material material;
 
-		void draw(const ShaderProgram& s) const;
+		void draw(const RenderInfo& info) const;
 	};
 }

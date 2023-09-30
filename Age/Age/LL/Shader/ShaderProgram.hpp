@@ -16,6 +16,7 @@ namespace a_game_engine
 
 	struct mat3;
 	struct mat4;
+	struct TransformProps;
 
 	class ShaderProgram
 	{
@@ -50,6 +51,7 @@ namespace a_game_engine
 		void setUniform(int location, const ShaderProperty& value) const;
 		void setUniform(const MaterialProperty& value) const;
 		void setCamera(const Camera3D& camera) const;
+		void setTransformProps(const TransformProps& props) const;
 
 		void use() const;
 		static void use(uint id);

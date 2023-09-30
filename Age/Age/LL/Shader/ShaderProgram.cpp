@@ -10,8 +10,7 @@
 #include "Age/Object/Node3D.hpp"
 #include "Age/Transform/Camera3D.hpp"
 #include "Age/Light/LightSource.hpp"
-#include <format>
-#include "Age/Material/ShaderProperty.hpp"
+#include "Age/Material/ShaderProps.hpp"
 
 namespace a_game_engine
 {
@@ -113,6 +112,15 @@ namespace a_game_engine
 		setUniform(getLocation("view"), camera.transform.getMatrix());
 		setUniform(getLocation("projection"), camera.getProjection());
 		setUniform(getLocation("cameraPos"), camera.transform.getPosition());
+	}
+	void ShaderProgram::setTransformProps(const TransformProps& props) const
+	{
+		setUniform(getLocation("model"), *props.model);
+		setUniform(getLocation("view"), *props.view);
+		setUniform(getLocation("projection"), *props.proj);
+		setUniform(getLocation("cameraPos"), props.cameraPos);
+		setUniform(getLocation("near"), props.near);
+		setUniform(getLocation("far"), props.far);
 	}
 	void ShaderProgram::setUniform(int location, const Texture2D& value, uint number) const
 	{

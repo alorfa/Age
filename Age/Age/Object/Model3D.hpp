@@ -7,6 +7,8 @@
 
 namespace a_game_engine
 {
+	struct Scene3DInfo;
+
 	class Model3D
 	{
 	public:
@@ -19,12 +21,12 @@ namespace a_game_engine
 			std::string name;
 			std::vector<std::unique_ptr<Node>> children;
 
-			void draw(const mat4& parentTransform, const ShaderProgram& shader) const;
+			void draw(const mat4& parentTransform, const Scene3DInfo& info, TransformProps& transform) const;
 		};
 
 		std::vector<std::unique_ptr<Mesh3D>> meshes;
 		std::unique_ptr<Node> rootNode;
 
-		void draw(const mat4& transform, const ShaderProgram& shader) const;
+		void draw(const mat4& transform, const Scene3DInfo& info) const;
 	};
 }

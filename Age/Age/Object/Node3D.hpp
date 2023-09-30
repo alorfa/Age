@@ -37,7 +37,6 @@ namespace a_game_engine
 		std::vector<std::unique_ptr<Component>> components;
 
 		Transform3D transform;
-		const Shader* shader = nullptr;
 
 		Node3D(Scene3D& scene, Node3D* parent, Type type = Type::Usual);
 
