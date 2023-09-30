@@ -2,11 +2,14 @@
 
 namespace a_game_engine
 {
-	void Mesh3D::draw(const ShaderProgram& s, uint textureOrder) const
+	void Mesh3D::draw(const ShaderProgram& s) const
 	{
-		uint texturesCount = s.setUniform("textures", material, textureOrder);
-		s.setUniform(s.getLocation("texturesCount"), (int)texturesCount);
+		for (const auto& prop : material.props)
+			s.setUniform(prop);
 
 		buffer.draw();
 	}
+	Mesh3D::RenderInfo::RenderInfo(const TransformProps& t, const SceneProps& e)
+		: transform(&t),external(&e)
+	{}
 }

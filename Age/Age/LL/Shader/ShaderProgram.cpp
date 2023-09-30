@@ -6,7 +6,7 @@
 #include "Age/Math/mat3.hpp"
 #include "Age/Math/mat4.hpp"
 #include "Age/Resource/Logger.hpp"
-#include "Age/Object/Material.hpp"
+#include "Age/Material/Material.hpp"
 #include "Age/Object/Node3D.hpp"
 #include "Age/Transform/Camera3D.hpp"
 #include "Age/Light/LightSource.hpp"
@@ -108,82 +108,11 @@ namespace a_game_engine
 	{
 		glUniformMatrix4fv(location, 1, GL_FALSE, (const float*)value.data);
 	}
-	void ShaderProgram::setUniform(const char* name, const DirLight& light) const
-	{
-		setUniform(getLocation((name + ".dir"s).c_str()), light.dir);
-		setUniform(getLocation((name + ".ambient"s).c_str()), light.ambient);
-		setUniform(getLocation((name + ".color"s).c_str()), light.color);
-	}
-	void ShaderProgram::setUniform(const char* name, const PointLight& light) const
-	{
-		setUniform(getLocation((name + ".pos"s).c_str()), light.pos);
-		setUniform(getLocation((name + ".ambient"s).c_str()), light.ambient);
-		setUniform(getLocation((name + ".color"s).c_str()), light.color);
-		setUniform(getLocation((name + ".constant"s).c_str()), light.constant);
-		setUniform(getLocation((name + ".linear"s).c_str()), light.linear);
-		setUniform(getLocation((name + ".quadratic"s).c_str()), light.quadratic);
-	}
-	void ShaderProgram::setUniform(const char* name, const SpotLight& light) const
-	{
-		setUniform(getLocation((name + ".pos"s).c_str()), light.pos);
-		setUniform(getLocation((name + ".dir"s).c_str()), light.dir);
-		setUniform(getLocation((name + ".cutOff"s).c_str()), cosf(light.cutOff));
-		setUniform(getLocation((name + ".outerCutOff"s).c_str()), cosf(light.outerCutOff));
-		setUniform(getLocation((name + ".ambient"s).c_str()), light.ambient);
-		setUniform(getLocation((name + ".color"s).c_str()), light.color);
-		setUniform(getLocation((name + ".constant"s).c_str()), light.constant);
-		setUniform(getLocation((name + ".linear"s).c_str()), light.linear);
-		setUniform(getLocation((name + ".quadratic"s).c_str()), light.quadratic);
-	}
-	void ShaderProgram::setLights(const Node3D& scene) const
-	{
-		int pointLightsCount = 0;
-		int dirLightsCount = 0;
-		int spotLightsCount = 0;
-		for (const auto& light : scene.infChildren)
-		{
-			auto* pointLight = light->as<PointLightSource>();
-			if (pointLight)
-			{
-				//std::format("pointLightSources[{}]", pointLightsCount++).c_str()
-				setUniform(("pointLightSources[" + std::to_string(pointLightsCount++) + ']').c_str(), pointLight->light);
-				continue;
-			}
-			auto* dirLight = light->as<DirLightSource>();
-			if (dirLight)
-			{
-				setUniform(("dirLightSources[" + std::to_string(dirLightsCount++) + ']').c_str(), dirLight->light);
-				continue;
-			}
-			auto* spotLight = light->as<SpotLightSource>();
-			if (spotLight)
-			{
-				setUniform(("spotLightSources[" + std::to_string(spotLightsCount++) + ']').c_str(), spotLight->light);
-				continue;
-			}
-		}
-		setUniform(getLocation("pointLightsCount"), pointLightsCount);
-		setUniform(getLocation("dirLightsCount"), dirLightsCount);
-		setUniform(getLocation("spotLightsCount"), spotLightsCount);
-	}
 	void ShaderProgram::setCamera(const Camera3D& camera) const
 	{
 		setUniform(getLocation("view"), camera.transform.getMatrix());
 		setUniform(getLocation("projection"), camera.getProjection());
 		setUniform(getLocation("cameraPos"), camera.transform.getPosition());
-	}
-	uint ShaderProgram::setUniform(const char* name, const TextureMaterial& mat, uint sampler) const
-	{
-		for (size_t i = 0; i < mat.textures.size(); i++)
-		{
-			if (sampler >= 16)
-				break;
-
-			setUniform(getLocation(std::format("{}[{}]", name, sampler).c_str()), *mat.textures[i], sampler);
-			sampler++;
-		}
-
-		return sampler;
 	}
 	void ShaderProgram::setUniform(int location, const Texture2D& value, uint number) const
 	{
@@ -216,11 +145,19 @@ namespace a_game_engine
 			setUniform(location, std::get<mat4>(value.value)); break;
 		case ShaderProperty::Type::Texture2D:
 			tex2D = &std::get<ShaderProperty::Texture2DProp>(value.value);
-			setUniform(location, *tex2D->texture, tex2D->slot); break;
+			if (tex2D->slot > -1)
+				setUniform(location, *tex2D->texture, tex2D->slot); 
+			break;
 		case ShaderProperty::Type::CubeMap:
 			cubemap = &std::get<ShaderProperty::CubeMapProp>(value.value);
-			setUniform(location, *cubemap->cubemap, cubemap->slot); break;
+			if (cubemap->slot > -1)
+				setUniform(location, *cubemap->cubemap, cubemap->slot);
+			break;
 		}
+	}
+	void ShaderProgram::setUniform(const MaterialProperty& value) const
+	{
+		setUniform(getLocation(value.name.c_str()), value.property);
 	}
 	void ShaderProgram::use() const
 	{

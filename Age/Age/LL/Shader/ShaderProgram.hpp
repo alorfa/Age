@@ -12,11 +12,10 @@ namespace a_game_engine
 	class Camera3D;
 	class Node3D;
 	class ShaderProperty;
+	class MaterialProperty;
 
 	struct mat3;
 	struct mat4;
-	struct ColorMaterial;
-	struct TextureMaterial;
 
 	class ShaderProgram
 	{
@@ -49,11 +48,7 @@ namespace a_game_engine
 		void setUniform(int location, const Texture2D& value, uint number) const;
 		void setUniform(int location, const CubeMap& value, uint number) const;
 		void setUniform(int location, const ShaderProperty& value) const;
-		uint setUniform(const char* name, const TextureMaterial& mat, uint firstSampler) const;
-		void setUniform(const char* name, const DirLight& light) const;
-		void setUniform(const char* name, const PointLight& light) const;
-		void setUniform(const char* name, const SpotLight& light) const;
-		void setLights(const Node3D& scene) const;
+		void setUniform(const MaterialProperty& value) const;
 		void setCamera(const Camera3D& camera) const;
 
 		void use() const;

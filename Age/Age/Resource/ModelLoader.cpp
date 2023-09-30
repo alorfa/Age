@@ -19,9 +19,14 @@ namespace a_game_engine
 			vec3 pos, normal;
 			vec2 uv;
 		};
+		struct TextureInfo
+		{
+			std::string name;
+			aiTextureType type;
+		};
 
 		std::unique_ptr<Mesh3D> handleAiMesh(aiMesh* mesh, 
-			const std::vector<TextureMaterial>& materials, 
+			const std::vector<Material>& materials, 
 			bool tangentSpace)
 		{
 			try
@@ -126,20 +131,38 @@ namespace a_game_engine
 			return result;
 		}
 
-		bool has(const std::vector<Texture2D*>& vec, const Texture2D* element)
+		bool has(const MaterialProps& props, const std::string& element)
 		{
-			for (int i = 0; i < vec.size(); i++)
+			for (int i = 0; i < props.size(); i++)
 			{
-				if (vec[i] == element)
+				if (props[i].name == element)
 					return true;
 			}
 			return false;
 		}
+		int find(const MaterialProps& props, const Texture2D* tex)
+		{
+			for (int i = 0; i < props.size(); i++)
+			{
+				if (props[i].property.getType() == ShaderProperty::Type::Texture2D &&
+					std::get<ShaderProperty::Texture2DProp>(props[i].property.value).texture == tex)
+					return i;
+			}
+			return -1;
+		}
 
-		TextureMaterial handleAiMaterial(aiMaterial* mat, TextureLoader& loader, 
+		Material handleAiMaterial(aiMaterial* mat, TextureLoader& loader, 
 			const std::filesystem::path& path, bool disableSrgb)
 		{
-			aiTextureType colorTypes[] = { aiTextureType_DIFFUSE };
+			TextureInfo colorTypes[] = { 
+				{"baseColorMap", aiTextureType_DIFFUSE},
+				{"baseColorMap", aiTextureType_BASE_COLOR}};
+			//aiTextureType colorTypes[] = { aiTextureType_DIFFUSE };
+			TextureInfo infoTypes[] = { 
+				{"normalMap", aiTextureType_NORMALS},
+				{"roughnessMap", aiTextureType_DIFFUSE_ROUGHNESS},
+				{"metalnessMap", aiTextureType_METALNESS},
+				{"aoMap", aiTextureType_AMBIENT_OCCLUSION}};
 
 			aiTextureType types[] = { aiTextureType_NORMALS,
 			aiTextureType_DIFFUSE_ROUGHNESS,
@@ -147,23 +170,50 @@ namespace a_game_engine
 			aiTextureType_AMBIENT_OCCLUSION,
 			aiTextureType_UNKNOWN };
 
-			TextureMaterial result;
-			for (aiTextureType type : colorTypes)
+			int slot = 0;
+			Material result;
+			for (const TextureInfo& texInfo : colorTypes)
 			{
-				auto textures = handleMaterialOfType(mat, type, loader, path, !disableSrgb);
+				auto textures = handleMaterialOfType(mat, texInfo.type, loader, path, !disableSrgb);
 				for (auto* tex : textures)
 				{
-					if (not has(result.textures, tex))
-						result.textures.push_back(tex);
+					if (not has(result.props, texInfo.name))
+					{
+						int texIndex = find(result.props, tex);
+						if (texIndex == -1)
+						{
+							ShaderProperty::Texture2DProp texProp(*tex, slot);
+							result.props.push_back({ texInfo.name, texProp });
+							slot++;
+						}
+						else
+						{
+							auto& prop = result.props[texIndex];
+							result.props.push_back({ texInfo.name, prop.property });
+						}
+					}
 				}
 			}
-			for (aiTextureType type : types)
+			for (const TextureInfo& texInfo : infoTypes)
 			{
-				auto textures = handleMaterialOfType(mat, type, loader, path, false);
+				auto textures = handleMaterialOfType(mat, texInfo.type, loader, path, false);
 				for (auto* tex : textures)
 				{
-					if (not has(result.textures, tex))
-						result.textures.push_back(tex);
+					if (not has(result.props, texInfo.name))
+					{
+						int texIndex = find(result.props, tex);
+						if (texIndex == -1)
+						{
+							ShaderProperty::Texture2DProp texProp(*tex, slot);
+							result.props.push_back({ texInfo.name, texProp });
+							slot++;
+						}
+						else
+						{
+							auto& prop = result.props[texIndex];
+							result.props.push_back({ texInfo.name, prop.property });
+						}
+					}
 				}
 			}
 
@@ -216,7 +266,7 @@ namespace a_game_engine
 		auto result = std::make_unique<Model3D>();
 
 		auto parentPath = path.parent_path();
-		std::vector<TextureMaterial> materials;
+		std::vector<Material> materials;
 		materials.resize(scene->mNumMaterials);
 		for (uint i = 0; i < scene->mNumMaterials; i++)
 		{

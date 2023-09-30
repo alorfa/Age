@@ -21,12 +21,18 @@ namespace a_game_engine
 		struct Texture2DProp
 		{
 			const Texture2D* texture = nullptr;
-			unsigned slot = 0;
+			int slot = -1;
+
+			inline Texture2DProp(const Texture2D& tex, int slot = -1)
+				: texture(&tex), slot(slot) {}
 		};
 		struct CubeMapProp
 		{
 			const CubeMap* cubemap = nullptr;
-			unsigned slot = 0;
+			int slot = -1;
+
+			inline CubeMapProp(const CubeMap& tex, int slot = -1)
+				: cubemap(&tex), slot(slot) {}
 		};
 		using PropertyValue = std::variant<int, float, vec2, vec3, mat3, mat4, Texture2DProp, CubeMapProp>;
 
