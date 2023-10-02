@@ -8,9 +8,13 @@ namespace a_game_engine
 	{
 		if (_fbuf)
 			glDeleteFramebuffers(1, &_fbuf);
+		_fbuf = 0;
+	}
+	void FrameBuffer2D::clearRenderBuffer()
+	{
 		if (_rbuf)
 			glDeleteRenderbuffers(1, &_rbuf);
-		_fbuf = _rbuf = 0;
+		_rbuf = 0;
 	}
 	FrameBuffer2D::FrameBuffer2D()
 	{
@@ -18,27 +22,32 @@ namespace a_game_engine
 	FrameBuffer2D::~FrameBuffer2D()
 	{
 		clear();
+		clearRenderBuffer();
 	}
-	void FrameBuffer2D::create(const Settings& s)
+	void FrameBuffer2D::createRenderBuffer(const uvec2& size)
+	{
+		glGenRenderbuffers(1, &_rbuf);
+		glBindRenderbuffer(GL_RENDERBUFFER, _rbuf);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
+	}
+	void FrameBuffer2D::create()
 	{
 		clear();
 		glGenFramebuffers(1, &_fbuf);
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
 
-		ImageInfo info{ s.size, nullptr, s.outer };
-		texture.create(Texture2D::Settings{info, s.internal, false});
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.getId(), 0);
+		for (uint i = 0; i < textures.size(); i++)
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i].getId(), 0);
 
-		glGenRenderbuffers(1, &_rbuf);
-		glBindRenderbuffer(GL_RENDERBUFFER, _rbuf); 
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, s.size.x, s.size.y);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _rbuf);
+		if (_rbuf)
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _rbuf);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	void FrameBuffer2D::use()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glViewport(0, 0, texture.getSize().x, texture.getSize().y);
+		glViewport(0, 0, textures[0].getSize().x, textures[0].getSize().y);
 	}
 	void FrameBuffer2D::useDefault(const uvec2& viewport)
 	{
@@ -50,14 +59,14 @@ namespace a_game_engine
 		return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 	}
 	FrameBuffer2D::FrameBuffer2D(FrameBuffer2D&& other)
-		: texture(std::move(other.texture))
+		: textures(std::move(other.textures))
 	{
 		std::swap(_fbuf, other._fbuf);
 		std::swap(_rbuf, other._rbuf);
 	}
 	FrameBuffer2D& FrameBuffer2D::operator=(FrameBuffer2D&& other)
 	{
-		std::swap(texture, other.texture);
+		std::swap(textures, other.textures);
 		std::swap(_fbuf, other._fbuf);
 		std::swap(_rbuf, other._rbuf);
 		return *this;

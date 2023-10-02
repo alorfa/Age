@@ -1,7 +1,6 @@
 #include "Texture2D.hpp"
 #include "Age/LL/opengl.h"
 #include <utility>
-//#include <cmath>
 #include <algorithm>
 
 namespace a_game_engine

@@ -215,6 +215,7 @@
     <ClInclude Include="Age\Object\Model3D.hpp" />
     <ClInclude Include="Age\Object\Node3D.hpp" />
     <ClInclude Include="Age\Object\Object3D.hpp" />
+    <ClInclude Include="Age\Render\DeferredRenderer.hpp" />
     <ClInclude Include="Age\Scene\Scene3D.hpp" />
     <ClInclude Include="Age\Scene\Scene3DInfo.hpp" />
     <ClInclude Include="Age\Scene\SkyBox.hpp" />

@@ -14,13 +14,17 @@ namespace a_game_engine
 	DefaultRenderer3D::DefaultRenderer3D()
 	{
 		shader = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
+		mainFb.textures.resize(1);
 	}
 	void DefaultRenderer3D::updateSize(const uvec2& newSize)
 	{
 		size = newSize;
-		mainFb.create(FrameBuffer2D::Settings(newSize, TextureFormat::RGB_Float16));
-		mainFb.texture.setFiltering(TextureFiltering::Linear);
-		mainFb.texture.setWrap(TextureWrap::ClampToEdge);
+		ImageInfo info{newSize, nullptr, TextureFormat::RGB_Float16};
+		mainFb.createRenderBuffer(newSize);
+		mainFb.textures[0].create({ info, false });
+		mainFb.textures[0].setFiltering(TextureFiltering::Linear);
+		mainFb.textures[0].setWrap(TextureWrap::ClampToEdge);
+		mainFb.create();
 	}
 	void DefaultRenderer3D::drawObject(const Node3D& o, const Scene3DInfo& info)
 	{
@@ -55,7 +59,7 @@ namespace a_game_engine
 		Pipeline::set2DContext();
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
-		shader->setUniform(shader->getLocation("tex"), mainFb.texture, 0);
+		shader->setUniform(shader->getLocation("tex"), mainFb.textures[0], 0);
 		verts->draw();
 	}
 }
