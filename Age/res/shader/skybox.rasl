@@ -21,17 +21,6 @@ out vec4 age_FragColor;
 in vec3 fragUv;
 uniform samplerCube skybox;
 
-vec4 sampleCubemap(samplerCube cubemap, vec3 texCoord)
-{
-	vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
-	return texture(cubemap, coord);
-}
-
-void fragmentControl()
-{
-
-}
-#define AGE_LIGHT_MODE_CUSTOM
 void paintOver()
 {
     age_FragColor = sampleCubemap(skybox, fragUv);

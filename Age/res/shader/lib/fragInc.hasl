@@ -1,19 +1,3 @@
-struct DirectionalLight
-{
-    vec3 dir, ambient, color;
-};
-struct PointLight
-{
-    vec3 pos, ambient, color;
-    float constant, linear, quadratic;
-};
-struct SpotLight
-{
-    vec3 pos, dir, ambient, color;
-    float cutOff, outerCutOff;
-    float constant, linear, quadratic;
-};
-
 in vec2 fragUv;
 in vec3 fragPos;
 in mat3 fragTBN;
@@ -38,12 +22,6 @@ uniform DirectionalLight dirLightSources[AGE_MAX_DIR_LIGHTS];
 #if defined(AGE_MAX_SPOT_LIGHTS) && AGE_MAX_SPOT_LIGHTS != 0
 uniform SpotLight spotLightSources[AGE_MAX_SPOT_LIGHTS];
 #endif
-
-vec4 sampleCubemap(samplerCube cubemap, vec3 texCoord)
-{
-    vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
-    return texture(cubemap, coord);
-}
 
 #if defined(AGE_MAX_POINT_LIGHTS) && AGE_MAX_POINT_LIGHTS != 0
 vec3 phong_computePointLight(in PointLight light, vec3 dif, vec3 spec, float shininess, vec3 norm)
@@ -109,12 +87,6 @@ vec3 computeNormal(in vec3 normal)
 {
     vec3 realNormal = normal * 2.f - 1.f;
     return normalize(fragTBN * realNormal);
-}
-float getDepth()
-{
-    float z = gl_FragCoord.z * 2.0 - 1.0;
-    float depth = (2.0 * near * far) / (far + near - z * (far - near));
-    return depth / far;
 }
 
 void pbr_paintOver()

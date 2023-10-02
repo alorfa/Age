@@ -9,14 +9,13 @@ vec4 vertexProcess()
 {
     fragUv = inUv;
     fragPos = (model * vec4(inPosition, 1.f)).xyz;
-    computeTBN(inNormal, inTangent);
+    fragTBN = computeTBN(inNormal, inTangent, mat3(model));
     return projection * view * model * vec4(inPosition, 1.0);
 }
 
 #endif
 #ifdef AGE_FRAGMENT
 
-uniform sampler2D textures[8];
 uniform sampler2D baseColorMap, normalMap, roughnessMap, metalnessMap;
 
 void fragmentControl()

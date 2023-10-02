@@ -1,0 +1,28 @@
+struct DirectionalLight
+{
+    vec3 dir, ambient, color;
+};
+struct PointLight
+{
+    vec3 pos, ambient, color;
+    float constant, linear, quadratic;
+};
+struct SpotLight
+{
+    vec3 pos, dir, ambient, color;
+    float cutOff, outerCutOff;
+    float constant, linear, quadratic;
+};
+
+vec4 sampleCubemap(samplerCube cubemap, in vec3 texCoord)
+{
+    vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
+    return texture(cubemap, coord);
+}
+
+float getDepth(float near, float far)
+{
+    float z = gl_FragCoord.z * 2.0 - 1.0;
+    float depth = (2.0 * near * far) / (far + near - z * (far - near));
+    return depth / far;
+}

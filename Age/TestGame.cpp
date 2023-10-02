@@ -219,15 +219,23 @@ int main()
 		"age_FragColor.rgb = age_base_color.rgb;\n"
 		"age_FragColor.a = age_roughness;\n"
 		"age_FragColor1.rgb = age_normal.rgb;\n"
-		"age_FragColor1.a = age_metalness;\n"
+		"age_FragColor1.a = age_metalness * 2.f - 1.f;\n"
 		"age_FragColor2.rgb = fragPos;\n");
-	ShaderSettings::include.vertInc = File::readAllText(egd.res / "shader/lib/vertInc.hasl");
-	ShaderSettings::include.fragInc = File::readAllText(egd.res / "shader/lib/fragInc.hasl");
-	ShaderSettings::rawInclude.vertMain =
-		ShaderSettings::include.vertMain = File::readAllText(egd.res / "shader/lib/vertMain.hasl");
-	ShaderSettings::rawInclude.fragMain = 
-		ShaderSettings::include.fragMain = File::readAllText(egd.res / "shader/lib/fragMain.hasl");
+
 	ShaderSettings::postprocVsh = File::readAllText(egd.res / "shader/lib/postproc.vsh");
+
+	ShaderSettings::include.vertLib = File::readAllText(egd.res / "shader/lib/vertLib.hasl");
+	ShaderSettings::include.vertInc = File::readAllText(egd.res / "shader/lib/vertInc.hasl");
+	ShaderSettings::include.vertMain = File::readAllText(egd.res / "shader/lib/vertMain.hasl");
+
+	ShaderSettings::include.fragLib = File::readAllText(egd.res / "shader/lib/fragLib.hasl");
+	ShaderSettings::include.fragInc = File::readAllText(egd.res / "shader/lib/fragInc.hasl");
+	ShaderSettings::include.fragMain = File::readAllText(egd.res / "shader/lib/fragMain.hasl");
+	ShaderSettings::rawInclude.fragMain = File::readAllText(egd.res / "shader/lib/rawFragMain.hasl");
+
+	ShaderSettings::rawInclude.vertLib = ShaderSettings::include.vertLib;
+	ShaderSettings::rawInclude.vertMain = ShaderSettings::include.vertMain;
+	ShaderSettings::rawInclude.fragLib = ShaderSettings::include.fragLib;
 	
 	auto game = std::make_unique<a_game::TestGame>();
 	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 0, 24);

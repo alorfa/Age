@@ -15,7 +15,7 @@ namespace a_game_engine
 	public:
 		struct Include
 		{
-			std::string common, vertInc, fragInc, vertMain, fragMain;
+			std::string vertLib, vertInc, vertMain, fragLib, fragInc, fragMain;
 		};
 		struct Forward
 		{

@@ -1,0 +1,8 @@
+mat3 computeTBN(in vec3 normal, in vec3 tangent, in mat3 modelMat)
+{
+	vec3 N = modelMat * normal;
+    vec3 T = modelMat * tangent;
+    T = normalize(T - dot(T, N) * N);
+    vec3 B = cross(N, T);
+    return mat3(T, B, N);
+}

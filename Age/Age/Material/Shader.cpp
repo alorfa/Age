@@ -14,12 +14,12 @@ namespace a_game_engine
 
         GlslCode result;
         result.vert = std::format("#define AGE_VERTEX\n{}\n{}\n{}\n{}\n{}",
-            s.defines, s.include->common, s.include->vertInc, source, s.include->vertMain);
+            s.defines, s.include->vertLib, s.include->vertInc, source, s.include->vertMain);
         std::string fragment;
         if (s.paintingFuncIndex < 0)
         {
             result.frag = std::format("#define AGE_FRAGMENT\n{}\n{}\n{}\n{}\n{}\n{}",
-                s.defines, bindings, s.include->common, s.include->fragInc, source, s.include->fragMain);
+                s.defines, bindings, s.include->fragLib, s.include->fragInc, source, s.include->fragMain);
         }
         else
         {
@@ -28,7 +28,7 @@ namespace a_game_engine
                 ShaderSettings::paintingFunctions[s.paintingFuncIndex] + "}\n";
             result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n"
                 "{}\n{}{}\n{}\n{}\n{}{}",
-                s.defines, bindings, s.include->common, s.include->fragInc, source, fullFunctionCode, s.include->fragMain);
+                s.defines, bindings, s.include->fragLib, s.include->fragInc, source, fullFunctionCode, s.include->fragMain);
         }
         return result;
     }
