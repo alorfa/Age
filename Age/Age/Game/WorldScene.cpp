@@ -15,7 +15,8 @@ namespace a_game
 	void WorldScene::load()
 	{
 		auto nativeSize = egd.window->getSize();
-		defRender.updateSize({ nativeSize.x, nativeSize.y });
+		forwardRenderer.updateSize({ nativeSize.x, nativeSize.y });
+		deferredRenderer.updateSize({ nativeSize.x, nativeSize.y });
 
 		activeCamera = &egd.camera;
 
@@ -91,7 +92,8 @@ namespace a_game
 	{
 		if (ev.type == ev.Resized)
 		{
-			defRender.updateSize({ ev.size.width ,ev.size.height });
+			forwardRenderer.updateSize({ ev.size.width ,ev.size.height });
+			deferredRenderer.updateSize({ ev.size.width ,ev.size.height });
 		}
 		rootNode->handleRawEvents(ev);
 	}
@@ -107,6 +109,7 @@ namespace a_game
 	}
 	void WorldScene::draw(const Camera3D&, const ShaderProgram* s) const
 	{
-		defRender.drawScene(*this, *activeCamera);
+		forwardRenderer.drawScene(*this, *activeCamera);
+		//deferredRenderer.drawScene(*this, *activeCamera);
 	}
 }

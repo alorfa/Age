@@ -35,7 +35,6 @@
     <ClInclude Include="Age\Game\Gdata.hpp" />
     <ClInclude Include="Age\LL\Buffers\FrameBuffer2D.hpp" />
     <ClInclude Include="Age\Render\Renderer3D.hpp" />
-    <ClInclude Include="Age\Render\DefaultRenderer3D.hpp" />
     <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
     <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
     <ClInclude Include="Age\Object\Node3D.hpp" />
@@ -53,6 +52,7 @@
     <ClInclude Include="Age\Material\ShaderProps.hpp" />
     <ClInclude Include="Age\Material\ShaderProperty.hpp" />
     <ClInclude Include="Age\Render\DeferredRenderer.hpp" />
+    <ClInclude Include="Age\Render\ForwardRenderer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -78,7 +78,6 @@
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
-    <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
     <ClCompile Include="Age\Object\Node3D.cpp" />
@@ -92,5 +91,7 @@
     <ClCompile Include="Age\Material\ShaderSettings.cpp" />
     <ClCompile Include="Age\Scene\Scene3DInfo.cpp" />
     <ClCompile Include="Age\Material\Material.cpp" />
+    <ClCompile Include="Age\Render\ForwardRenderer.cpp" />
+    <ClCompile Include="Age\Render\DeferredRenderer.cpp" />
   </ItemGroup>
 </Project>

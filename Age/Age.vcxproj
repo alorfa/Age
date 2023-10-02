@@ -216,6 +216,7 @@
     <ClInclude Include="Age\Object\Node3D.hpp" />
     <ClInclude Include="Age\Object\Object3D.hpp" />
     <ClInclude Include="Age\Render\DeferredRenderer.hpp" />
+    <ClInclude Include="Age\Render\ForwardRenderer.hpp" />
     <ClInclude Include="Age\Scene\Scene3D.hpp" />
     <ClInclude Include="Age\Scene\Scene3DInfo.hpp" />
     <ClInclude Include="Age\Scene\SkyBox.hpp" />
@@ -225,7 +226,6 @@
     <ClInclude Include="Age\Resource\ResourceLoader.hpp" />
     <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
     <ClInclude Include="Age\Resource\TextureLoader.hpp" />
-    <ClInclude Include="Age\Render\DefaultRenderer3D.hpp" />
     <ClInclude Include="Age\Render\Renderer3D.hpp" />
     <ClInclude Include="Age\Transform\Camera3D.hpp" />
     <ClInclude Include="Age\Transform\Transform3D.hpp" />
@@ -258,6 +258,8 @@
     <ClCompile Include="Age\Object\Model3D.cpp" />
     <ClCompile Include="Age\Object\Node3D.cpp" />
     <ClCompile Include="Age\Object\Object3D.cpp" />
+    <ClCompile Include="Age\Render\DeferredRenderer.cpp" />
+    <ClCompile Include="Age\Render\ForwardRenderer.cpp" />
     <ClCompile Include="Age\Scene\Scene3D.cpp" />
     <ClCompile Include="Age\Scene\Scene3DInfo.cpp" />
     <ClCompile Include="Age\Scene\SkyBox.cpp" />
@@ -266,7 +268,6 @@
     <ClCompile Include="Age\Resource\ModelLoader.cpp" />
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
-    <ClCompile Include="Age\Render\DefaultRenderer3D.cpp" />
     <ClCompile Include="Age\Transform\Camera3D.cpp" />
     <ClCompile Include="Age\Transform\Transform3D.cpp" />
     <ClCompile Include="TestGame.cpp" />

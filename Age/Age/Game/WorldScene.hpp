@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Age/Render/DefaultRenderer3D.hpp>
+#include <Age/Render/ForwardRenderer.hpp>
+#include <Age/Render/DeferredRenderer.hpp>
 #include <Age/Scene/Scene3D.hpp>
 #include <Age/Light/LightSource.hpp>
 
@@ -10,7 +11,8 @@ namespace a_game
 {
 	class WorldScene : public Scene3D
 	{
-		mutable DefaultRenderer3D defRender;
+		mutable ForwardRenderer forwardRenderer;
+		mutable DeferredRenderer deferredRenderer;
 	public:
 		WorldScene();
 

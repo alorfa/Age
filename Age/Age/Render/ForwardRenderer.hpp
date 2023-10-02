@@ -6,13 +6,13 @@
 
 namespace a_game_engine
 {
-	class DefaultRenderer3D : public Renderer3D
+	class ForwardRenderer : public Renderer3D
 	{
 		mutable FrameBuffer2D mainFb;
 
 		ShaderProgram* shader;
 	public:
-		DefaultRenderer3D();
+		ForwardRenderer();
 
 		void updateSize(const uvec2& newSize);
 		void drawObject(const Node3D& o, const Scene3DInfo& info) override;
