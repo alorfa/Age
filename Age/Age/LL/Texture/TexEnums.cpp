@@ -1,5 +1,6 @@
 #include "TexEnums.hpp"
 #include "Age/LL/opengl.h"
+#include <cmath>
 
 namespace a_game_engine
 {
@@ -159,5 +160,13 @@ namespace a_game_engine
 			return 4;
 		}
 		return 0;
+	}
+	int TexEnums::computeMipLevels(uint maxSize)
+	{
+		return (int)std::floor(std::log2(maxSize)) + 1;
+	}
+	int TexEnums::computeMipLevels(uvec2 size)
+	{
+		return computeMipLevels(std::max(size.x, size.y));
 	}
 }

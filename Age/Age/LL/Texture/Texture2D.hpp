@@ -30,6 +30,7 @@ namespace a_game_engine
 		Texture2D(const Settings& s);
 		void create(const Settings& s);
 		void generateMipmaps();
+		void destroy();
 
 		void setWrap(TextureWrap x, TextureWrap y);
 		void setWrap(TextureWrap wrap);

@@ -33,6 +33,8 @@ namespace a_game_engine
 		static int toOglType(TextureDataType);
 		static TextureFormat toSRGB(TextureFormat);
 		static int getComponentsCount(TextureFormat);
+		static int computeMipLevels(uint maxSize);
+		static int computeMipLevels(uvec2 size);
 	};
 
 	struct ImageInfo

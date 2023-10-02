@@ -36,11 +36,6 @@ namespace a_game
 		//objs[1]->shader = &egd.shaders.load(egd.res / "shader/default");
 		objs[0]->setShader(egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		objs[1]->setShader(egd.shaders.load(egd.res / "shader/default.asl"));
-		/*for (uint i = 10; i < 15; i++)
-			objs[1]->model->meshes[i]->material.shader = &egd.shaders.load(egd.res / "shader/pbrNormal.asl");*/
-		objs[1]->model->meshes[18]->material.shader = &egd.shaders.load(egd.res / "shader/pbrNormal.asl");
-		objs[1]->model->meshes[12]->material.shader = &egd.shaders.load(egd.res / "shader/pbrNormal.asl");
-		//objs[1]->model->meshes[29]->material.shader = &egd.shaders.load(egd.res / "shader/pbrNormal.asl");
 		auto flashLight = std::make_unique<SpotLightSource>(*this, &*rootNode);
 		std::unique_ptr<PointLightSource> lights[2] = { 
 			std::make_unique<PointLightSource>(*this, &*rootNode),
