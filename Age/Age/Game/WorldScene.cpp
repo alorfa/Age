@@ -109,7 +109,7 @@ namespace a_game
 	}
 	void WorldScene::draw(const Camera3D&, const ShaderProgram* s) const
 	{
-		forwardRenderer.drawScene(*this, *activeCamera);
-		//deferredRenderer.drawScene(*this, *activeCamera);
+		//forwardRenderer.drawScene(*this, *activeCamera);
+		deferredRenderer.drawScene(*this, *activeCamera);
 	}
 }

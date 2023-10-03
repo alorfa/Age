@@ -1,0 +1,31 @@
+#ifdef AGE_VERTEX
+
+layout (location = 0) in vec2 position;
+layout (location = 1) in vec2 texCoord;
+
+uniform vec2 offset, scale;
+
+out vec2 uv;
+
+vec4 vertexProcess()
+{
+	uv = texCoord;
+	vec2 screenPos = position * scale + offset;
+    return vec4(screenPos.x, screenPos.y, 0.f, 1.f);
+}
+
+#endif
+#ifdef AGE_FRAGMENT
+
+out vec4 age_FragColor;
+
+in vec2 uv;
+
+uniform sampler2D tex;
+
+void paintOver()
+{
+    age_FragColor = texture(tex, uv);
+}
+
+#endif

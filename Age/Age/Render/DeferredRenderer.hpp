@@ -8,10 +8,10 @@ namespace a_game_engine
 {
 	class DeferredRenderer : public Renderer3D
 	{
-		mutable FrameBuffer2D gbuffer, postprocFb;
+		mutable FrameBuffer2D gbuffer, screenFb;
 
 		const ShaderProgram 
-			*gbufferPass, *debugPass,
+			*debugPass,
 			*pointLightPass, *dirLightPass, *spotLightPass,
 			*postprocPass;
 
