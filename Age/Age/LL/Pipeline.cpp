@@ -8,6 +8,29 @@ namespace a_game_engine
 		DepthFunc depthFunc = DepthFunc::Never;
 		CullFace cullFace = CullFace::Disable;
 		bool frontFaceCCW = true;
+		BlendMode blendNode = BlendMode::Disable;
+	}
+
+	void Pipeline::setBlendMode(BlendMode mode)
+	{
+		if (blendNode == mode)
+			return;
+
+		if (mode == BlendMode::Disable)
+			glDisable(GL_BLEND);
+		else
+			glEnable(GL_BLEND);
+
+		switch (mode)
+		{
+		case BlendMode::Lerp:
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			break;
+		case BlendMode::Add:
+			glBlendFunc(GL_ONE, GL_ONE);
+			break;
+		}
+		blendNode = mode;
 	}
 
 	void Pipeline::setDepthFunc(DepthFunc func)

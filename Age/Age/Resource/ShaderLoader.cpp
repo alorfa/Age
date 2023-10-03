@@ -86,7 +86,7 @@ namespace a_game_engine
 				ShaderModule vert{ ShaderSettings::postprocVsh, ShaderModule::Vertex };
 				if (not vert.isValid())
 					return nullptr;
-				ShaderModule frag{ source, ShaderModule::Fragment };
+				ShaderModule frag{ std::format("{}\n{}", ShaderSettings::include.fragLib, source), ShaderModule::Fragment};
 				if (not frag.isValid())
 					return nullptr;
 

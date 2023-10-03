@@ -4,6 +4,12 @@
 
 namespace a_game_engine
 {
+	namespace
+	{
+		const GLenum attachments[] =
+		{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	}
+
 	void FrameBuffer2D::clear()
 	{
 		if (_fbuf)
@@ -47,11 +53,13 @@ namespace a_game_engine
 	void FrameBuffer2D::use()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
+		glDrawBuffers((int)textures.size(), attachments);
 		glViewport(0, 0, textures[0].getSize().x, textures[0].getSize().y);
 	}
 	void FrameBuffer2D::useDefault(const uvec2& viewport)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glDrawBuffers(1, attachments);
 		glViewport(0, 0, viewport.x, viewport.y);
 	}
 	bool FrameBuffer2D::checkActiveBuffer()

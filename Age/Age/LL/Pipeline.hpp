@@ -16,10 +16,15 @@ namespace a_game_engine
 	{
 		Disable, Back, Front, BackAndFront
 	};
+	enum class BlendMode
+	{
+		Lerp, Add, Disable, Default = Lerp
+	};
 
 	class Pipeline
 	{
 	public:
+		static void setBlendMode(BlendMode mode);
 		static void setDepthFunc(DepthFunc func);
 		static void setFaceCulling(CullFace face);
 		static void setFrontFace(bool ccw = true);

@@ -20,6 +20,7 @@ namespace a_game_engine
 
 		void updateSize(const uvec2& newSize);
 		void drawObject(const Node3D& o, const Scene3DInfo& info) override;
+		void drawLightSources(const Node3D& node, const vec3& cameraPos);
 		void drawScene(const Scene3D& scene, const Camera3D& camera) override;
 	};
 }

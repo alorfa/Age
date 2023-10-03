@@ -53,6 +53,10 @@ namespace a_game_engine
 		T* as() {
 			return dynamic_cast<T*>(this);
 		}
+		template <typename T>
+		const T* as() const {
+			return dynamic_cast<const T*>(this);
+		}
 		bool isInfluencing() const {
 			return bool(type & Type::Influencing);
 		}
