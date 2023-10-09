@@ -1,0 +1,23 @@
+out vec4 FragColor;
+
+in vec2 uv;
+
+uniform sampler2D baseColor_roughness_map, normal_metalness_map, pos_map;
+uniform PointLight light;
+
+void main()
+{
+    vec4 diffuse_roughness = texture(baseColor_roughness_map, uv);
+    vec4 normal_metalness = texture(normal_metalness_map, uv);
+    vec3 fragPos = texture(pos_map, uv).rgb;
+    age_base_color = diffuse_roughness.rgb;
+    age_roughness = diffuse_roughness.a;
+    age_normal = normal_metalness.xyz;
+    age_metalness = normal_metalness.a * 0.5 + 0.5;
+    LIGHT_SETUP(fragPos);
+    POINT_LIGHT_SETUP(light, fragPos);
+
+    vec3 outColor = pbr_computeRay() * attenuation;
+
+    FragColor = vec4(outColor, 1.0f);
+}

@@ -1,4 +1,4 @@
-struct DirectionalLight
+struct DirLight
 {
     vec3 dir, ambient, color;
 };
@@ -14,15 +14,63 @@ struct SpotLight
     float constant, linear, quadratic;
 };
 
+uniform vec3 cameraPos;
+
+vec3 age_emission, age_base_color, age_specular, age_normal;
+float age_metalness, age_roughness, age_shininess;
+
+DirLight age_ray;
+vec3 age_viewDir;
+
 vec4 sampleCubemap(samplerCube cubemap, in vec3 texCoord)
 {
     vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
     return texture(cubemap, coord);
 }
 
-float getDepth(float near, float far)
+float getDepth(float n, float f)
 {
-    float z = gl_FragCoord.z * 2.0 - 1.0;
-    float depth = (2.0 * near * far) / (far + near - z * (far - near));
-    return depth / far;
+    return (gl_FragCoord.z - n) / (f - n);
 }
+
+vec3 blinnPhong_computeRay()
+{
+    //vec3 viewDir = normalize(cameraPos - fragPos);
+    //vec3 halfwayDir = normalize(age_viewDir - age_ray.dir);
+    vec3 reflectDir = reflect(-age_ray.dir, age_normal);
+    float diffFactor = max(dot(age_ray.dir, age_normal), 0.0);
+    //float specFactor = pow(max(dot(age_normal, halfwayDir), 0.0), age_shininess);
+    float specFactor = pow(max(dot(age_viewDir, reflectDir), 0.0), age_shininess);
+    vec3 ambientCol = age_base_color * age_ray.ambient;
+    vec3 diffuse = age_base_color * diffFactor;
+    vec3 specular = age_specular * specFactor;
+    return (diffuse + specular) * age_ray.color + ambientCol;
+}
+vec3 pbr_computeRay()
+{
+    age_shininess = (1.0 - age_roughness) * 32.0;
+    age_specular = mix(vec3(0.04), age_base_color, age_metalness);
+    return blinnPhong_computeRay();
+}
+
+#define LIGHT_SETUP(fragmentPos) age_viewDir = normalize(cameraPos - fragmentPos)
+
+#define DIR_LIGHT_SETUP(just_light) \
+age_ray.dir = just_light.dir; \
+age_ray.color = just_light.color; \
+age_ray.ambient = just_light.ambient 
+
+#define POINT_LIGHT_SETUP(just_light, fragmentPos) \
+float dist = distance(just_light.pos, fragmentPos); \
+float attenuation = 1.0 / (just_light.constant + just_light.linear * dist + just_light.quadratic * (dist * dist)); \
+age_ray.dir = normalize(just_light.pos - fragmentPos); \
+age_ray.color = just_light.color; \
+age_ray.ambient = just_light.ambient
+
+#define SPOT_LIGHT_SETUP(just_light, fragmentPos) \
+POINT_LIGHT_SETUP(just_light, fragmentPos); \
+float theta = dot(age_ray.dir, normalize(-just_light.dir)); \
+float epsilon = just_light.cutOff - just_light.outerCutOff; \
+float intensity = clamp((theta - just_light.outerCutOff) / epsilon, 0.0, 1.0); \
+intensity *= step(epsilon, just_light.outerCutOff); \
+age_ray.color *= intensity

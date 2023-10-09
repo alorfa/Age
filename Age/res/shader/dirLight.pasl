@@ -3,37 +3,21 @@ out vec4 FragColor;
 in vec2 uv;
 
 uniform sampler2D baseColor_roughness_map, normal_metalness_map, pos_map;
-
-uniform DirectionalLight light;
-uniform vec3 cameraPos;
-
-vec4 diffuse_roughness, normal_metalness;
-vec3 fragPos;
-
-vec3 computePbrColor()
-{
-	vec3 dif = diffuse_roughness.rgb;
-	float shininess = (1.f - diffuse_roughness.a) * 32.f;
-	vec3 norm = normal_metalness.rgb;
-	vec3 spec = dif * normal_metalness.a;
-
-    vec3 viewDir = normalize(cameraPos - fragPos);
-    vec3 reflectDir = reflect(light.dir, norm);
-    float diffFactor = max(dot(-light.dir, norm), 0.f);
-    float specFactor = pow(max(dot(viewDir, reflectDir), 0.f), shininess);
-    vec3 ambientCol = dif * light.ambient;
-    vec3 diffuse = dif * diffFactor;
-    vec3 specular = spec * specFactor;
-    return (diffuse + specular) * light.color + ambientCol;
-}
+uniform DirLight light;
 
 void main()
 {
-    diffuse_roughness = texture(baseColor_roughness_map, uv);
-    normal_metalness = texture(normal_metalness_map, uv);
-    fragPos = texture(pos_map, uv).rgb;
+    vec4 diffuse_roughness = texture(baseColor_roughness_map, uv);
+    vec4 normal_metalness = texture(normal_metalness_map, uv);
+    vec3 fragPos = texture(pos_map, uv).rgb;
+	age_base_color = diffuse_roughness.rgb;
+	age_roughness = diffuse_roughness.a;
+	age_normal = normal_metalness.xyz;
+	age_metalness = normal_metalness.a * 0.5 + 0.5;
+	LIGHT_SETUP(fragPos);
+	DIR_LIGHT_SETUP(light);
 
-    vec3 outColor = computePbrColor();
+    vec3 outColor = pbr_computeRay();
 
-    FragColor = vec4(outColor, 1.0f);
+    FragColor = vec4(outColor, 1.0);
 }

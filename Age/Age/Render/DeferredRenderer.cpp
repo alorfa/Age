@@ -13,6 +13,7 @@ namespace a_game_engine
 		debugPass = &egd.shaders.loadRaw(egd.res / "shader/deferredDebugger.rasl");
 		postprocPass = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
 		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/dirLight.pasl");
+		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/pointLight.pasl");
 		gbuffer.textures.resize(3);
 		screenFb.textures.resize(1);
 	}
@@ -54,13 +55,48 @@ namespace a_game_engine
 		if (dir)
 		{
 			dirLightPass->use();
-			dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), gbuffer.textures[0], 0);
-			dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), gbuffer.textures[1], 1);
-			dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), gbuffer.textures[2], 2);
+			dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
+			dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
+			dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
 			dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), dir->light.dir);
 			dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), dir->light.ambient);
 			dirLightPass->setUniform(dirLightPass->getLocation("light.color"), dir->light.color);
 			dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
+			VertexBuffer::getDefFramebuf().draw();
+		}
+		const PointLightSource* point = node.as<PointLightSource>();
+		if (point)
+		{
+			pointLightPass->use();
+			pointLightPass->setUniform(pointLightPass->getLocation("baseColor_roughness_map"), 0);
+			pointLightPass->setUniform(pointLightPass->getLocation("normal_metalness_map"), 1);
+			pointLightPass->setUniform(pointLightPass->getLocation("pos_map"), 2);
+			pointLightPass->setUniform(pointLightPass->getLocation("light.pos"), point->light.pos);
+			pointLightPass->setUniform(pointLightPass->getLocation("light.ambient"), point->light.ambient);
+			pointLightPass->setUniform(pointLightPass->getLocation("light.color"), point->light.color);
+			pointLightPass->setUniform(pointLightPass->getLocation("light.constant"), point->light.constant);
+			pointLightPass->setUniform(pointLightPass->getLocation("light.linear"), point->light.linear);
+			pointLightPass->setUniform(pointLightPass->getLocation("light.quadratic"), point->light.quadratic);
+			pointLightPass->setUniform(pointLightPass->getLocation("cameraPos"), cameraPos);
+			VertexBuffer::getDefFramebuf().draw();
+		}
+		const SpotLightSource* spot = node.as<SpotLightSource>();
+		if (false)
+		{
+			spotLightPass->use();
+			spotLightPass->setUniform(spotLightPass->getLocation("baseColor_roughness_map"), 0);
+			spotLightPass->setUniform(spotLightPass->getLocation("normal_metalness_map"), 1);
+			spotLightPass->setUniform(spotLightPass->getLocation("pos_map"), 2);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.pos"), spot->light.pos);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.ambient"), spot->light.ambient);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.color"), spot->light.color);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.constant"), spot->light.constant);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.linear"), spot->light.linear);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.quadratic"), spot->light.quadratic);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.dir"), spot->light.dir);
+			spotLightPass->setUniform(spotLightPass->getLocation("light.cutOff"), cos(spot->light.cutOff));
+			spotLightPass->setUniform(spotLightPass->getLocation("light.outerCutOff"), cos(spot->light.outerCutOff));
+			spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
 			VertexBuffer::getDefFramebuf().draw();
 		}
 		node.forEachConst([&](const Node3D& n)
@@ -96,30 +132,30 @@ namespace a_game_engine
 		Pipeline::set2DContext();
 		Pipeline::clear({ 0.f, 0.f, 0.f });
 		Pipeline::setBlendMode(BlendMode::Add);
+		gbuffer.textures[0].activate(0);
+		gbuffer.textures[1].activate(1);
+		gbuffer.textures[2].activate(2);
 		drawLightSources(*scene.rootNode, camera.transform.getPosition());
 
 		//draw on the screen
 		Pipeline::setBlendMode(BlendMode::Disable);
 		FrameBuffer::useDefault(size);
 		postprocPass->use();
-		postprocPass->setUniform(postprocPass->getLocation("tex"), screenFb.textures[0], 4);
+		postprocPass->setUniform(postprocPass->getLocation("tex"), screenFb.textures[0], 3);
 		rectangleVerts->draw();
 		//scene.skyBox.draw(camera, nullptr);
-		
 
 		//debug
 		debugPass->use();
 		debugPass->setUniform(debugPass->getLocation("offset"), { 0.9f, 0.8f });
 		debugPass->setUniform(debugPass->getLocation("scale"), { 0.2f, 0.2f });
-		debugPass->setUniform(debugPass->getLocation("tex"), gbuffer.textures[0], 0);
+		debugPass->setUniform(debugPass->getLocation("tex"), 0);
 		rectangleVerts->draw();
 		debugPass->setUniform(debugPass->getLocation("offset"), { 0.9f, 0.4f });
-		debugPass->setUniform(debugPass->getLocation("tex"), gbuffer.textures[1], 1);
+		debugPass->setUniform(debugPass->getLocation("tex"), 1);
 		rectangleVerts->draw();
 		debugPass->setUniform(debugPass->getLocation("offset"), { 0.9f, 0.f });
-		debugPass->setUniform(debugPass->getLocation("tex"), gbuffer.textures[2], 2);
+		debugPass->setUniform(debugPass->getLocation("tex"), 2);
 		rectangleVerts->draw();
-
-		
 	}
 }
