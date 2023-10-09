@@ -72,5 +72,4 @@ POINT_LIGHT_SETUP(just_light, fragmentPos); \
 float theta = dot(age_ray.dir, normalize(-just_light.dir)); \
 float epsilon = just_light.cutOff - just_light.outerCutOff; \
 float intensity = clamp((theta - just_light.outerCutOff) / epsilon, 0.0, 1.0); \
-intensity *= step(epsilon, just_light.outerCutOff); \
 age_ray.color *= intensity
