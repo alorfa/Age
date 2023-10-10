@@ -14,6 +14,7 @@ namespace a_game_engine
 		postprocPass = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
 		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/dirLight.pasl");
 		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/pointLight.pasl");
+		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/spotLight.pasl");
 		gbuffer.textures.resize(3);
 		screenFb.textures.resize(1);
 	}
@@ -29,12 +30,11 @@ namespace a_game_engine
 		gbuffer.textures[0].create({ baseColorRGB_RoughnessA, false });
 		gbuffer.textures[1].create({ normalRGB_MetalnessA, false });
 		gbuffer.textures[2].create({ posRGB, false });
-		gbuffer.textures[0].setFiltering(TextureFiltering::Linear);
-		gbuffer.textures[0].setWrap(TextureWrap::ClampToEdge);
-		gbuffer.textures[1].setFiltering(TextureFiltering::Linear);
-		gbuffer.textures[1].setWrap(TextureWrap::ClampToEdge);
-		gbuffer.textures[2].setFiltering(TextureFiltering::Linear);
-		gbuffer.textures[2].setWrap(TextureWrap::ClampToEdge);
+		for (uint i = 0; i < gbuffer.textures.size(); i++)
+		{
+			gbuffer.textures[i].setFiltering(TextureFiltering::Near);
+			gbuffer.textures[i].setWrap(TextureWrap::ClampToEdge);
+		}
 		gbuffer.create();
 
 		screenFb.textures[0].create({ screenRGB , false });
@@ -81,7 +81,7 @@ namespace a_game_engine
 			VertexBuffer::getDefFramebuf().draw();
 		}
 		const SpotLightSource* spot = node.as<SpotLightSource>();
-		if (false)
+		if (spot)
 		{
 			spotLightPass->use();
 			spotLightPass->setUniform(spotLightPass->getLocation("baseColor_roughness_map"), 0);
@@ -147,14 +147,14 @@ namespace a_game_engine
 
 		//debug
 		debugPass->use();
-		debugPass->setUniform(debugPass->getLocation("offset"), { 0.9f, 0.8f });
+		debugPass->setUniform(debugPass->getLocation("offset"), {0.8f, 0.8f});
 		debugPass->setUniform(debugPass->getLocation("scale"), { 0.2f, 0.2f });
 		debugPass->setUniform(debugPass->getLocation("tex"), 0);
 		rectangleVerts->draw();
-		debugPass->setUniform(debugPass->getLocation("offset"), { 0.9f, 0.4f });
+		debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.4f });
 		debugPass->setUniform(debugPass->getLocation("tex"), 1);
 		rectangleVerts->draw();
-		debugPass->setUniform(debugPass->getLocation("offset"), { 0.9f, 0.f });
+		debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
 		debugPass->setUniform(debugPass->getLocation("tex"), 2);
 		rectangleVerts->draw();
 	}

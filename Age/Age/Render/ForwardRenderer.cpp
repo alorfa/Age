@@ -50,7 +50,7 @@ namespace a_game_engine
 		sc.rootNode->forEachConst([&](const Node3D& n) {
 			drawObject(n, info);
 			});
-		sc.skyBox.draw(camera, nullptr);
+		//sc.skyBox.draw(camera, nullptr);
 
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();

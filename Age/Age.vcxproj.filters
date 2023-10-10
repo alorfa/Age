@@ -53,6 +53,7 @@
     <ClInclude Include="Age\Material\ShaderProperty.hpp" />
     <ClInclude Include="Age\Render\DeferredRenderer.hpp" />
     <ClInclude Include="Age\Render\ForwardRenderer.hpp" />
+    <ClInclude Include="Age\Game\Rotate.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -93,5 +94,6 @@
     <ClCompile Include="Age\Material\Material.cpp" />
     <ClCompile Include="Age\Render\ForwardRenderer.cpp" />
     <ClCompile Include="Age\Render\DeferredRenderer.cpp" />
+    <ClCompile Include="Age\Game\Rotate.cpp" />
   </ItemGroup>
 </Project>

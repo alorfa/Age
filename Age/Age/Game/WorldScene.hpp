@@ -13,6 +13,7 @@ namespace a_game
 	{
 		mutable ForwardRenderer forwardRenderer;
 		mutable DeferredRenderer deferredRenderer;
+		Renderer3D* activeRenderer;
 	public:
 		WorldScene();
 

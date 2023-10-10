@@ -22,6 +22,7 @@ void fragmentControl()
     age_base_color = texture(baseColorMap, fragUv).rgb;
     age_specular = age_base_color;
     age_normal = normalize(fragTBN[2]);
+    age_metalness = 0.5;
     age_shininess = 64.f;
 }
 #define AGE_LIGHT_MODE_PHONG

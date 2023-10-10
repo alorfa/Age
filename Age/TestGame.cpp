@@ -152,11 +152,6 @@ namespace a_game
 		if (_eventHandler.getEvent("d"))
 			egd.camera.transform.changePosition() += rightDir * (delta * 4);
 
-		if (_eventHandler.getEvent("left"))
-			egd.camera.transform.changeRotation().z += delta = 0.05f;
-		if (_eventHandler.getEvent("right"))
-			egd.camera.transform.changeRotation().z -= delta = 0.05f;
-
 		const auto up = Math::getUpDir(egd.camera.transform.getRotation());
 
 		if (_eventHandler.getEvent("mouseLeft"))
@@ -218,8 +213,8 @@ int main()
 	ShaderSettings::paintingFunctions.push_back(
 		"age_FragColor.rgb = age_base_color.rgb;\n"
 		"age_FragColor.a = age_roughness;\n"
-		"age_FragColor1.rgb = age_normal.rgb;\n"
-		"age_FragColor1.a = age_metalness * 2.f - 1.f;\n"
+		"age_FragColor1.rgb = age_normal.rgb * 0.5 + 0.5;\n"
+		"age_FragColor1.a = age_metalness;\n"
 		"age_FragColor2.rgb = fragPos;\n");
 
 	ShaderSettings::postprocVsh = File::readAllText(egd.res / "shader/lib/postproc.vsh");

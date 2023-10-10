@@ -3,6 +3,7 @@
 #include <SFML/Window/Event.hpp>
 #include <Age/EventHandler.hpp>
 #include "FollowToCamera.hpp"
+#include "Rotate.hpp"
 #include "Age/egd.hpp"
 #include "Age/Material/Shader.hpp"
 #include "Age/Resource/File.hpp"
@@ -17,6 +18,7 @@ namespace a_game
 		auto nativeSize = egd.window->getSize();
 		forwardRenderer.updateSize({ nativeSize.x, nativeSize.y });
 		deferredRenderer.updateSize({ nativeSize.x, nativeSize.y });
+		activeRenderer = &forwardRenderer;
 
 		activeCamera = &egd.camera;
 
@@ -37,6 +39,7 @@ namespace a_game
 		//objs[1]->shader = &egd.shaders.load(egd.res / "shader/default");
 		objs[0]->setShader(egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		objs[1]->setShader(egd.shaders.load(egd.res / "shader/default.asl"));
+		objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 		auto flashLight = std::make_unique<SpotLightSource>(*this, &*rootNode);
 		std::unique_ptr<PointLightSource> lights[2] = { 
 			std::make_unique<PointLightSource>(*this, &*rootNode),
@@ -95,6 +98,13 @@ namespace a_game
 			forwardRenderer.updateSize({ ev.size.width ,ev.size.height });
 			deferredRenderer.updateSize({ ev.size.width ,ev.size.height });
 		}
+		if (ev.type == ev.KeyPressed)
+		{
+			if (ev.key.code == sf::Keyboard::Left)
+				activeRenderer = &forwardRenderer;
+			if (ev.key.code == sf::Keyboard::Right)
+				activeRenderer = &deferredRenderer;
+		}
 		rootNode->handleRawEvents(ev);
 	}
 	void WorldScene::handleEvents(const EventHandler& ev, float delta)
@@ -109,7 +119,6 @@ namespace a_game
 	}
 	void WorldScene::draw(const Camera3D&, const ShaderProgram* s) const
 	{
-		//forwardRenderer.drawScene(*this, *activeCamera);
-		deferredRenderer.drawScene(*this, *activeCamera);
+		activeRenderer->drawScene(*this, *activeCamera);
 	}
 }
