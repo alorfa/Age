@@ -111,6 +111,7 @@ namespace a_game_engine
 
 	void DeferredRenderer::drawScene(const Scene3D& scene, const Camera3D& camera)
 	{
+		sf::Clock clock;
 		//setup
 		auto* rectangleVerts = &VertexBuffer::getDefFramebuf();
 
@@ -130,6 +131,8 @@ namespace a_game_engine
 			drawObject(n, info);
 			});
 
+		gbufferTime = clock.restart().asMicroseconds();
+
 		//draw lights
 		screenFb.use();
 		Pipeline::clear({ 0.f, 0.f, 0.f });
@@ -141,6 +144,8 @@ namespace a_game_engine
 		gbuffer.textures[1].activate(1);
 		gbuffer.textures[2].activate(2);
 		drawLightSources(*scene.rootNode, camera.transform.getPosition());
+
+		lightTime = clock.restart().asMicroseconds();
 
 		//draw on the screen
 		Pipeline::setBlendMode(BlendMode::Disable);
@@ -162,5 +167,7 @@ namespace a_game_engine
 		debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
 		debugPass->setUniform(debugPass->getLocation("tex"), 2);
 		rectangleVerts->draw();
+
+		screenTime = clock.restart().asMicroseconds();
 	}
 }

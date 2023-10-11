@@ -120,5 +120,8 @@ namespace a_game
 	void WorldScene::draw(const Camera3D&, const ShaderProgram* s) const
 	{
 		activeRenderer->drawScene(*this, *activeCamera);
+		if (activeRenderer == &deferredRenderer)
+			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",
+				deferredRenderer.gbufferTime, deferredRenderer.lightTime, deferredRenderer.screenTime));
 	}
 }

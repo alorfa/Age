@@ -8,14 +8,15 @@ namespace a_game_engine
 {
 	class DeferredRenderer : public Renderer3D
 	{
-		mutable FrameBuffer2D gbuffer, screenFb;
+		FrameBuffer2D gbuffer, screenFb;
 
 		const ShaderProgram 
 			*debugPass,
 			*pointLightPass, *dirLightPass, *spotLightPass,
 			*postprocPass;
-
 	public:
+		int gbufferTime = 0, lightTime = 0, screenTime = 0;
+
 		DeferredRenderer();
 
 		void updateSize(const uvec2& newSize);
