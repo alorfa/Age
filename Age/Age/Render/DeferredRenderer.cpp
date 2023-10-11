@@ -23,10 +23,12 @@ namespace a_game_engine
 	{
 		size = newSize;
 		ImageInfo baseColorRGB_RoughnessA{ newSize, nullptr, TextureFormat::RGBA_Float16 },
-			normalRGB_MetalnessA{ newSize, nullptr, TextureFormat::RGBA },
+			normalRGB_MetalnessA{ newSize, nullptr, TextureFormat::RGBA_Float16 },
 			posRGB{ newSize, nullptr, TextureFormat::RGB_Float32 },
-			screenRGB{ newSize, nullptr, TextureFormat::RGB_Float16 };
-		gbuffer.createRenderBuffer(newSize);
+			screenRGB{ newSize, nullptr, TextureFormat::RGB_Float16 },
+			depthStencil{ newSize, nullptr, TextureFormat::Depth24_Stencil8 };
+		//gbuffer.createRenderBuffer(newSize);
+		gbuffer.depthStencil.create({ depthStencil, false });
 		gbuffer.textures[0].create({ baseColorRGB_RoughnessA, false });
 		gbuffer.textures[1].create({ normalRGB_MetalnessA, false });
 		gbuffer.textures[2].create({ posRGB, false });
@@ -37,6 +39,7 @@ namespace a_game_engine
 		}
 		gbuffer.create();
 
+		screenFb.depthStencil.create({ depthStencil, false });
 		screenFb.textures[0].create({ screenRGB , false });
 		screenFb.textures[0].setFiltering(TextureFiltering::Near);
 		screenFb.textures[0].setWrap(TextureWrap::ClampToEdge);
@@ -129,8 +132,10 @@ namespace a_game_engine
 
 		//draw lights
 		screenFb.use();
-		Pipeline::set2DContext();
 		Pipeline::clear({ 0.f, 0.f, 0.f });
+		screenFb.copyFrom(gbuffer, FrameBuffer::Depth);
+		scene.skyBox.draw(camera, nullptr);
+		Pipeline::set2DContext();
 		Pipeline::setBlendMode(BlendMode::Add);
 		gbuffer.textures[0].activate(0);
 		gbuffer.textures[1].activate(1);

@@ -33,11 +33,11 @@ namespace a_game_engine
 	}
 	void ForwardRenderer::drawScene(const Scene3D& sc, const Camera3D& camera)
 	{
+		ShaderSettings::Forward settings;
 		Scene3DInfo info;
 		info.camera = &camera;
 		info.props.push_back({ "skybox", SkyBox::getSlot() });
 		info.addLights(*sc.rootNode);
-		ShaderSettings::Forward settings;
 		settings.dirLights = info.lights.dir;
 		settings.pointLights = info.lights.point;
 		settings.spotLights = info.lights.spot;
@@ -50,7 +50,7 @@ namespace a_game_engine
 		sc.rootNode->forEachConst([&](const Node3D& n) {
 			drawObject(n, info);
 			});
-		//sc.skyBox.draw(camera, nullptr);
+		sc.skyBox.draw(camera, nullptr);
 
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();

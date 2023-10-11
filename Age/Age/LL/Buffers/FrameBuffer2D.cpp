@@ -45,7 +45,9 @@ namespace a_game_engine
 		for (uint i = 0; i < textures.size(); i++)
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i].getId(), 0);
 
-		if (_rbuf)
+		if (depthStencil.getId())
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencil.getId(), 0);
+		else if (_rbuf)
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _rbuf);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -55,6 +57,34 @@ namespace a_game_engine
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
 		glDrawBuffers((int)textures.size(), attachments);
 		glViewport(0, 0, textures[0].getSize().x, textures[0].getSize().y);
+	}
+	void FrameBuffer2D::copyFrom(const FrameBuffer2D& fb, BufferType type, TextureFiltering filter)
+	{
+		uvec2 srcSize = fb.depthStencil.getSize(), dstSize = depthStencil.getSize();
+		if (fb.textures.size())
+			srcSize = fb.textures[0].getSize();
+		if (srcSize.x == 0 or srcSize.y == 0)
+		{ //TODO: add logger?
+			return;
+		}
+
+		if (textures.size())
+			dstSize = textures[0].getSize();
+		if (dstSize.x == 0 or dstSize.y == 0)
+			return;
+
+		int bitmask = 0;
+		if (type & BufferType::Color)
+			bitmask |= GL_COLOR_BUFFER_BIT;
+		if (type & BufferType::Depth)
+			bitmask |= GL_DEPTH_BUFFER_BIT;
+		if (type & BufferType::Stencil)
+			bitmask |= GL_STENCIL_BUFFER_BIT;
+
+		glBlitNamedFramebuffer(fb._fbuf, _fbuf,
+			0, 0, srcSize.x, srcSize.y,
+			0, 0, dstSize.x, dstSize.y,
+			bitmask, TexEnums::toOglFilter(filter));
 	}
 	void FrameBuffer2D::useDefault(const uvec2& viewport)
 	{
