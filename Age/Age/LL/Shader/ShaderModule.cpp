@@ -44,7 +44,7 @@ namespace a_game_engine
 
 			if (compile_status == GL_FALSE)
 			{
-				//Logger::logError(shader_message);
+				Logger::logError(shader_message);
 				destroy();
 			}
 			else

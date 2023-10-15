@@ -39,7 +39,7 @@ namespace a_game_engine
 		}
 		gbuffer.create();
 
-		screenFb.depthStencil.create({ depthStencil, false });
+		screenFb.createRenderBuffer(newSize);
 		screenFb.textures[0].create({ screenRGB , false });
 		screenFb.textures[0].setFiltering(TextureFiltering::Near);
 		screenFb.textures[0].setWrap(TextureWrap::ClampToEdge);
@@ -153,7 +153,6 @@ namespace a_game_engine
 		postprocPass->use();
 		postprocPass->setUniform(postprocPass->getLocation("tex"), screenFb.textures[0], 3);
 		rectangleVerts->draw();
-		//scene.skyBox.draw(camera, nullptr);
 
 		//debug
 		debugPass->use();

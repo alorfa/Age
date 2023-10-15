@@ -20,11 +20,14 @@ uniform sampler2D baseColorMap;
 void fragmentControl()
 {
     age_base_color = texture(baseColorMap, fragUv).rgb;
-    age_specular = age_base_color;
+    //age_specular = age_base_color;
     age_normal = normalize(fragTBN[2]);
-    age_metalness = 0.3;
-    age_shininess = 64.f;
+    //age_metalness = 0.3;
+    //age_shininess = 64.f;
+    //age_base_color = vec3(1.);
+    age_metalness = 0.0;
+    age_roughness = 1.0;
 }
-#define AGE_LIGHT_MODE_PHONG
+#define AGE_LIGHT_MODE_PBR
 
 #endif

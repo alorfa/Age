@@ -39,7 +39,7 @@ namespace a_game
 		//objs[1]->shader = &egd.shaders.load(egd.res / "shader/default");
 		objs[0]->setShader(egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		objs[1]->setShader(egd.shaders.load(egd.res / "shader/default.asl"));
-		objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
+		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 		auto flashLight = std::make_unique<SpotLightSource>(*this, &*rootNode);
 		std::unique_ptr<PointLightSource> lights[2] = { 
 			std::make_unique<PointLightSource>(*this, &*rootNode),
