@@ -3,22 +3,23 @@
 
 namespace a_game_engine
 {
-	Transform3D::Transform3D()
+	Transform3D::Transform3D(const Transform3D* parent)
+		: _parent(parent)
 	{
 	}
 	vec3& Transform3D::changePosition()
 	{
-		_needToUpdate = true;
+		markForUpdate();
 		return _position;
 	}
 	vec3& Transform3D::changeRotation()
 	{
-		_needToUpdate = true;
+		markForUpdate();
 		return _rotation;
 	}
 	vec3& Transform3D::changeScale()
 	{
-		_needToUpdate = true;
+		markForUpdate();
 		return _scale;
 	}
 	void Transform3D::setIsCamera(bool v)
@@ -26,19 +27,37 @@ namespace a_game_engine
 		if (_isCamera != v)
 		{
 			_isCamera = v;
-			_needToUpdate = true;
+			markForUpdate();
 		}
 	}
-	const mat4& Transform3D::getMatrix() const
+	
+	const mat4& Transform3D::getWorld() const
 	{
-		if (_needToUpdate)
+		if (_parent == nullptr)
+			return getLocal();
+
+		if (_isCamera) //TODO: use parent matrix
+			return getLocal(); 
+
+		if (_worldIsChanged)
 		{
-			_needToUpdate = false;
-			if (_isCamera)
-				_matrix.setViewMatrix(_position, _rotation);
-			else
-				_matrix.setModelMatrix(_position, _rotation, _scale);
+			_worldIsChanged = false;
+
+			const auto& parentMatrix = _parent->getWorld();
+			_world = parentMatrix * getLocal(); //TODO: use fast multiplication
 		}
-		return _matrix;
+		return _world;
+	}
+	const mat4& Transform3D::getLocal() const
+	{
+		if (_localIsChanged)
+		{
+			_localIsChanged = false;
+			if (_isCamera)
+				_local.setViewMatrix(_position, _rotation);
+			else
+				_local.setModelMatrix(_position, _rotation, _scale);
+		}
+		return _local;
 	}
 }

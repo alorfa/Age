@@ -9,12 +9,22 @@ namespace a_game_engine
 	{
 	private:
 		vec3 _position, _rotation, _scale = { 1.f, 1.f, 1.f };
-		mutable mat4 _matrix;
-		mutable bool _needToUpdate = true;
+		mutable mat4 _local, _world;
+		mutable bool _localIsChanged = true, _worldIsChanged = true, _otherIsChanged = true;
 		bool _isCamera = false;
-	public:
-		Transform3D();
+		const Transform3D* _parent = nullptr;
 
+		inline void markForUpdate()
+		{
+			_localIsChanged =
+				_worldIsChanged =
+				_otherIsChanged = true;
+		}
+	public:
+		Transform3D(const Transform3D* parent);
+
+		inline void markParent() const { _worldIsChanged = true; }
+		
 		vec3& changePosition();
 		vec3& changeRotation();
 		vec3& changeScale();
@@ -24,7 +34,9 @@ namespace a_game_engine
 		void setIsCamera(bool v = true);
 		inline bool isCamera() const { return _isCamera; }
 
-		inline bool isNeedToUpdate() const { return _needToUpdate; }
-		const mat4& getMatrix() const;
+		inline void setChangedFlag(bool value = true) { _otherIsChanged = value; }
+		inline bool getChangedFlag() const { return _otherIsChanged; }
+		const mat4& getLocal() const;
+		const mat4& getWorld() const;
 	};
 }

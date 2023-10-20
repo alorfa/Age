@@ -3,6 +3,7 @@
 namespace a_game_engine
 {
 	Camera3D::Camera3D()
+		: transform(nullptr)
 	{
 		transform.setIsCamera();
 	}

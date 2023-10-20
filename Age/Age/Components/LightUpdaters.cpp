@@ -5,13 +5,13 @@ namespace a_game_engine
 {
 	void PointLightUpdater::update(float delta)
 	{
-		light->light.pos = light->transform.getPosition();
+		light->light.pos = light->getTransform().getPosition();
 	}
 
 	void SpotLightUpdater::update(float delta)
 	{
-		light->light.pos = light->transform.getPosition();
-		light->light.dir = Math::getForwardDir(light->transform.getRotation());
+		light->light.pos = light->getTransform().getPosition();
+		light->light.dir = Math::getForwardDir(light->getTransform().getRotation());
 	}
 }
 

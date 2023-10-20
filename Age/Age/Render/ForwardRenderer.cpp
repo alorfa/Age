@@ -28,8 +28,11 @@ namespace a_game_engine
 	}
 	void ForwardRenderer::drawObject(const Node3D& o, const Scene3DInfo& info)
 	{
-		static mat4 identity;
-		o.draw(identity, info);
+		o.draw(info);
+		o.forEachConst([&](const Node3D& n)
+			{
+				n.draw(info);
+			});
 	}
 	void ForwardRenderer::drawScene(const Scene3D& sc, const Camera3D& camera)
 	{
@@ -47,9 +50,7 @@ namespace a_game_engine
 		mainFb.use();
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f });
 		sc.skyBox.cubemap->activate(SkyBox::getSlot());
-		sc.rootNode->forEachConst([&](const Node3D& n) {
-			drawObject(n, info);
-			});
+		drawObject(*sc.rootNode, info);
 		sc.skyBox.draw(camera, nullptr);
 
 		mainFb.useDefault(size);

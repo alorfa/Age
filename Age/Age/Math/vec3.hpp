@@ -40,6 +40,15 @@ namespace a_game_engine
 			float l = 1.f / length();
 			(*this) *= l;
 		}
+
+		bool operator==(const vector3& v) const
+		{
+			return x == v.x && y == v.y && z == v.z;
+		}
+		bool operator!=(const vector3& v) const
+		{
+			return !operator==(v);
+		}
 	};
 
 #define AGE_VECTOR3_OPERATOR_IMPL(oper)										\

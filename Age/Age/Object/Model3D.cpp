@@ -7,7 +7,7 @@ namespace a_game_engine
     void Model3D::draw(const mat4& t, const Scene3DInfo& info) const
     {
         TransformProps transform;
-        transform.view = &info.camera->transform.getMatrix();
+        transform.view = &info.camera->transform.getWorld();
         transform.proj = &info.camera->getProjection();
         transform.cameraPos = info.camera->transform.getPosition();
         transform.near = info.camera->getNearFar().x;

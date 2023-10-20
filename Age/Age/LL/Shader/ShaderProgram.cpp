@@ -109,7 +109,7 @@ namespace a_game_engine
 	}
 	void ShaderProgram::setCamera(const Camera3D& camera) const
 	{
-		setUniform(getLocation("view"), camera.transform.getMatrix());
+		setUniform(getLocation("view"), camera.transform.getWorld());
 		setUniform(getLocation("projection"), camera.getProjection());
 		setUniform(getLocation("cameraPos"), camera.transform.getPosition());
 	}

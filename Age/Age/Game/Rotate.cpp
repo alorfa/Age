@@ -10,7 +10,7 @@ namespace a_game
 
 	void Rotate::update(float delta)
 	{
-		node->transform.changeRotation().z += delta * 0.2f;
+		node->changeTransform().changeRotation().z += delta * 0.2f;
 	}
 }
 

@@ -23,7 +23,7 @@ namespace a_game_engine
 		{
 			Pipeline::setDepthFunc(DepthFunc::LEqual);
 			s->use();
-			mat4 view = camera.transform.getMatrix();
+			mat4 view = camera.transform.getWorld();
 			view.data[3][0] = view.data[3][1] = view.data[3][2] = 0.f;
 			s->setUniform(s->getLocation("view"), view);
 			s->setUniform(s->getLocation("projection"), camera.getProjection());

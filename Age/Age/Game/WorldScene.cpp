@@ -52,16 +52,16 @@ namespace a_game
 		lights[1]->setShader(lightShader);
 		flashLight->addComponent(std::make_unique<FollowToCamera>(*flashLight, *activeCamera));
 
-		lights[0]->transform.changePosition() = vec3(-1.f, 5, 2);
-		lights[1]->transform.changePosition() = vec3(-3.f, 4, -2);
+		lights[0]->changeTransform().changePosition() = vec3(-1.f, 5, 2);
+		lights[1]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
 		lights[0]->light.color = vec3(1.5f, 0.9f, 0.3f);
 		//lights[0]->light.color = vec3(0.0f, 0.0f, 0.0f);
 		lights[0]->light.ambient = lights[0]->light.color * 0.1f;
 		lights[1]->light.color = vec3(1.0f, 0.1f, 0.1f);
 		//lights[1]->light.color = vec3(0.0f, 0.f, 0.f);
 		lights[1]->light.ambient = lights[1]->light.color * 0.1f;
-		objs[0]->transform.changePosition() = {-3, 5, 0};
-		objs[1]->transform.changePosition() = { 0, 5, -1 };
+		objs[0]->changeTransform().changePosition() = {-3, 5, 0};
+		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
 		flashLight->light.color = { 0.6f, 0.6f, 1.f };
 		flashLight->light.ambient = flashLight->light.color * 0.1f;
 		auto dirLight = std::make_unique<DirLightSource>(*this, &*rootNode);
@@ -88,7 +88,7 @@ namespace a_game
 		for (auto& light : rootNode->infChildren)
 		{
 			if (light->is<PointLightSource>())
-				light->transform.changeScale() *= 0.15f;
+				light->changeTransform().changeScale() *= 0.15f;
 		}
 	}
 	void WorldScene::handleRawEvents(const sf::Event& ev)

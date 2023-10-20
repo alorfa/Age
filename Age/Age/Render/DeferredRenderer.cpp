@@ -48,8 +48,11 @@ namespace a_game_engine
 
 	void DeferredRenderer::drawObject(const Node3D& o, const Scene3DInfo& info)
 	{
-		static mat4 identity;
-		o.draw(identity, info);
+		o.draw(info);
+		o.forEachConst([&](const Node3D& n)
+			{
+				n.draw(info);
+			});
 	}
 
 	void DeferredRenderer::drawLightSources(const Node3D& node, const vec3& cameraPos)
@@ -127,9 +130,7 @@ namespace a_game_engine
 		Pipeline::setBlendMode(BlendMode::Disable);
 		Pipeline::set3DContext();
 		Pipeline::clear({ 0.f, 0.f, 0.f });
-		scene.rootNode->forEachConst([&](const Node3D& n) {
-			drawObject(n, info);
-			});
+		drawObject(*scene.rootNode, info);
 
 		gbufferTime = clock.restart().asMicroseconds();
 

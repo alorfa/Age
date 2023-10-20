@@ -4,8 +4,32 @@
 
 namespace a_game_engine
 {
+	Transform3D& Node3D::changeTransform()
+	{
+		forEach([](Node3D& n)
+			{
+				n.getTransform().markParent();
+				n.changeTransform();
+			});
+		return _transform;
+	}
+	void Node3D::setPosition(const vec3& pos)
+	{
+		if (getTransform().getPosition() != pos)
+			changeTransform().changePosition() = pos;
+	}
+	void Node3D::setEulerRotation(const vec3& rot)
+	{
+		if (getTransform().getRotation() != rot)
+			changeTransform().changeRotation() = rot;
+	}
+	void Node3D::setScale(const vec3& scale)
+	{
+		if (getTransform().getScale() != scale)
+			changeTransform().changeScale() = scale;
+	}
 	Node3D::Node3D(Scene3D& scene, Node3D* parent, Type type)
-		: scene(&scene), parent(parent), type(type)
+		: scene(&scene), parent(parent), type(type), _transform(parent ? parent->_transform : nullptr)
 	{ }
 
 	void Node3D::addComponent(std::unique_ptr<Component>&& comp)
@@ -60,12 +84,7 @@ namespace a_game_engine
 			n.update(delta);
 		});
 	}
-	void Node3D::draw(const mat4& parent, const Scene3DInfo& info) const
+	void Node3D::draw(const Scene3DInfo& info) const
 	{
-		mat4 curTransform = parent * transform.getMatrix();
-		forEachConst([&](const Node3D& n)
-			{
-				n.draw(curTransform, info);
-			});
 	}
 }

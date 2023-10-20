@@ -14,8 +14,8 @@ namespace a_game
 
 	void FollowToCamera::update(float delta)
 	{
-		node->transform.changePosition() = camera->transform.getPosition();
-		node->transform.changeRotation() = camera->transform.getRotation();
+		node->setPosition(camera->transform.getPosition());
+		node->setEulerRotation(camera->transform.getRotation());
 	}
 }
 

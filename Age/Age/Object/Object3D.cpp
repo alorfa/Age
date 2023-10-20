@@ -21,16 +21,12 @@ namespace a_game_engine
 		}
 	}
 
-	void Object3D::draw(const mat4& parent, const Scene3DInfo& info) const
+	void Object3D::draw(const Scene3DInfo& info) const
 	{
 		if (model)
 		{
 			Pipeline::setDepthFunc(DepthFunc::Less);
-
-			mat4 curTransform = parent * transform.getMatrix();
-			model->draw(curTransform, info);
+			model->draw(getTransform().getWorld(), info);
 		}
-
-		Node3D::draw(parent, info);
 	}
 }

@@ -21,7 +21,14 @@ namespace a_game_engine
 
 	class Node3D
 	{
+		Transform3D _transform;
 	public:
+		inline const Transform3D& getTransform() const { return _transform; }
+		Transform3D& changeTransform();
+		void setPosition(const vec3& pos);
+		void setEulerRotation(const vec3& rot);
+		void setScale(const vec3& scale);
+
 		enum Type : unsigned int
 		{
 			Usual, Influencing
@@ -35,8 +42,6 @@ namespace a_game_engine
 		Container children;
 		Container infChildren;
 		std::vector<std::unique_ptr<Component>> components;
-
-		Transform3D transform;
 
 		Node3D(Scene3D& scene, Node3D* parent, Type type = Type::Usual);
 
@@ -64,7 +69,7 @@ namespace a_game_engine
 		void handleRawEvents(const sf::Event& ev);
 		void handleEvents(const EventHandler& ev, float delta);
 		void update(float delta);
-		virtual void draw(const mat4& parent, const Scene3DInfo& info) const;
+		virtual void draw(const Scene3DInfo& info) const;
 
 		virtual ~Node3D() = default;
 	};

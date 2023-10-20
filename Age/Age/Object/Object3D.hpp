@@ -17,6 +17,6 @@ namespace a_game_engine
 
 		void setShader(const Shader& s);
 
-		virtual void draw(const mat4& parent, const Scene3DInfo& info) const override;
+		virtual void draw(const Scene3DInfo& info) const override;
 	};
 }
