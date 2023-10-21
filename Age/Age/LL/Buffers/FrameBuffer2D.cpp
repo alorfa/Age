@@ -58,7 +58,7 @@ namespace a_game_engine
 		glDrawBuffers((int)textures.size(), attachments);
 		glViewport(0, 0, textures[0].getSize().x, textures[0].getSize().y);
 	}
-	void FrameBuffer2D::copyFrom(const FrameBuffer2D& fb, BufferType type, TextureFiltering filter)
+	void FrameBuffer2D::copyFrom(const FrameBuffer2D& fb, int type, TextureFiltering filter)
 	{
 		uvec2 srcSize = fb.depthStencil.getSize(), dstSize = depthStencil.getSize();
 		if (fb.textures.size())

@@ -29,7 +29,7 @@ namespace a_game_engine
 		void create();
 		void clear();
 		void use();
-		void copyFrom(const FrameBuffer2D& fb, BufferType type, TextureFiltering filter = TextureFiltering::Near);
+		void copyFrom(const FrameBuffer2D& fb, int type, TextureFiltering filter = TextureFiltering::Near);
 		static void useDefault(const uvec2& viewport);
 		static bool checkActiveBuffer();
 	};

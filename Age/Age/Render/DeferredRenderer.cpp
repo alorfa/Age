@@ -5,6 +5,7 @@
 #include "Age/Scene/SkyBox.hpp"
 #include "Age/Scene/Scene3D.hpp"
 #include "Age/Light/LightSource.hpp"
+#include "Age/LL/opengl.h"
 
 namespace a_game_engine
 {
@@ -134,7 +135,11 @@ namespace a_game_engine
 		gbuffer.use();
 		Pipeline::setBlendMode(BlendMode::Disable);
 		Pipeline::set3DContext();
+		Pipeline::enableStencil(true);
+		Pipeline::setStencilWrite(0x1);
 		Pipeline::clear({ 0.f, 0.f, 0.f });
+		Pipeline::setStencilFunc(DepthFunc::Always, 0xFF);
+		Pipeline::setStencilOp(StencilOp::Replace);
 		drawObject(*scene.rootNode, info);
 
 		gbufferTime = clock.restart().asMicroseconds();
@@ -144,14 +149,19 @@ namespace a_game_engine
 				(m.shader->requiresEmission || 
 					m.shader->customRendering);
 		};
-		//draw lights
+		//forward draw
 		screenFb.use();
 		Pipeline::clear({ 0.f, 0.f, 0.f });
-		screenFb.copyFrom(gbuffer, FrameBuffer::Depth);
+		screenFb.copyFrom(gbuffer, FrameBuffer::Depth | FrameBuffer::Stencil);
+		Pipeline::setStencilWrite(2);
 		drawObject(*scene.rootNode, info);
+		Pipeline::setStencilWrite(0);
 		scene.skyBox.draw(camera, nullptr);
+
+		//draw lights
 		Pipeline::set2DContext();
 		Pipeline::setBlendMode(BlendMode::Add);
+		Pipeline::setStencilFunc(DepthFunc::Equal, 1);
 		gbuffer.textures[0].activate(0);
 		gbuffer.textures[1].activate(1);
 		gbuffer.textures[2].activate(2);
@@ -160,6 +170,7 @@ namespace a_game_engine
 		lightTime = clock.restart().asMicroseconds();
 
 		//draw on the screen
+		Pipeline::enableStencil(false);
 		Pipeline::setBlendMode(BlendMode::Disable);
 		FrameBuffer::useDefault(size);
 		postprocPass->use();

@@ -5,10 +5,14 @@ namespace a_game_engine
 {
 	namespace
 	{
-		DepthFunc depthFunc = DepthFunc::Never;
+		DepthFunc depthFunc = DepthFunc::Always;
 		CullFace cullFace = CullFace::Disable;
 		bool frontFaceCCW = true;
 		BlendMode blendNode = BlendMode::Disable;
+
+		bool stencilIsEnabled = false;
+		DepthFunc stencilFunc = DepthFunc::Always;
+		unsigned char stencilWrite = 0, stencilMask = 0, stencilTest = 0;
 	}
 
 	void Pipeline::setBlendMode(BlendMode mode)
@@ -37,10 +41,10 @@ namespace a_game_engine
 	{
 		if (func != depthFunc)
 		{
-			if (depthFunc == DepthFunc::Never)
+			if (depthFunc == DepthFunc::Always)
 				glEnable(GL_DEPTH_TEST);
 			depthFunc = func;
-			if (func == DepthFunc::Never)
+			if (func == DepthFunc::Always)
 			{
 				glDisable(GL_DEPTH_TEST);
 				return;
@@ -79,13 +83,50 @@ namespace a_game_engine
 	{
 		glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
 	}
-	void Pipeline::clear(const vec3& color)
+	void Pipeline::clear(const vec3& color, bool depth, bool stencil)
 	{
 		int flag = GL_COLOR_BUFFER_BIT;
-		if (depthFunc != DepthFunc::Disable)
+		if (depth)
 			flag |= GL_DEPTH_BUFFER_BIT;
+		if (stencil)
+			flag |= GL_STENCIL_BUFFER_BIT;
 		glClearColor(color.x, color.y, color.z, 1.f);
 		glClear(flag);
+	}
+	void Pipeline::enableStencil(bool value)
+	{
+		if (value == stencilIsEnabled)
+			return;
+
+		stencilIsEnabled = value;
+		if (value)
+			glEnable(GL_STENCIL_TEST);
+		else
+			glDisable(GL_STENCIL_TEST);
+	}
+	void Pipeline::setStencilWrite(unsigned char value)
+	{
+		if (value != stencilWrite)
+		{
+			glStencilMask(value);
+			stencilWrite = value;
+		}
+	}
+	void Pipeline::setStencilFunc(DepthFunc func, unsigned char value, unsigned char mask)
+	{
+		if (stencilFunc == func && stencilTest == value && stencilMask == mask)
+			return;
+
+		stencilFunc = func;
+		stencilTest = value;
+		stencilMask = mask;
+
+		glStencilFunc(toOglValue(func), value, mask);
+	}
+	void Pipeline::setStencilOp(StencilOp success, StencilOp fail)
+	{
+		const int failValue = toOglValue(fail);
+		glStencilOp(failValue, failValue, toOglValue(success));
 	}
 	void Pipeline::set3DContext()
 	{
@@ -132,5 +173,27 @@ namespace a_game_engine
 			return GL_FRONT_AND_BACK; 
 		}
 		return GL_BACK;
+	}
+	int Pipeline::toOglValue(StencilOp op)
+	{
+		switch (op)
+		{
+		case StencilOp::Keep:
+			return GL_KEEP;
+		case StencilOp::Zero:
+			return GL_ZERO;
+		case StencilOp::Replace:
+			return GL_REPLACE;
+		case StencilOp::Incr:
+			return GL_INCR;
+		case StencilOp::IncrWrap:
+			return GL_INCR_WRAP;
+		case StencilOp::Decr:
+			return GL_DECR;
+		case StencilOp::DecrWrap:
+			return GL_DECR_WRAP;
+		case StencilOp::Invert:
+			return GL_INVERT;
+		}
 	}
 }

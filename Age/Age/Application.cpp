@@ -71,6 +71,7 @@ namespace a_game_engine
 		settings.minorVersion = 5;
 		settings.antialiasingLevel = antialiasing;
 		settings.depthBits = depthBits;
+		settings.stencilBits = 8;
 		_window.create({ size.x, size.y }, title, style, settings);
 
 		glewExperimental = true;
