@@ -23,7 +23,8 @@ namespace a_game_engine
         {
             tr.model = &t;
             Mesh3D::RenderInfo renderInfo = {tr, info.props, *info.shader, info.shaderSettings};
-            mesh->draw(renderInfo);
+            if (!info.drawingCondition or info.drawingCondition(mesh->material))
+                mesh->draw(renderInfo);
         }
 
         for (const auto& node : children)

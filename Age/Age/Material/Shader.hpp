@@ -23,6 +23,8 @@ namespace a_game_engine
 		static std::string generateBinding(uint vecComponents, uint number);
 		static std::string toVecType(uint vecComponents);
 	public:
+		bool requiresEmission = false, customRendering = false, opaque = true;
+
 		Shader(const std::string& source, const ShaderSettings::Include& include);
 		Shader(const std::string& source);
 		struct GlslCode { std::string vert, frag; };

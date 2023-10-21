@@ -46,7 +46,8 @@ namespace a_game
 			std::make_unique<PointLightSource>(*this, &*rootNode) };
 		lights[0]->model = lights[1]->model = 
 			&egd.models.load(egd.res / "model/cube.obj");
-		const Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
+		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
+		lightShader.requiresEmission = true;
 		flashLight->setShader(lightShader);
 		lights[0]->setShader(lightShader);
 		lights[1]->setShader(lightShader);

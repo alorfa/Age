@@ -51,7 +51,7 @@ namespace a_game_engine
 		o.draw(info);
 		o.forEachConst([&](const Node3D& n)
 			{
-				n.draw(info);
+				drawObject(n, info);
 			});
 	}
 
@@ -120,6 +120,11 @@ namespace a_game_engine
 
 		Scene3DInfo info;
 		info.camera = &camera;
+		info.drawingCondition = [](const Material& m) { 
+			return m.shader->opaque &&
+				not m.shader->requiresEmission &&
+				not m.shader->customRendering;
+		};
 		ShaderSettings::Deferred deferred;
 		deferred.bindings = { 4, 4, 3 };
 		deferred.paintingFuncIndex = 0;
@@ -134,10 +139,16 @@ namespace a_game_engine
 
 		gbufferTime = clock.restart().asMicroseconds();
 
+		info.drawingCondition = [](const Material& m) {
+			return m.shader->opaque && 
+				(m.shader->requiresEmission || 
+					m.shader->customRendering);
+		};
 		//draw lights
 		screenFb.use();
 		Pipeline::clear({ 0.f, 0.f, 0.f });
 		screenFb.copyFrom(gbuffer, FrameBuffer::Depth);
+		drawObject(*scene.rootNode, info);
 		scene.skyBox.draw(camera, nullptr);
 		Pipeline::set2DContext();
 		Pipeline::setBlendMode(BlendMode::Add);

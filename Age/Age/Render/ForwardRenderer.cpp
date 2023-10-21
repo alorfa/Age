@@ -31,7 +31,7 @@ namespace a_game_engine
 		o.draw(info);
 		o.forEachConst([&](const Node3D& n)
 			{
-				n.draw(info);
+				drawObject(n, info);
 			});
 	}
 	void ForwardRenderer::drawScene(const Scene3D& sc, const Camera3D& camera)
