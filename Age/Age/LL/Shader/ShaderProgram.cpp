@@ -54,7 +54,7 @@ namespace a_game_engine
 
 		_isValid = true;
 
-		if (log_length > 0)
+		if (log_length > 1) //some videocards can return "\0" with length 1
 		{
 			std::string shader_message;
 			shader_message.resize(log_length);
