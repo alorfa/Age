@@ -7,7 +7,7 @@
 
 namespace a_game_engine
 {
-	class Mesh3D
+	class Mesh
 	{
 	public:
 		struct RenderInfo
@@ -25,13 +25,13 @@ namespace a_game_engine
 				: transform(&t), external(&e), shader(&s), shaderSettings(&settings) {}
 		};
 
-		Mesh3D() = default;
-		Mesh3D(const Mesh3D&) = delete;
-		Mesh3D& operator=(const Mesh3D&) = delete;
-		Mesh3D(Mesh3D&&) = default;
-		Mesh3D& operator=(Mesh3D&&) = default;
+		Mesh() = default;
+		Mesh(const Mesh&) = delete;
+		Mesh& operator=(const Mesh&) = delete;
+		Mesh(Mesh&&) = default;
+		Mesh& operator=(Mesh&&) = default;
 
-		VertexBuffer buffer;
+		const VertexBuffer* buffer = nullptr;
 		Material material;
 
 		void draw(const RenderInfo& info) const;

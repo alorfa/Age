@@ -195,5 +195,6 @@ namespace a_game_engine
 		case StencilOp::Invert:
 			return GL_INVERT;
 		}
+		return GL_KEEP;
 	}
 }

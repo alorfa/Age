@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Transform3D.hpp"
+#include "Transform.hpp"
 #include "Age/Math/vec2.hpp"
 
 namespace a_game_engine
 {
-	class Camera3D
+	class Camera
 	{
 		mutable mat4 _projection;
 		mutable bool _needUpdate = true;
@@ -16,9 +16,9 @@ namespace a_game_engine
 		vec2 _nearFar;
 		bool _isOrtho = false;
 	public:
-		Transform3D transform;
+		Transform transform;
 
-		Camera3D();
+		Camera();
 
 		void setFov(float fov); //only for perspective
 		void setViewport(float viewport); //only for ortho

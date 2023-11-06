@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Age/Object/Model3D.hpp"
+#include "Age/Object/Model.hpp"
 #include "TextureLoader.hpp"
 
 namespace a_game_engine
 {
 	class ModelLoader
 	{
-		static std::unique_ptr<Model3D> defModel;
-		std::map<std::filesystem::path, std::unique_ptr<Model3D>> resources;
+		static std::unique_ptr<Model> defModel;
+		std::map<std::filesystem::path, std::unique_ptr<Model>> resources;
 		TextureLoader textureLoader;
 	public:
 		ModelLoader();
@@ -28,9 +28,9 @@ namespace a_game_engine
 			Settings() = default;
 		};
 
-		Model3D& load(const std::filesystem::path& path, const Settings& s = Settings{});
-		std::unique_ptr<Model3D> readFromFile(const std::filesystem::path& path, 
+		Model& load(const std::filesystem::path& path, const Settings& s = Settings{});
+		std::unique_ptr<Model> readFromFile(const std::filesystem::path& path, 
 			const Settings& s = Settings{});
-		static Model3D& getDefault();
+		static Model& getDefault();
 	};
 }

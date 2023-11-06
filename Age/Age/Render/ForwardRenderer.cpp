@@ -5,9 +5,8 @@
 #include "Age/LL/Pipeline.hpp"
 #include "Age/Resource/ShaderLoader.hpp"
 #include "Age/LL/Buffers/VertexBuffer.hpp"
-#include "Age/Object/Object3D.hpp"
 #include "Age/egd.hpp"
-#include "Age/Scene/Scene3D.hpp"
+#include "Age/Scene/Scene.hpp"
 
 namespace a_game_engine
 {
@@ -26,18 +25,18 @@ namespace a_game_engine
 		mainFb.textures[0].setWrap(TextureWrap::ClampToEdge);
 		mainFb.create();
 	}
-	void ForwardRenderer::drawObject(const Node3D& o, const Scene3DInfo& info)
+	void ForwardRenderer::drawObject(const Node& o, const SceneInfo& info)
 	{
 		o.draw(info);
-		o.forEachConst([&](const Node3D& n)
+		o.forEachConst([&](const Node& n)
 			{
 				drawObject(n, info);
 			});
 	}
-	void ForwardRenderer::drawScene(const Scene3D& sc, const Camera3D& camera)
+	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera)
 	{
 		ShaderSettings::Forward settings;
-		Scene3DInfo info;
+		SceneInfo info;
 		info.camera = &camera;
 		info.props.push_back({ "skybox", SkyBox::getSlot() });
 		info.addLights(*sc.rootNode);

@@ -1,28 +1,28 @@
-#include "Transform3D.hpp"
+#include "Transform.hpp"
 #include "Age/Math/Math.hpp"
 
 namespace a_game_engine
 {
-	Transform3D::Transform3D(const Transform3D* parent)
+	Transform::Transform(const Transform* parent)
 		: _parent(parent)
 	{
 	}
-	vec3& Transform3D::changePosition()
+	vec3& Transform::changePosition()
 	{
 		markForUpdate();
 		return _position;
 	}
-	vec3& Transform3D::changeRotation()
+	vec3& Transform::changeRotation()
 	{
 		markForUpdate();
 		return _rotation;
 	}
-	vec3& Transform3D::changeScale()
+	vec3& Transform::changeScale()
 	{
 		markForUpdate();
 		return _scale;
 	}
-	void Transform3D::setIsCamera(bool v)
+	void Transform::setIsCamera(bool v)
 	{
 		if (_isCamera != v)
 		{
@@ -31,7 +31,7 @@ namespace a_game_engine
 		}
 	}
 	
-	const mat4& Transform3D::getWorld() const
+	const mat4& Transform::getWorld() const
 	{
 		if (_parent == nullptr)
 			return getLocal();
@@ -48,7 +48,7 @@ namespace a_game_engine
 		}
 		return _world;
 	}
-	const mat4& Transform3D::getLocal() const
+	const mat4& Transform::getLocal() const
 	{
 		if (_localIsChanged)
 		{

@@ -1,12 +1,12 @@
-#include "Age/Object/Mesh3D.hpp"
+#include "Age/Object/Mesh.hpp"
 #include "Age/Material/Shader.hpp"
 
 namespace a_game_engine
 {
-	void Mesh3D::draw(const RenderInfo& info) const
+	void Mesh::draw(const RenderInfo& info) const
 	{
 		const Shader* shTemp = info.shader ? info.shader : material.shader;
-		if (shTemp == nullptr)
+		if (shTemp == nullptr or not buffer)
 			return;
 		const ShaderProgram* s = &shTemp->getProgram(*info.shaderSettings);
 
@@ -17,6 +17,6 @@ namespace a_game_engine
 			s->setUniform(prop);
 		s->setTransformProps(*info.transform);
 
-		buffer.draw();
+		buffer->draw();
 	}
 }

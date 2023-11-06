@@ -5,14 +5,14 @@
 
 namespace a_game_engine
 {
-	struct Transform3D
+	struct Transform
 	{
 	private:
 		vec3 _position, _rotation, _scale = { 1.f, 1.f, 1.f };
 		mutable mat4 _local, _world;
 		mutable bool _localIsChanged = true, _worldIsChanged = true, _otherIsChanged = true;
 		bool _isCamera = false;
-		const Transform3D* _parent = nullptr;
+		const Transform* _parent = nullptr;
 
 		inline void markForUpdate()
 		{
@@ -21,7 +21,7 @@ namespace a_game_engine
 				_otherIsChanged = true;
 		}
 	public:
-		Transform3D(const Transform3D* parent);
+		Transform(const Transform* parent);
 
 		inline void markParent() const { _worldIsChanged = true; }
 		

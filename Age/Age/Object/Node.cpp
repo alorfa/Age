@@ -1,90 +1,90 @@
-#include "Node3D.hpp"
+#include "Node.hpp"
 #include <SFML/Window/Event.hpp>
 #include "Age/EventHandler.hpp"
 
 namespace a_game_engine
 {
-	Transform3D& Node3D::changeTransform()
+	Transform& Node::changeTransform()
 	{
-		forEach([](Node3D& n)
+		forEach([](Node& n)
 			{
 				n.getTransform().markParent();
 				n.changeTransform();
 			});
 		return _transform;
 	}
-	void Node3D::setPosition(const vec3& pos)
+	void Node::setPosition(const vec3& pos)
 	{
 		if (getTransform().getPosition() != pos)
 			changeTransform().changePosition() = pos;
 	}
-	void Node3D::setEulerRotation(const vec3& rot)
+	void Node::setEulerRotation(const vec3& rot)
 	{
 		if (getTransform().getRotation() != rot)
 			changeTransform().changeRotation() = rot;
 	}
-	void Node3D::setScale(const vec3& scale)
+	void Node::setScale(const vec3& scale)
 	{
 		if (getTransform().getScale() != scale)
 			changeTransform().changeScale() = scale;
 	}
-	Node3D::Node3D(Scene3D& scene, Node3D* parent, Type type)
+	Node::Node(Scene& scene, Node* parent, Type type)
 		: scene(&scene), parent(parent), type(type), _transform(parent ? parent->_transform : nullptr)
 	{ }
 
-	void Node3D::addComponent(std::unique_ptr<Component>&& comp)
+	void Node::addComponent(std::unique_ptr<Component>&& comp)
 	{
 		components.push_back(std::move(comp));
 	}
-	void Node3D::addChild(std::unique_ptr<Node3D>&& node)
+	void Node::addChild(std::unique_ptr<Node>&& node)
 	{
 		if (node->isInfluencing())
 			infChildren.push_front(std::move(node));
 		else
 			children.push_front(std::move(node));
 	}
-	void Node3D::forEach(std::function<void(Node3D&)> func)
+	void Node::forEach(std::function<void(Node&)> func)
 	{
 		for (const auto& node : children)
 			func(*node);
 		for (const auto& node : infChildren)
 			func(*node);
 	}
-	void Node3D::forEachConst(std::function<void(const Node3D&)> func) const
+	void Node::forEachConst(std::function<void(const Node&)> func) const
 	{
 		for (const auto& node : children)
 			func(*node);
 		for (const auto& node : infChildren)
 			func(*node);
 	}
-	void Node3D::handleRawEvents(const sf::Event& ev)
+	void Node::handleRawEvents(const sf::Event& ev)
 	{
 		for (auto& comp : components)
 			comp->handleRawEvents(ev);
 
-		forEach([&](Node3D& n) {
+		forEach([&](Node& n) {
 			n.handleRawEvents(ev);
 		});
 	}
-	void Node3D::handleEvents(const EventHandler& ev, float delta)
+	void Node::handleEvents(const EventHandler& ev, float delta)
 	{
 		for (auto& comp : components)
 			comp->handleEvents(ev, delta);
 
-		forEach([&](Node3D& n) {
+		forEach([&](Node& n) {
 			n.handleEvents(ev, delta);
 		});
 	}
-	void Node3D::update(float delta)
+	void Node::update(float delta)
 	{
 		for (auto& comp : components)
 			comp->update(delta);
 
-		forEach([&](Node3D& n) {
+		forEach([&](Node& n) {
 			n.update(delta);
 		});
 	}
-	void Node3D::draw(const Scene3DInfo& info) const
+	void Node::draw(const SceneInfo& info) const
 	{
 	}
 }

@@ -5,14 +5,14 @@
 
 namespace a_game_engine
 {
-	class Scene3D;
+	class Scene;
 
 	class PointLightSource : public Object3D
 	{
 	public:
 		PointLight light;
 
-		PointLightSource(Scene3D& scene, Node3D* parent);
+		PointLightSource(Scene& scene, Node* parent);
 	};
 
 	class SpotLightSource : public Object3D
@@ -20,14 +20,14 @@ namespace a_game_engine
 	public:
 		SpotLight light;
 
-		SpotLightSource(Scene3D& scene, Node3D* parent);
+		SpotLightSource(Scene& scene, Node* parent);
 	};
 
-	class DirLightSource : public Node3D
+	class DirLightSource : public Node
 	{
 	public:
 		DirLight light;
 
-		DirLightSource(Scene3D& scene, Node3D* parent);
+		DirLightSource(Scene& scene, Node* parent);
 	};
 }

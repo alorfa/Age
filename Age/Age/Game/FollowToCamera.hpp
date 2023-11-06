@@ -4,8 +4,8 @@
 
 namespace a_game_engine
 {
-	class Node3D;
-	class Camera3D;
+	class Node;
+	class Camera;
 }
 
 using namespace a_game_engine;
@@ -14,10 +14,10 @@ namespace a_game
 {
 	class FollowToCamera : public Component
 	{
-		Node3D* node = nullptr;
-		const Camera3D* camera = nullptr;
+		Node* node = nullptr;
+		const Camera* camera = nullptr;
 	public:
-		FollowToCamera(Node3D& node, const Camera3D& camera);
+		FollowToCamera(Node& node, const Camera& camera);
 
 		void update(float delta) override;
 	};

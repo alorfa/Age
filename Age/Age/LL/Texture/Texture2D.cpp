@@ -57,6 +57,15 @@ namespace a_game_engine
 		_size = { 0, 0 };
 	}
 
+	vec3 Texture2D::getMidColor() const
+	{
+		vec3 result;
+		if (_id)
+			glGetTextureImage(_id, TexEnums::computeMipLevels(_size), GL_RGB, GL_FLOAT, sizeof(vec3), &result);
+
+		return result;
+	}
+
 	void Texture2D::setWrap(TextureWrap x, TextureWrap y)
 	{
 		glTextureParameteri(_id, GL_TEXTURE_WRAP_S, TexEnums::toOglWrap(x));

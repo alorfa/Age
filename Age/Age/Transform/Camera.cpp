@@ -1,43 +1,43 @@
-#include "Camera3D.hpp"
+#include "Camera.hpp"
 
 namespace a_game_engine
 {
-	Camera3D::Camera3D()
+	Camera::Camera()
 		: transform(nullptr)
 	{
 		transform.setIsCamera();
 	}
 
-	void Camera3D::setFov(float fov)
+	void Camera::setFov(float fov)
 	{
 		_fov = fov;
 		_needUpdate = true;
 	}
-	void Camera3D::setViewport(float viewport)
+	void Camera::setViewport(float viewport)
 	{
 		_viewport = viewport;
 		_needUpdate = true;
 	}
-	void Camera3D::setAspectRatio(uvec2 windowSize)
+	void Camera::setAspectRatio(uvec2 windowSize)
 	{
 		setAspectRatio((float)windowSize.x / (float)windowSize.y);
 	}
-	void Camera3D::setAspectRatio(float ratio)
+	void Camera::setAspectRatio(float ratio)
 	{
 		_aspectRatio = ratio;
 		_needUpdate = true;
 	}
-	void Camera3D::setNearFar(vec2 nearFar)
+	void Camera::setNearFar(vec2 nearFar)
 	{
 		_nearFar = nearFar;
 		_needUpdate = true;
 	}
-	void Camera3D::setOrtho(bool value)
+	void Camera::setOrtho(bool value)
 	{
 		_isOrtho = value;
 		_needUpdate = true;
 	}
-	const mat4& Camera3D::getProjection() const
+	const mat4& Camera::getProjection() const
 	{
 		if (_needUpdate)
 		{

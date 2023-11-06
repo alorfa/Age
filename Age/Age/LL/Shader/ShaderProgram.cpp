@@ -7,8 +7,8 @@
 #include "Age/Math/mat4.hpp"
 #include "Age/Resource/Logger.hpp"
 #include "Age/Material/Material.hpp"
-#include "Age/Object/Node3D.hpp"
-#include "Age/Transform/Camera3D.hpp"
+#include "Age/Object/Node.hpp"
+#include "Age/Transform/Camera.hpp"
 #include "Age/Light/LightSource.hpp"
 #include "Age/Material/ShaderProps.hpp"
 
@@ -107,7 +107,7 @@ namespace a_game_engine
 	{
 		glUniformMatrix4fv(location, 1, GL_FALSE, (const float*)value.data);
 	}
-	void ShaderProgram::setCamera(const Camera3D& camera) const
+	void ShaderProgram::setCamera(const Camera& camera) const
 	{
 		setUniform(getLocation("view"), camera.transform.getWorld());
 		setUniform(getLocation("projection"), camera.getProjection());

@@ -1,12 +1,12 @@
-#include "Scene3DInfo.hpp"
-#include "Age/Object/Node3D.hpp"
+#include "SceneInfo.hpp"
+#include "Age/Object/Node.hpp"
 #include "Age/Light/LightSource.hpp"
 #include <format>
 #include "Age/Math/Math.hpp"
 
 namespace a_game_engine
 {
-	void Scene3DInfo::addLights(const Node3D& node)
+	void SceneInfo::addLights(const Node& node)
 	{
 		for (const auto& light : node.infChildren)
 		{

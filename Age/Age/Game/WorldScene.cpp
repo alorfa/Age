@@ -22,21 +22,14 @@ namespace a_game
 
 		activeCamera = &egd.camera;
 
-		ShaderSettings::Forward settings;
-		settings.dirLights = settings.spotLights = 1;
-		settings.pointLights = 2;
-
-		//ambient = vec3{ 0.2f, 0.2f, 0.5f };
 		std::unique_ptr<Object3D> objs[2] = {
 			std::make_unique<Object3D>(*this, &*rootNode),
 			std::make_unique<Object3D>(*this, &*rootNode)
 		};
-		objs[0]->model = &egd.models.load(egd.res / "model/daedric/scene.gltf",
+		objs[0]->_model = &egd.models.load(egd.res / "model/daedric/scene.gltf",
 			ModelLoader::Settings{ vec3{5.f}, false, false, true });
-		objs[1]->model = &egd.models.load(egd.res / "model/kirara/scene.gltf",
+		objs[1]->_model = &egd.models.load(egd.res / "model/kirara/scene.gltf",
 			ModelLoader::Settings{ vec3{10.f}, false});
-		//objs[0]->shader = &egd.shaders.load(egd.res / "shader/pbrNormal");
-		//objs[1]->shader = &egd.shaders.load(egd.res / "shader/default");
 		objs[0]->setShader(egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		objs[1]->setShader(egd.shaders.load(egd.res / "shader/default.asl"));
 		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
@@ -44,7 +37,7 @@ namespace a_game
 		std::unique_ptr<PointLightSource> lights[2] = { 
 			std::make_unique<PointLightSource>(*this, &*rootNode),
 			std::make_unique<PointLightSource>(*this, &*rootNode) };
-		lights[0]->model = lights[1]->model = 
+		lights[0]->_model = lights[1]->_model = 
 			&egd.models.load(egd.res / "model/cube.obj");
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
@@ -56,10 +49,8 @@ namespace a_game
 		lights[0]->changeTransform().changePosition() = vec3(-1.f, 5, 2);
 		lights[1]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
 		lights[0]->light.color = vec3(1.5f, 0.9f, 0.3f);
-		//lights[0]->light.color = vec3(0.0f, 0.0f, 0.0f);
 		lights[0]->light.ambient = lights[0]->light.color * 0.1f;
 		lights[1]->light.color = vec3(1.0f, 0.1f, 0.1f);
-		//lights[1]->light.color = vec3(0.0f, 0.f, 0.f);
 		lights[1]->light.ambient = lights[1]->light.color * 0.1f;
 		objs[0]->changeTransform().changePosition() = {-3, 5, 0};
 		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
@@ -91,6 +82,15 @@ namespace a_game
 			if (light->is<PointLightSource>())
 				light->changeTransform().changeScale() *= 0.15f;
 		}
+
+		for (uint i = 0; i < 11; i++)
+			for (uint j = 0; j < 11; j++)
+			{
+				auto obj = std::make_unique<Object3D>(*this, &*rootNode);
+				obj->setModel(egd.models.load(egd.res / "model/smoothsus.obj",
+					ModelLoader::Settings{vec3{1.f}, true}));
+				obj->setShader()
+			}
 	}
 	void WorldScene::handleRawEvents(const sf::Event& ev)
 	{
@@ -118,7 +118,7 @@ namespace a_game
 	{
 		rootNode->update(delta);
 	}
-	void WorldScene::draw(const Camera3D&, const ShaderProgram* s) const
+	void WorldScene::draw(const Camera&, const ShaderProgram* s) const
 	{
 		activeRenderer->drawScene(*this, *activeCamera);
 		if (activeRenderer == &deferredRenderer)

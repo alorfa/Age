@@ -4,8 +4,8 @@
 
 namespace a_game_engine
 {
-	class Node3D;
-	class Camera3D;
+	class Node;
+	class Camera;
 }
 
 using namespace a_game_engine;
@@ -14,9 +14,9 @@ namespace a_game
 {
 	class Rotate : public Component
 	{
-		Node3D* node = nullptr;
+		Node* node = nullptr;
 	public:
-		Rotate(Node3D& node);
+		Rotate(Node& node);
 
 		void update(float delta) override;
 	};

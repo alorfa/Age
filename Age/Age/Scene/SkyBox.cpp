@@ -1,25 +1,25 @@
 #include "SkyBox.hpp"
 #include "Age/LL/Shader/ShaderProgram.hpp"
-#include "Age/Object/Mesh3D.hpp"
+#include "Age/Object/Mesh.hpp"
 #include "Age/egd.hpp"
 #include "Age/LL/Pipeline.hpp"
 #include "Age/LL/opengl.h"
 
 namespace a_game_engine
 {
-	const Mesh3D* SkyBox::cube = nullptr;
+	const Mesh* SkyBox::cube = nullptr;
 
-	SkyBox::SkyBox(Scene3D& scene)
+	SkyBox::SkyBox(Scene& scene)
 		: scene(&scene)
 	{
 	}
 
-	void SkyBox::draw(const Camera3D& camera, const ShaderProgram* s) const
+	void SkyBox::draw(const Camera& camera, const ShaderProgram* s) const
 	{
 		if (s == nullptr)
 			s = shader;
 
-		if (cubemap && cube)
+		if (cubemap && cube && cube->buffer)
 		{
 			Pipeline::setDepthFunc(DepthFunc::LEqual);
 			s->use();
@@ -28,7 +28,7 @@ namespace a_game_engine
 			s->setUniform(s->getLocation("view"), view);
 			s->setUniform(s->getLocation("projection"), camera.getProjection());
 			s->setUniform(s->getLocation("skybox"), *cubemap, 0);
-			cube->buffer.draw();
+			cube->buffer->draw();
 		}
 	}
 	int SkyBox::getSlot()

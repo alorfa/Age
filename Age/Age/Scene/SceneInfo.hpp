@@ -7,25 +7,25 @@
 
 namespace a_game_engine
 {
-	class Camera3D;
+	class Camera;
 	class Shader;
-	class Node3D;
+	class Node;
 	struct Material;
 
-	struct Scene3DInfo
+	struct SceneInfo
 	{
 		struct LightsInfo
 		{
 			uint dir = 0, point = 0, spot = 0;
 		};
 
-		const Camera3D* camera = nullptr;
+		const Camera* camera = nullptr;
 		const Shader* shader = nullptr;
 		SceneProps props;
 		LightsInfo lights;
 		ShaderSettings::Common shaderSettings;
 		std::function<bool(const Material&)> drawingCondition;
 
-		void addLights(const Node3D& node);
+		void addLights(const Node& node);
 	};
 }

@@ -1,9 +1,9 @@
 #include "Rotate.hpp"
-#include "Age/Object/Node3D.hpp"
+#include "Age/Object/Node.hpp"
 
 namespace a_game
 {
-	Rotate::Rotate(Node3D& node)
+	Rotate::Rotate(Node& node)
 		: node(&node)
 	{
 	}

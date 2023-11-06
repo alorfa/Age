@@ -1,9 +1,9 @@
 #include "DeferredRenderer.hpp"
 #include "Age/egd.hpp"
-#include "Age/Object/Node3D.hpp"
+#include "Age/Object/Node.hpp"
 #include "Age/LL/Pipeline.hpp"
 #include "Age/Scene/SkyBox.hpp"
-#include "Age/Scene/Scene3D.hpp"
+#include "Age/Scene/Scene.hpp"
 #include "Age/Light/LightSource.hpp"
 #include "Age/LL/opengl.h"
 
@@ -47,16 +47,16 @@ namespace a_game_engine
 		screenFb.create();
 	}
 
-	void DeferredRenderer::drawObject(const Node3D& o, const Scene3DInfo& info)
+	void DeferredRenderer::drawObject(const Node& o, const SceneInfo& info)
 	{
 		o.draw(info);
-		o.forEachConst([&](const Node3D& n)
+		o.forEachConst([&](const Node& n)
 			{
 				drawObject(n, info);
 			});
 	}
 
-	void DeferredRenderer::drawLightSources(const Node3D& node, const vec3& cameraPos)
+	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos)
 	{
 		const DirLightSource* dir = node.as<DirLightSource>();
 		if (dir)
@@ -106,20 +106,20 @@ namespace a_game_engine
 			spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
 			VertexBuffer::getDefFramebuf().draw();
 		}
-		node.forEachConst([&](const Node3D& n)
+		node.forEachConst([&](const Node& n)
 			{
 				drawLightSources(n, cameraPos);
 			});
 		
 	}
 
-	void DeferredRenderer::drawScene(const Scene3D& scene, const Camera3D& camera)
+	void DeferredRenderer::drawScene(const Scene& scene, const Camera& camera)
 	{
 		sf::Clock clock;
 		//setup
 		auto* rectangleVerts = &VertexBuffer::getDefFramebuf();
 
-		Scene3DInfo info;
+		SceneInfo info;
 		info.camera = &camera;
 		info.drawingCondition = [](const Material& m) { 
 			return m.shader->opaque &&

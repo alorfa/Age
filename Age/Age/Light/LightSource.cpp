@@ -8,19 +8,19 @@
 
 namespace a_game_engine
 {
-	PointLightSource::PointLightSource(Scene3D& scene, Node3D* parent)
-		: Object3D(scene, parent, Node3D::Influencing)
+	PointLightSource::PointLightSource(Scene& scene, Node* parent)
+		: Object3D(scene, parent, Node::Influencing)
 	{
 		components.push_back(std::make_unique<PointLightUpdater>(*this));
 	}
 
-	SpotLightSource::SpotLightSource(Scene3D& scene, Node3D* parent)
-		: Object3D(scene, parent, Node3D::Influencing)
+	SpotLightSource::SpotLightSource(Scene& scene, Node* parent)
+		: Object3D(scene, parent, Node::Influencing)
 	{
 		components.push_back(std::make_unique<SpotLightUpdater>(*this));
 	}
 
-	DirLightSource::DirLightSource(Scene3D& scene, Node3D* parent)
-		: Node3D(scene, parent, Node3D::Influencing)
+	DirLightSource::DirLightSource(Scene& scene, Node* parent)
+		: Node(scene, parent, Node::Influencing)
 	{}
 }

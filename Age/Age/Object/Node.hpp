@@ -3,9 +3,9 @@
 #include <forward_list>
 #include <memory>
 #include <functional>
-#include "Age/Transform/Transform3D.hpp"
+#include "Age/Transform/Transform.hpp"
 #include "Component.hpp"
-#include "Age/Scene/Scene3DInfo.hpp"
+#include "Age/Scene/SceneInfo.hpp"
 
 namespace sf
 {
@@ -14,17 +14,17 @@ namespace sf
 
 namespace a_game_engine
 {
-	class Camera3D;
+	class Camera;
 	class Shader;
 	class EventHandler;
-	class Scene3D;
+	class Scene;
 
-	class Node3D
+	class Node
 	{
-		Transform3D _transform;
+		Transform _transform;
 	public:
-		inline const Transform3D& getTransform() const { return _transform; }
-		Transform3D& changeTransform();
+		inline const Transform& getTransform() const { return _transform; }
+		Transform& changeTransform();
 		void setPosition(const vec3& pos);
 		void setEulerRotation(const vec3& rot);
 		void setScale(const vec3& scale);
@@ -34,21 +34,21 @@ namespace a_game_engine
 			Usual, Influencing
 		};
 
-		using Container = std::forward_list<std::unique_ptr<Node3D>>;
+		using Container = std::forward_list<std::unique_ptr<Node>>;
 
 		const Type type = Type::Usual;
-		Scene3D* const scene;
-		Node3D* const parent;
+		Scene* const scene;
+		Node* const parent;
 		Container children;
 		Container infChildren;
 		std::vector<std::unique_ptr<Component>> components;
 
-		Node3D(Scene3D& scene, Node3D* parent, Type type = Type::Usual);
+		Node(Scene& scene, Node* parent, Type type = Type::Usual);
 
 		void addComponent(std::unique_ptr<Component>&& comp);
-		void addChild(std::unique_ptr<Node3D>&& node);
-		void forEach(std::function<void(Node3D&)> func);
-		void forEachConst(std::function<void(const Node3D&)> func) const;
+		void addChild(std::unique_ptr<Node>&& node);
+		void forEach(std::function<void(Node&)> func);
+		void forEachConst(std::function<void(const Node&)> func) const;
 
 		template<typename T>
 		bool is() const {
@@ -69,8 +69,8 @@ namespace a_game_engine
 		void handleRawEvents(const sf::Event& ev);
 		void handleEvents(const EventHandler& ev, float delta);
 		void update(float delta);
-		virtual void draw(const Scene3DInfo& info) const;
+		virtual void draw(const SceneInfo& info) const;
 
-		virtual ~Node3D() = default;
+		virtual ~Node() = default;
 	};
 }

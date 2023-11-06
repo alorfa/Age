@@ -2,6 +2,7 @@
 
 #include "Age/types.hpp"
 #include "Age/Math/vec2.hpp"
+#include "Age/Math/vec3.hpp"
 #include "TexEnums.hpp"
 
 namespace a_game_engine
@@ -31,6 +32,7 @@ namespace a_game_engine
 		void create(const Settings& s);
 		void generateMipmaps();
 		void destroy();
+		vec3 getMidColor() const;
 
 		void setWrap(TextureWrap x, TextureWrap y);
 		void setWrap(TextureWrap wrap);

@@ -5,7 +5,6 @@
 #include <string.h>
 #include <algorithm>
 #include "Age/Math/vec3.hpp"
-#include "Age/Transform/Transform3D.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtc/matrix_transform.hpp>

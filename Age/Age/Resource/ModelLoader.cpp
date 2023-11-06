@@ -4,10 +4,10 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "Age/Auxiliary/print_math.hpp"
+#include "Age/Other/print_math.hpp"
 #include "Age/Resource/ResourceLoader.hpp"
 #include "Age/Resource/Logger.hpp"
-#include "Age/Transform/Transform3D.hpp"
+#include "Age/Transform/Transform.hpp"
 #include "Age/Math/Math.hpp"
 
 namespace a_game_engine
@@ -25,7 +25,7 @@ namespace a_game_engine
 			aiTextureType type;
 		};
 
-		std::unique_ptr<Mesh3D> handleAiMesh(aiMesh* mesh, 
+		std::unique_ptr<Mesh> handleAiMesh(aiMesh* mesh, 
 			const std::vector<Material>& materials, 
 			bool tangentSpace)
 		{
@@ -75,7 +75,7 @@ namespace a_game_engine
 						VertexBuffer::Attributes(3, 3, 3, 0));
 				}
 
-				auto result = std::make_unique<Mesh3D>();
+				auto result = std::make_unique<Mesh>();
 				result->buffer = std::move(buffer);
 				result->material = materials[mesh->mMaterialIndex];
 
@@ -87,10 +87,10 @@ namespace a_game_engine
 			}
 		}
 
-		std::unique_ptr<Model3D::Node> handleAiNode(aiNode* node, 
-			const Model3D& model, const Model3D::Node* parent)
+		std::unique_ptr<Model::Node> handleAiNode(aiNode* node, 
+			const Model& model, const Model::Node* parent)
 		{
-			auto result = std::make_unique<Model3D::Node>();
+			auto result = std::make_unique<Model::Node>();
 
 			result->model = &model;
 			result->parent = parent;
@@ -221,7 +221,7 @@ namespace a_game_engine
 		}
 	}
 
-	std::unique_ptr<Model3D> ModelLoader::defModel = nullptr;
+	std::unique_ptr<Model> ModelLoader::defModel = nullptr;
 
 	ModelLoader::ModelLoader()
 	{
@@ -237,15 +237,15 @@ namespace a_game_engine
 		}
 	}
 
-	Model3D& ModelLoader::load(const std::filesystem::path& path, const Settings& s)
+	Model& ModelLoader::load(const std::filesystem::path& path, const Settings& s)
 	{
-		return ResourceLoader::defaultLoad<Model3D, std::filesystem::path>(resources, path, 
+		return ResourceLoader::defaultLoad<Model, std::filesystem::path>(resources, path, 
 			[&](const std::filesystem::path& path)
 			{
 				return readFromFile(path, s);
 			}, getDefault);
 	}
-	std::unique_ptr<Model3D> ModelLoader::readFromFile(const std::filesystem::path& path, const Settings& s)
+	std::unique_ptr<Model> ModelLoader::readFromFile(const std::filesystem::path& path, const Settings& s)
 	{
 		Assimp::Importer importer;
 		uint flags = aiProcess_Triangulate;
@@ -263,7 +263,7 @@ namespace a_game_engine
 			return nullptr;
 		}
 
-		auto result = std::make_unique<Model3D>();
+		auto result = std::make_unique<Model>();
 
 		auto parentPath = path.parent_path();
 		std::vector<Material> materials;
@@ -293,11 +293,11 @@ namespace a_game_engine
 
 		return result;
 	}
-	Model3D& ModelLoader::getDefault()
+	Model& ModelLoader::getDefault()
 	{
 		if (defModel == nullptr)
 		{
-			defModel = std::make_unique<Model3D>();
+			defModel = std::make_unique<Model>();
 		}
 		return *defModel;
 	}

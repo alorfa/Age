@@ -9,8 +9,8 @@ namespace a_game_engine
 {
 	class Texture2D;
 	class CubeMap;
-	class Camera3D;
-	class Node3D;
+	class Camera;
+	class Node;
 	class ShaderProperty;
 	class MaterialProperty;
 
@@ -50,7 +50,7 @@ namespace a_game_engine
 		void setUniform(int location, const CubeMap& value, uint number) const;
 		void setUniform(int location, const ShaderProperty& value) const;
 		void setUniform(const MaterialProperty& value) const;
-		void setCamera(const Camera3D& camera) const;
+		void setCamera(const Camera& camera) const;
 		void setTransformProps(const TransformProps& props) const;
 
 		void use() const;

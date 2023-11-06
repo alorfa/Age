@@ -4,7 +4,7 @@
 #include "Age/Resource/TextureLoader.hpp"
 #include "Age/Resource/ModelLoader.hpp"
 #include <SFML/Window/Window.hpp>
-#include <Age/Transform/Camera3D.hpp>
+#include <Age/Transform/Camera.hpp>
 
 namespace a_game_engine
 {
@@ -15,7 +15,7 @@ namespace a_game_engine
 		ModelLoader models;
 		std::filesystem::path res, user;
 		sf::Window* window = nullptr;
-		Camera3D camera;
+		Camera camera;
 	};
 
 	extern Egd egd;

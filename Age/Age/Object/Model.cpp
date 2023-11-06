@@ -1,10 +1,10 @@
-#include "Model3D.hpp"
-#include "Age/Scene/Scene3DInfo.hpp"
-#include "Age/Transform/Camera3D.hpp"
+#include "Model.hpp"
+#include "Age/Scene/SceneInfo.hpp"
+#include "Age/Transform/Camera.hpp"
 
 namespace a_game_engine
 {
-    void Model3D::draw(const mat4& t, const Scene3DInfo& info) const
+    void Model::draw(const mat4& t, const SceneInfo& info) const
     {
         TransformProps transform;
         transform.view = &info.camera->transform.getWorld();
@@ -15,14 +15,14 @@ namespace a_game_engine
         rootNode->draw(t, info, transform);
     }
 
-    void Model3D::Node::draw(const mat4& parentTransform, const Scene3DInfo& info, TransformProps& tr) const
+    void Model::Node::draw(const mat4& parentTransform, const SceneInfo& info, TransformProps& tr) const
     {
         mat4 t = parentTransform * transform;
 
         for (const auto& mesh : meshes)
         {
             tr.model = &t;
-            Mesh3D::RenderInfo renderInfo = {tr, info.props, *info.shader, info.shaderSettings};
+            Mesh::RenderInfo renderInfo = {tr, info.props, *info.shader, info.shaderSettings};
             if (!info.drawingCondition or info.drawingCondition(mesh->material))
                 mesh->draw(renderInfo);
         }

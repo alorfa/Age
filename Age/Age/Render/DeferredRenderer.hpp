@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Renderer3D.hpp"
+#include "Renderer.hpp"
 #include "Age/LL/Buffers/FrameBuffer2D.hpp"
-#include "Age/Scene/Scene3DInfo.hpp"
+#include "Age/Scene/SceneInfo.hpp"
 
 namespace a_game_engine
 {
-	class DeferredRenderer : public Renderer3D
+	class DeferredRenderer : public Renderer
 	{
 		FrameBuffer2D gbuffer, screenFb;
 
@@ -20,8 +20,8 @@ namespace a_game_engine
 		DeferredRenderer();
 
 		void updateSize(const uvec2& newSize);
-		void drawObject(const Node3D& o, const Scene3DInfo& info) override;
-		void drawLightSources(const Node3D& node, const vec3& cameraPos);
-		void drawScene(const Scene3D& scene, const Camera3D& camera) override;
+		void drawObject(const Node& o, const SceneInfo& info) override;
+		void drawLightSources(const Node& node, const vec3& cameraPos);
+		void drawScene(const Scene& scene, const Camera& camera) override;
 	};
 }
