@@ -1,6 +1,6 @@
 #include "ShaderModule.hpp"
 #include "Age/LL/opengl.h"
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 
 namespace a_game_engine
 {

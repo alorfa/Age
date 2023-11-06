@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ForwardRenderer.hpp"
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 #include "Age/LL/Pipeline.hpp"
 #include "Age/Resource/ShaderLoader.hpp"
 #include "Age/LL/Buffers/VertexBuffer.hpp"

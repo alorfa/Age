@@ -1,12 +1,11 @@
 #include "ModelLoader.hpp"
 #include "Age/Resource/File.hpp"
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "Age/Other/print_math.hpp"
 #include "Age/Resource/ResourceLoader.hpp"
-#include "Age/Resource/Logger.hpp"
 #include "Age/Transform/Transform.hpp"
 #include "Age/Math/Math.hpp"
 

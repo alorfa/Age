@@ -1,7 +1,7 @@
 #include "TextureLoader.hpp"
 #include "Age/LL/Texture/Image.hpp"
 #include "Age/Resource/ResourceLoader.hpp"
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 
 namespace a_game_engine
 {

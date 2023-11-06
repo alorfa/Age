@@ -1,7 +1,7 @@
 #include "ShaderLoader.hpp"
 #include "Age/LL/Shader/ShaderModule.hpp"
 #include "Age/Resource/ResourceLoader.hpp"
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 #include "Age/Resource/File.hpp"
 #include "Age/egd.hpp"
 

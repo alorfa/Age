@@ -221,7 +221,7 @@
     <ClInclude Include="Age\Scene\SceneInfo.hpp" />
     <ClInclude Include="Age\Scene\SkyBox.hpp" />
     <ClInclude Include="Age\Resource\File.hpp" />
-    <ClInclude Include="Age\Resource\Logger.hpp" />
+    <ClInclude Include="Age\Other\Logger.hpp" />
     <ClInclude Include="Age\Resource\ModelLoader.hpp" />
     <ClInclude Include="Age\Resource\ResourceLoader.hpp" />
     <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
@@ -264,7 +264,7 @@
     <ClCompile Include="Age\Scene\SceneInfo.cpp" />
     <ClCompile Include="Age\Scene\SkyBox.cpp" />
     <ClCompile Include="Age\Resource\File.cpp" />
-    <ClCompile Include="Age\Resource\Logger.cpp" />
+    <ClCompile Include="Age\Other\Logger.cpp" />
     <ClCompile Include="Age\Resource\ModelLoader.cpp" />
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />

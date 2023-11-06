@@ -5,7 +5,7 @@
 #include "Age/LL/Texture/CubeMap.hpp"
 #include "Age/Math/mat3.hpp"
 #include "Age/Math/mat4.hpp"
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 #include "Age/Material/Material.hpp"
 #include "Age/Object/Node.hpp"
 #include "Age/Transform/Camera.hpp"

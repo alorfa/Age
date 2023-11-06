@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <filesystem>
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 #include "Age/types.hpp"
 
 namespace a_game_engine

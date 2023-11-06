@@ -1,7 +1,7 @@
 #include "Shader.hpp"
 #include "Age/LL/Shader/ShaderProgram.hpp"
 #include "Age/LL/Shader/ShaderModule.hpp"
-#include "Age/Resource/Logger.hpp"
+#include "Age/Other/Logger.hpp"
 #include "Age/Resource/File.hpp"
 
 namespace a_game_engine
