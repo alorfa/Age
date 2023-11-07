@@ -13,7 +13,7 @@ namespace a_game_engine
 	void Component::update(float delta)
 	{
 	}
-	void Component::draw() const
+	void Component::draw(const SceneInfo& info) const
 	{
 	}
 }

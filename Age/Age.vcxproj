@@ -180,9 +180,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Age\Application.hpp" />
+    <ClInclude Include="Age\Components\MeshComponent.hpp" />
     <ClInclude Include="Age\Other\DEBUG.hpp" />
     <ClInclude Include="Age\Other\print_math.hpp" />
-    <ClInclude Include="Age\Components\LightUpdaters.hpp" />
+    <ClInclude Include="Age\Components\LightComponents.hpp" />
     <ClInclude Include="Age\egd.hpp" />
     <ClInclude Include="Age\EventHandler.hpp" />
     <ClInclude Include="Age\Game\FollowToCamera.hpp" />
@@ -190,7 +191,6 @@
     <ClInclude Include="Age\Game\WorldScene.hpp" />
     <ClInclude Include="Age\Game\Gdata.hpp" />
     <ClInclude Include="Age\Light\Light.hpp" />
-    <ClInclude Include="Age\Light\LightSource.hpp" />
     <ClInclude Include="Age\LL\Buffers\FrameBuffer2D.hpp" />
     <ClInclude Include="Age\LL\Buffers\VertexBuffer.hpp" />
     <ClInclude Include="Age\LL\opengl.h" />
@@ -217,6 +217,7 @@
     <ClInclude Include="Age\Object\Node.hpp" />
     <ClInclude Include="Age\Render\DeferredRenderer.hpp" />
     <ClInclude Include="Age\Render\ForwardRenderer.hpp" />
+    <ClInclude Include="Age\Resource\ModelResource.hpp" />
     <ClInclude Include="Age\Scene\Scene.hpp" />
     <ClInclude Include="Age\Scene\SceneInfo.hpp" />
     <ClInclude Include="Age\Scene\SkyBox.hpp" />
@@ -234,13 +235,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Age\Application.cpp" />
+    <ClCompile Include="Age\Components\LightComponents.cpp" />
     <ClCompile Include="Age\Components\LightUpdaters.cpp" />
+    <ClCompile Include="Age\Components\MeshComponent.cpp" />
     <ClCompile Include="Age\EventHandler.cpp" />
     <ClCompile Include="Age\Game\FollowToCamera.cpp" />
     <ClCompile Include="Age\Game\Rotate.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
-    <ClCompile Include="Age\Light\LightSource.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\LL\Buffers\VertexBuffer.cpp" />
     <ClCompile Include="Age\LL\Pipeline.cpp" />

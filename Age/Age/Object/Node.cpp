@@ -86,5 +86,7 @@ namespace a_game_engine
 	}
 	void Node::draw(const SceneInfo& info) const
 	{
+		for (auto& comp : components)
+			comp->draw(info);
 	}
 }

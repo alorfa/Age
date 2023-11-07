@@ -28,7 +28,6 @@
     <ClInclude Include="Age\Material\Material.hpp" />
     <ClInclude Include="Age\Math\mat4.hpp" />
     <ClInclude Include="Age\Light\Light.hpp" />
-    <ClInclude Include="Age\Light\LightSource.hpp" />
     <ClInclude Include="Age\Resource\ShaderLoader.hpp" />
     <ClInclude Include="Age\Game\WorldScene.hpp" />
     <ClInclude Include="Age\Game\Gdata.hpp" />
@@ -44,7 +43,7 @@
     <ClInclude Include="Age\LL\Pipeline.hpp" />
     <ClInclude Include="Age\Math\Math.hpp" />
     <ClInclude Include="Age\Scene\Scene.hpp" />
-    <ClInclude Include="Age\Components\LightUpdaters.hpp" />
+    <ClInclude Include="Age\Components\LightComponents.hpp" />
     <ClInclude Include="Age\Material\Shader.hpp" />
     <ClInclude Include="Age\Material\ShaderSettings.hpp" />
     <ClInclude Include="Age\Scene\SceneInfo.hpp" />
@@ -53,6 +52,8 @@
     <ClInclude Include="Age\Render\DeferredRenderer.hpp" />
     <ClInclude Include="Age\Render\ForwardRenderer.hpp" />
     <ClInclude Include="Age\Game\Rotate.hpp" />
+    <ClInclude Include="Age\Resource\ModelResource.hpp" />
+    <ClInclude Include="Age\Components\MeshComponent.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -73,7 +74,6 @@
     <ClCompile Include="Age\Resource\ModelLoader.cpp" />
     <ClCompile Include="Age\Math\Math.cpp" />
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />
-    <ClCompile Include="Age\Light\LightSource.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
@@ -93,5 +93,7 @@
     <ClCompile Include="Age\Render\ForwardRenderer.cpp" />
     <ClCompile Include="Age\Render\DeferredRenderer.cpp" />
     <ClCompile Include="Age\Game\Rotate.cpp" />
+    <ClCompile Include="Age\Components\MeshComponent.cpp" />
+    <ClCompile Include="Age\Components\LightComponents.cpp" />
   </ItemGroup>
 </Project>

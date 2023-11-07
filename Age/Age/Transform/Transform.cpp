@@ -48,6 +48,11 @@ namespace a_game_engine
 		}
 		return _world;
 	}
+	void Transform::UNSAFE_setLocalMatrix(const mat4& mat)
+	{
+		_local = mat;
+		_localIsChanged = false;
+	}
 	const mat4& Transform::getLocal() const
 	{
 		if (_localIsChanged)

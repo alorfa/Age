@@ -14,7 +14,6 @@ namespace a_game_engine
 	void SpotLightUpdater::update(float delta)
 	{
 		light->light.pos = light->getTransform().getPosition();
-		light->light.dir = Math::getForwardDir(light->getTransform().getRotation());
 	}
 }
 

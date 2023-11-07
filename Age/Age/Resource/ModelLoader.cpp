@@ -24,9 +24,8 @@ namespace a_game_engine
 			aiTextureType type;
 		};
 
-		std::unique_ptr<Mesh> handleAiMesh(aiMesh* mesh, 
-			const std::vector<Material>& materials, 
-			bool tangentSpace)
+		std::unique_ptr<ModelResource::Mesh> handleAiMesh(aiMesh* mesh, 
+			const std::vector<MaterialProps>& materials, bool tangentSpace)
 		{
 			try
 			{
@@ -74,9 +73,9 @@ namespace a_game_engine
 						VertexBuffer::Attributes(3, 3, 3, 0));
 				}
 
-				auto result = std::make_unique<Mesh>();
+				auto result = std::make_unique<ModelResource::Mesh>();
 				result->buffer = std::move(buffer);
-				result->material = materials[mesh->mMaterialIndex];
+				result->props = materials[mesh->mMaterialIndex];
 
 				return result;
 			}
@@ -86,12 +85,12 @@ namespace a_game_engine
 			}
 		}
 
-		std::unique_ptr<Model::Node> handleAiNode(aiNode* node, 
-			const Model& model, const Model::Node* parent)
+		std::unique_ptr<ModelResource::Node> handleAiNode(aiNode* node, 
+			const ModelResource& model, const ModelResource::Node* parent)
 		{
-			auto result = std::make_unique<Model::Node>();
+			auto result = std::make_unique<ModelResource::Node>();
 
-			result->model = &model;
+			result->ownerModel = &model;
 			result->parent = parent;
 			result->name = node->mName.C_Str();
 			
@@ -150,13 +149,12 @@ namespace a_game_engine
 			return -1;
 		}
 
-		Material handleAiMaterial(aiMaterial* mat, TextureLoader& loader, 
+		MaterialProps handleAiMaterial(aiMaterial* mat, TextureLoader& loader, 
 			const std::filesystem::path& path, bool disableSrgb)
 		{
 			TextureInfo colorTypes[] = { 
 				{"baseColorMap", aiTextureType_DIFFUSE},
 				{"baseColorMap", aiTextureType_BASE_COLOR}};
-			//aiTextureType colorTypes[] = { aiTextureType_DIFFUSE };
 			TextureInfo infoTypes[] = { 
 				{"normalMap", aiTextureType_NORMALS},
 				{"roughnessMap", aiTextureType_DIFFUSE_ROUGHNESS},
@@ -170,25 +168,25 @@ namespace a_game_engine
 			aiTextureType_UNKNOWN };
 
 			int slot = 0;
-			Material result;
+			MaterialProps result;
 			for (const TextureInfo& texInfo : colorTypes)
 			{
 				auto textures = handleMaterialOfType(mat, texInfo.type, loader, path, !disableSrgb);
 				for (auto* tex : textures)
 				{
-					if (not has(result.props, texInfo.name))
+					if (not has(result, texInfo.name))
 					{
-						int texIndex = find(result.props, tex);
+						int texIndex = find(result, tex);
 						if (texIndex == -1)
 						{
 							ShaderProperty::Texture2DProp texProp(*tex, slot);
-							result.props.push_back({ texInfo.name, texProp });
+							result.push_back({ texInfo.name, texProp });
 							slot++;
 						}
 						else
 						{
-							auto& prop = result.props[texIndex];
-							result.props.push_back({ texInfo.name, prop.property });
+							auto& prop = result[texIndex];
+							result.push_back({ texInfo.name, prop.property });
 						}
 					}
 				}
@@ -198,19 +196,19 @@ namespace a_game_engine
 				auto textures = handleMaterialOfType(mat, texInfo.type, loader, path, false);
 				for (auto* tex : textures)
 				{
-					if (not has(result.props, texInfo.name))
+					if (not has(result, texInfo.name))
 					{
-						int texIndex = find(result.props, tex);
+						int texIndex = find(result, tex);
 						if (texIndex == -1)
 						{
 							ShaderProperty::Texture2DProp texProp(*tex, slot);
-							result.props.push_back({ texInfo.name, texProp });
+							result.push_back({ texInfo.name, texProp });
 							slot++;
 						}
 						else
 						{
-							auto& prop = result.props[texIndex];
-							result.props.push_back({ texInfo.name, prop.property });
+							auto& prop = result[texIndex];
+							result.push_back({ texInfo.name, prop.property });
 						}
 					}
 				}
@@ -220,7 +218,7 @@ namespace a_game_engine
 		}
 	}
 
-	std::unique_ptr<Model> ModelLoader::defModel = nullptr;
+	std::unique_ptr<ModelResource> ModelLoader::defModel = nullptr;
 
 	ModelLoader::ModelLoader()
 	{
@@ -236,15 +234,15 @@ namespace a_game_engine
 		}
 	}
 
-	Model& ModelLoader::load(const std::filesystem::path& path, const Settings& s)
+	ModelResource& ModelLoader::load(const std::filesystem::path& path, const Settings& s)
 	{
-		return ResourceLoader::defaultLoad<Model, std::filesystem::path>(resources, path, 
+		return ResourceLoader::defaultLoad<ModelResource, std::filesystem::path>(resources, path, 
 			[&](const std::filesystem::path& path)
 			{
 				return readFromFile(path, s);
 			}, getDefault);
 	}
-	std::unique_ptr<Model> ModelLoader::readFromFile(const std::filesystem::path& path, const Settings& s)
+	std::unique_ptr<ModelResource> ModelLoader::readFromFile(const std::filesystem::path& path, const Settings& s)
 	{
 		Assimp::Importer importer;
 		uint flags = aiProcess_Triangulate;
@@ -262,10 +260,10 @@ namespace a_game_engine
 			return nullptr;
 		}
 
-		auto result = std::make_unique<Model>();
+		auto result = std::make_unique<ModelResource>();
 
 		auto parentPath = path.parent_path();
-		std::vector<Material> materials;
+		std::vector<MaterialProps> materials;
 		materials.resize(scene->mNumMaterials);
 		for (uint i = 0; i < scene->mNumMaterials; i++)
 		{
@@ -292,11 +290,11 @@ namespace a_game_engine
 
 		return result;
 	}
-	Model& ModelLoader::getDefault()
+	ModelResource& ModelLoader::getDefault()
 	{
 		if (defModel == nullptr)
 		{
-			defModel = std::make_unique<Model>();
+			defModel = std::make_unique<ModelResource>();
 		}
 		return *defModel;
 	}

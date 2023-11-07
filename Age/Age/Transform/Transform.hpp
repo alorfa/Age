@@ -38,5 +38,7 @@ namespace a_game_engine
 		inline bool getChangedFlag() const { return _otherIsChanged; }
 		const mat4& getLocal() const;
 		const mat4& getWorld() const;
+
+		void UNSAFE_setLocalMatrix(const mat4& mat);
 	};
 }
