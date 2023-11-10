@@ -48,9 +48,9 @@ namespace a_game_engine
 		Pipeline::set3DContext();
 		mainFb.use();
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f }, true, false);
-		sc.skyBox.cubemap->activate(SkyBox::getSlot());
+		//sc.skyBox.cubemap->activate(SkyBox::getSlot());
 		drawObject(*sc.rootNode, info);
-		sc.skyBox.draw(camera, nullptr);
+		//sc.skyBox.draw(camera, nullptr);
 
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();

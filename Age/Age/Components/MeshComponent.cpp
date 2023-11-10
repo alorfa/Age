@@ -48,4 +48,16 @@ namespace a_game_engine
 		}
 		node.addChild(std::move(root));
 	}
+	void MeshComponent::setShader(Node& node, const Shader& s)
+	{
+		for (auto& comp : node.components)
+		{
+			auto ptr = dynamic_cast<MeshComponent*>(comp.get());
+			if (ptr)
+				ptr->mesh.material.shader = &s;
+		}
+		node.forEach([&](Node& n){
+			setShader(n, s);
+			});
+	}
 }

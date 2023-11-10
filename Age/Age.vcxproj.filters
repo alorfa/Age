@@ -85,7 +85,6 @@
     <ClCompile Include="Age\Scene\SkyBox.cpp" />
     <ClCompile Include="Age\LL\Pipeline.cpp" />
     <ClCompile Include="Age\Scene\Scene.cpp" />
-    <ClCompile Include="Age\Components\LightUpdaters.cpp" />
     <ClCompile Include="Age\Material\Shader.cpp" />
     <ClCompile Include="Age\Material\ShaderSettings.cpp" />
     <ClCompile Include="Age\Scene\SceneInfo.cpp" />

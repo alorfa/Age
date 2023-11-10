@@ -4,7 +4,6 @@
 #include "Age/LL/Pipeline.hpp"
 #include "Age/Scene/SkyBox.hpp"
 #include "Age/Scene/Scene.hpp"
-#include "Age/Light/LightSource.hpp"
 #include "Age/LL/opengl.h"
 
 namespace a_game_engine
@@ -58,7 +57,7 @@ namespace a_game_engine
 
 	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos)
 	{
-		const DirLightSource* dir = node.as<DirLightSource>();
+		/*const DirLightSource* dir = node.as<DirLightSource>();
 		if (dir)
 		{
 			dirLightPass->use();
@@ -105,7 +104,7 @@ namespace a_game_engine
 			spotLightPass->setUniform(spotLightPass->getLocation("light.outerCutOff"), cos(spot->light.outerCutOff));
 			spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
 			VertexBuffer::getDefFramebuf().draw();
-		}
+		}*/
 		node.forEachConst([&](const Node& n)
 			{
 				drawLightSources(n, cameraPos);

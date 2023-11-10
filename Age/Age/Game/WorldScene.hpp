@@ -3,7 +3,6 @@
 #include <Age/Render/ForwardRenderer.hpp>
 #include <Age/Render/DeferredRenderer.hpp>
 #include <Age/Scene/Scene.hpp>
-#include <Age/Light/LightSource.hpp>
 
 using namespace a_game_engine;
 

@@ -4,10 +4,10 @@
 #include <Age/LL/Texture/Image.hpp>
 #include <Age/LL/Texture/Texture2D.hpp>
 #include <iostream>
-#include <Age/Object/Object3D.hpp>
-#include <Age/Auxiliary/print_math.hpp>
-#include <Age/Transform/Camera3D.hpp>
-#include <Age/Resource/Logger.hpp>
+#include <Age/Object/Node.hpp>
+#include <Age/Other/print_math.hpp>
+#include <Age/Transform/Camera.hpp>
+#include <Age/Other/Logger.hpp>
 #include "Age/Light/Light.hpp"
 #include "Age/Game/Gdata.hpp"
 #include "Age/egd.hpp"

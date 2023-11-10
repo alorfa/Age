@@ -236,7 +236,6 @@
   <ItemGroup>
     <ClCompile Include="Age\Application.cpp" />
     <ClCompile Include="Age\Components\LightComponents.cpp" />
-    <ClCompile Include="Age\Components\LightUpdaters.cpp" />
     <ClCompile Include="Age\Components\MeshComponent.cpp" />
     <ClCompile Include="Age\EventHandler.cpp" />
     <ClCompile Include="Age\Game\FollowToCamera.cpp" />

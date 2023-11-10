@@ -9,7 +9,6 @@
 #include "Age/Material/Material.hpp"
 #include "Age/Object/Node.hpp"
 #include "Age/Transform/Camera.hpp"
-#include "Age/Light/LightSource.hpp"
 #include "Age/Material/ShaderProps.hpp"
 
 namespace a_game_engine
