@@ -40,5 +40,7 @@ namespace a_game_engine
 		const mat4& getWorld() const;
 
 		void UNSAFE_setLocalMatrix(const mat4& mat);
+
+		friend class Node;
 	};
 }

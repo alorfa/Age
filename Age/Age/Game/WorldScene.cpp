@@ -34,10 +34,10 @@ namespace a_game
 		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/default.asl"));
 		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 		auto spotLight = std::make_unique<SpotLightComponent>(*objs[2]);
-		auto pointLight = std::make_unique<SpotLightComponent>(*objs[3]);
-		auto pointLight2 = std::make_unique<SpotLightComponent>(*objs[4]);
+		auto pointLight = std::make_unique<PointLightComponent>(*objs[3]);
+		auto pointLight2 = std::make_unique<PointLightComponent>(*objs[4]);
 		spotLight->setColor({ 0.6f, 0.6f, 1.f });
-		spotLight->setColor({ 0.06f, 0.06f, 0.1f });
+		spotLight->setAmbient({ 0.06f, 0.06f, 0.1f });
 		pointLight->setColor({ 1.5f, 0.9f, 0.3f });
 		pointLight->setAmbient({ 0.15f, 0.09f, 0.03f });
 		pointLight2->setColor({ 1.0f, 0.1f, 0.1f });

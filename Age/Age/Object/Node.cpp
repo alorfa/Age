@@ -38,6 +38,7 @@ namespace a_game_engine
 	}
 	void Node::addChild(std::unique_ptr<Node>&& node)
 	{
+		node->_transform._parent = &_transform;
 		if (node->isInfluencing())
 			infChildren.push_front(std::move(node));
 		else
