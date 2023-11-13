@@ -3,9 +3,8 @@
 namespace a_game_engine
 {
 	Camera::Camera()
-		: transform(nullptr)
 	{
-		transform.setIsCamera();
+		transform.setIsCamera(); //TODO: parent node?
 	}
 
 	void Camera::setFov(float fov)

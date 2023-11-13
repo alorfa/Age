@@ -36,17 +36,16 @@ namespace a_game_engine
 	}
 	void MeshComponent::addResModelNode(Node& node, const ModelResource::Node& model)
 	{
-		auto root = std::make_unique<Node>(*node.scene, &node);
-		root->changeTransform().UNSAFE_setLocalMatrix(model.transform);
+		auto& root = node.addChild();
+		root.changeTransform().UNSAFE_setLocalMatrix(model.transform);
 		for (const auto& m : model.meshes)
 		{
-			root->addComponent(std::make_unique<MeshComponent>(*root, m));
+			root.addComponent(std::make_unique<MeshComponent>(root, m));
 		}
 		for (const auto& c : model.children)
 		{
-			addResModelNode(*root, *c);
+			addResModelNode(root, *c);
 		}
-		node.addChild(std::move(root));
 	}
 	void MeshComponent::setShader(Node& node, const Shader& s)
 	{

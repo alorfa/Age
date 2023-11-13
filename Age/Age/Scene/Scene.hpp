@@ -30,5 +30,7 @@ namespace a_game_engine
 		virtual void handleEvents(const EventHandler& ev, float delta);
 		virtual void update(float delta);
 		virtual void draw(const Camera& c, const ShaderProgram* s) const = 0;
+
+		virtual ~Scene() = default;
 	};
 }

@@ -42,7 +42,9 @@ float normalDistribution_GGX(float specFactor)
     a2 *= a2;
     float spec2 = specFactor * specFactor;
     float denom = spec2 * ((a2 * 0.99 + 0.01) - 1.) + 1.;
-    return a2 / (denom * denom * PI);
+    //float denom = spec2 * (a2 - 1.) + 1.;
+    float result = a2 / (denom * denom * PI);
+    return min(result, 4.); //TODO: wtf?
 }
 float geometrySchlickGGX(float cosTheta)
 {

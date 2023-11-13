@@ -5,7 +5,8 @@ namespace a_game_engine
 	Scene::Scene()
 		: skyBox(*this)
 	{
-		rootNode = std::make_unique<Node>(*this, nullptr);
+		rootNode = std::make_unique<Node>();
+		rootNode->scene = this;
 	}
 	void Scene::handleRawEvents(const sf::Event& ev)
 	{

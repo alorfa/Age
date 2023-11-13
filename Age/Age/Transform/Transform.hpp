@@ -21,8 +21,6 @@ namespace a_game_engine
 				_otherIsChanged = true;
 		}
 	public:
-		Transform(const Transform* parent);
-
 		inline void markParent() const { _worldIsChanged = true; }
 		
 		vec3& changePosition();

@@ -25,7 +25,7 @@ namespace a_game
 
 		std::unique_ptr<Node> objs[6];
 		for (uint i = 0; i < 6; i++)
-			objs[i] = std::make_unique<Node>(*this, rootNode.get());
+			objs[i] = std::make_unique<Node>();
 		MeshComponent::addModel(*objs[0], egd.models.load(egd.res / "model/daedric/scene.gltf",
 			ModelLoader::Settings{ vec3{5.f}, false, false, true }));
 		MeshComponent::addModel(*objs[1], egd.models.load(egd.res / "model/kirara/scene.gltf",

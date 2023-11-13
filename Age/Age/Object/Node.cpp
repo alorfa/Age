@@ -28,9 +28,9 @@ namespace a_game_engine
 		if (getTransform().getScale() != scale)
 			changeTransform().changeScale() = scale;
 	}
-	Node::Node(Scene& scene, Node* parent, Type type)
-		: scene(&scene), parent(parent), type(type), _transform(parent ? parent->_transform : nullptr)
-	{ }
+
+	Node::Node(Type type)
+		: type(type) {}
 
 	void Node::addComponent(std::unique_ptr<Component>&& comp)
 	{
@@ -39,23 +39,32 @@ namespace a_game_engine
 	void Node::addChild(std::unique_ptr<Node>&& node)
 	{
 		node->_transform._parent = &_transform;
-		if (node->isInfluencing())
-			infChildren.push_front(std::move(node));
+		node->parent = this;
+		node->scene = scene;
+		if (node->isTransparent())
+			transparentChildren.push_front(std::move(node));
 		else
 			children.push_front(std::move(node));
+	}
+	Node& Node::addChild(Type type)
+	{
+		auto n = std::make_unique<Node>(type);
+		Node* result = n.get();
+		addChild(std::move(n));
+		return *result;
 	}
 	void Node::forEach(std::function<void(Node&)> func)
 	{
 		for (const auto& node : children)
 			func(*node);
-		for (const auto& node : infChildren)
+		for (const auto& node : transparentChildren)
 			func(*node);
 	}
 	void Node::forEachConst(std::function<void(const Node&)> func) const
 	{
 		for (const auto& node : children)
 			func(*node);
-		for (const auto& node : infChildren)
+		for (const auto& node : transparentChildren)
 			func(*node);
 	}
 	void Node::handleRawEvents(const sf::Event& ev)

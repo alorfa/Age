@@ -3,10 +3,6 @@
 
 namespace a_game_engine
 {
-	Transform::Transform(const Transform* parent)
-		: _parent(parent)
-	{
-	}
 	vec3& Transform::changePosition()
 	{
 		markForUpdate();

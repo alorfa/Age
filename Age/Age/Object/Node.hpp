@@ -31,22 +31,23 @@ namespace a_game_engine
 
 		enum Type : unsigned int
 		{
-			Usual, Influencing
+			Opaque, Transparent
 		};
 
 		using Container = std::forward_list<std::unique_ptr<Node>>;
 
-		const Type type = Type::Usual;
-		Scene* const scene;
-		Node* const parent;
+		const Type type = Type::Opaque;
+		Scene* scene;
+		Node* parent;
 		Container children;
-		Container infChildren;
+		Container transparentChildren;
 		std::vector<std::unique_ptr<Component>> components;
 
-		Node(Scene& scene, Node* parent, Type type = Type::Usual);
+		Node(Type type = Type::Opaque);
 
 		void addComponent(std::unique_ptr<Component>&& comp);
 		void addChild(std::unique_ptr<Node>&& node);
+		Node& addChild(Type type = Opaque);
 		void forEach(std::function<void(Node&)> func);
 		void forEachConst(std::function<void(const Node&)> func) const;
 
@@ -62,8 +63,8 @@ namespace a_game_engine
 		const T* as() const {
 			return dynamic_cast<const T*>(this);
 		}
-		bool isInfluencing() const {
-			return bool(type & Type::Influencing);
+		bool isTransparent() const {
+			return bool(type & Type::Transparent);
 		}
 
 		void handleRawEvents(const sf::Event& ev);
