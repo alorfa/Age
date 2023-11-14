@@ -30,12 +30,16 @@ namespace a_game
 			ModelLoader::Settings{ vec3{5.f}, false, false, true }));
 		MeshComponent::addModel(*objs[1], egd.models.load(egd.res / "model/kirara/scene.gltf",
 			ModelLoader::Settings{ vec3{10.f}, false}));
+		MeshComponent::addModel(*objs[3], egd.models.load(egd.res / "model/cube.obj"));
+		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/cube.obj"));
 		MeshComponent::setShader(*objs[0], egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/default.asl"));
 		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 		auto spotLight = std::make_unique<SpotLightComponent>(*objs[2]);
 		auto pointLight = std::make_unique<PointLightComponent>(*objs[3]);
 		auto pointLight2 = std::make_unique<PointLightComponent>(*objs[4]);
+		pointLight->addModel(*objs[3]);
+		pointLight2->addModel(*objs[4]);
 		spotLight->setColor({ 0.6f, 0.6f, 1.f });
 		spotLight->setAmbient({ 0.06f, 0.06f, 0.1f });
 		pointLight->setColor({ 1.5f, 0.9f, 0.3f });
@@ -46,8 +50,6 @@ namespace a_game
 		objs[2]->addComponent(std::make_unique<FollowToCamera>(*objs[2], *activeCamera));
 		objs[3]->addComponent(std::move(pointLight));
 		objs[4]->addComponent(std::move(pointLight2));
-		MeshComponent::addModel(*objs[3], egd.models.load(egd.res / "model/cube.obj"));
-		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/cube.obj"));
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(*objs[3], lightShader);

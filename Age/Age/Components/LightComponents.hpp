@@ -5,11 +5,15 @@
 
 namespace a_game_engine
 {
+	class MeshComponent;
+	class Node;
+
 	class PointLightComponent : public Component
 	{
 		PointLight _light;
 	public:
 		const Node* node = nullptr;
+		std::vector<MeshComponent*> emissionMeshes;
 
 		inline PointLightComponent(const Node& n)
 			: node(&n) {}
@@ -17,6 +21,8 @@ namespace a_game_engine
 		void setColor(const vec3& color);
 		void setAmbient(const vec3& color);
 		inline const PointLight& getLight() const { return _light; }
+
+		void addModel(Node& n);
 
 		void update(float delta) override;
 	};

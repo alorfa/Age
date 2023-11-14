@@ -45,24 +45,59 @@ namespace a_game_engine
 
 		Node(Type type = Type::Opaque);
 
+		template <typename T>
+		T* findComponent()
+		{
+			for (auto& comp : components)
+			{
+				T* castedComp = comp->as<T*>();
+				if (castedComp)
+					return castedComp;
+			}
+			return nullptr;
+		}
+		template <typename T>
+		const T* findComponentConst() const
+		{
+			for (auto& comp : components)
+			{
+				const T* castedComp = comp->as<const T*>();
+				if (castedComp)
+					return castedComp;
+			}
+			return nullptr;
+		}
+		template <typename T>
+		std::vector<T*> findAllComponents()
+		{
+			std::vector<T*> result;
+			for (auto& comp : components)
+			{
+				T* castedComp = comp->as<T>();
+				if (castedComp)
+					result.push_back(castedComp);
+			}
+			return result;
+		}
+		template <typename T>
+		std::vector<const T*> findAllComponentsConst() const
+		{
+			std::vector<const T*> result;
+			for (auto& comp : components)
+			{
+				const T* castedComp = comp->as<const T>();
+				if (castedComp)
+					result.push_back(castedComp);
+			}
+			return result;
+		}
 		void addComponent(std::unique_ptr<Component>&& comp);
+
 		void addChild(std::unique_ptr<Node>&& node);
 		Node& addChild(Type type = Opaque);
 		void forEach(std::function<void(Node&)> func);
 		void forEachConst(std::function<void(const Node&)> func) const;
 
-		template<typename T>
-		bool is() const {
-			return (bool)dynamic_cast<const T*>(this);
-		}
-		template <typename T>
-		T* as() {
-			return dynamic_cast<T*>(this);
-		}
-		template <typename T>
-		const T* as() const {
-			return dynamic_cast<const T*>(this);
-		}
 		bool isTransparent() const {
 			return bool(type & Type::Transparent);
 		}
