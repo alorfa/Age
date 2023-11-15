@@ -61,7 +61,7 @@ namespace a_game_engine
 			if (ptr)
 				ptr->mesh.material.shader = &s;
 		}
-		node.forEach([&](Node& n){
+		node.forEachLocal([&](Node& n){
 			setShader(n, s);
 			});
 	}

@@ -49,7 +49,7 @@ namespace a_game_engine
 	void DeferredRenderer::drawObject(const Node& o, const SceneInfo& info)
 	{
 		o.draw(info);
-		o.forEachConst([&](const Node& n)
+		o.forEachConstLocal([&](const Node& n)
 			{
 				drawObject(n, info);
 			});
@@ -105,7 +105,7 @@ namespace a_game_engine
 			spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
 			VertexBuffer::getDefFramebuf().draw();
 		}*/
-		node.forEachConst([&](const Node& n)
+		node.forEachConstLocal([&](const Node& n)
 			{
 				drawLightSources(n, cameraPos);
 			});

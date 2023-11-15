@@ -106,6 +106,8 @@ namespace a_game_engine
 		Node& addChild(Type type = Opaque);
 		void forEach(std::function<void(Node&)> func);
 		void forEachConst(std::function<void(const Node&)> func) const;
+		void forEachLocal(std::function<void(Node&)> func);
+		void forEachConstLocal(std::function<void(const Node&)> func) const;
 
 		bool isTransparent() const {
 			return bool(type & Type::Transparent);

@@ -1,6 +1,4 @@
 #include "WorldScene.hpp"
-#include <Age/Components/LightComponents.hpp>
-#include <Age/Components/MeshComponent.hpp>
 #include <SFML/Window/Event.hpp>
 #include <Age/EventHandler.hpp>
 #include "FollowToCamera.hpp"
@@ -8,6 +6,9 @@
 #include "Age/egd.hpp"
 #include "Age/Material/Shader.hpp"
 #include "Age/Resource/File.hpp"
+#include <Age/Components/MeshComponent.hpp>
+#include <Age/Components/LightComponents.hpp>
+#include "Age/Object/Node.hpp"
 
 namespace a_game
 {
@@ -53,7 +54,7 @@ namespace a_game
 			.addModel(*objs[4]);
 		objs[5]->addComponent<DirLightComponent>();
 
-		objs[0]->changeTransform().changePosition() = {-3, 5, 0};
+		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
 		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
 		objs[3]->changeTransform().changePosition() = vec3(-1.f, 5, 2);
 		objs[3]->changeTransform().changeScale() *= 0.15f;
@@ -73,14 +74,25 @@ namespace a_game
 		//skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
 
 
-		/*for (uint i = 0; i < 11; i++)
+		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)
 			{
-				auto obj = std::make_unique<Object3D>(*this, &*rootNode);
-				obj->setModel(egd.models.load(egd.res / "model/smoothsus.obj",
-					ModelLoader::Settings{vec3{1.f}, true}));
-				obj->setShader()
-			}*/
+				auto& sphere = rootNode->addChild();
+				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/smoothsus.obj",
+					ModelLoader::Settings{vec3{1.f}, false}));
+				MeshComponent::setShader(sphere, egd.shaders.load(egd.res / "shader/testSus.asl"));
+				sphere.forEach([&](Node& n) {
+					auto meshes = n.findAllComponents<MeshComponent>();
+					for (auto& mesh : meshes)
+					{
+						mesh->mesh.material.setValue("metalic", ShaderProperty((float)i * 0.1f));
+						mesh->mesh.material.setValue("roughness", ShaderProperty((float)j * 0.1f));
+					}
+				});
+				sphere.setPosition({ (float)i, (float)j, -2.f });
+				sphere.setScale({ 0.5f });
+			}
+	
 
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));

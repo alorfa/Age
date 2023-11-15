@@ -10,7 +10,7 @@ namespace a_game_engine
 		auto meshes = n.findAllComponents<MeshComponent>();
 		for (auto* m : meshes)
 			emissionMeshes.push_back(m);
-		n.forEach([this](Node& node)
+		n.forEachLocal([this](Node& node)
 			{
 				addModel(node);
 			});

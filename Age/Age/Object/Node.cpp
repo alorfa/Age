@@ -9,7 +9,6 @@ namespace a_game_engine
 		forEach([](Node& n)
 			{
 				n.getTransform().markParent();
-				n.changeTransform();
 			});
 		return _transform;
 	}
@@ -56,11 +55,37 @@ namespace a_game_engine
 	void Node::forEach(std::function<void(Node&)> func)
 	{
 		for (const auto& node : children)
+		{
+			func(*node);
+			node->forEach(func);
+		}
+		for (const auto& node : transparentChildren)
+		{
+			func(*node);
+			node->forEach(func);
+		}
+	}
+	void Node::forEachConst(std::function<void(const Node&)> func) const
+	{
+		for (const auto& node : children)
+		{
+			func(*node);
+			node->forEachConst(func);
+		}
+		for (const auto& node : transparentChildren)
+		{
+			func(*node);
+			node->forEachConst(func);
+		}
+	}
+	void Node::forEachLocal(std::function<void(Node&)> func)
+	{
+		for (const auto& node : children)
 			func(*node);
 		for (const auto& node : transparentChildren)
 			func(*node);
 	}
-	void Node::forEachConst(std::function<void(const Node&)> func) const
+	void Node::forEachConstLocal(std::function<void(const Node&)> func) const
 	{
 		for (const auto& node : children)
 			func(*node);
@@ -72,7 +97,7 @@ namespace a_game_engine
 		for (auto& comp : components)
 			comp->handleRawEvents(ev);
 
-		forEach([&](Node& n) {
+		forEachLocal([&](Node& n) {
 			n.handleRawEvents(ev);
 		});
 	}
@@ -81,7 +106,7 @@ namespace a_game_engine
 		for (auto& comp : components)
 			comp->handleEvents(ev, delta);
 
-		forEach([&](Node& n) {
+		forEachLocal([&](Node& n) {
 			n.handleEvents(ev, delta);
 		});
 	}
@@ -90,7 +115,7 @@ namespace a_game_engine
 		for (auto& comp : components)
 			comp->update(delta);
 
-		forEach([&](Node& n) {
+		forEachLocal([&](Node& n) {
 			n.update(delta);
 		});
 	}

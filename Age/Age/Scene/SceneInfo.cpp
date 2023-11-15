@@ -8,7 +8,7 @@ namespace a_game_engine
 {
 	void SceneInfo::addLights(const Node& node)
 	{
-		node.forEachConst([&](const Node& n) {
+		node.forEachConstLocal([&](const Node& n) {
 			for (auto& comp : n.components)
 			{
 				auto* pointLight = dynamic_cast<const PointLightComponent*>(comp.get());
@@ -47,9 +47,9 @@ namespace a_game_engine
 					lights.dir++;
 					continue;
 				}
+				addLights(n);
 			}
-			addLights(n);
-			});
+		});
 	}
 }
 

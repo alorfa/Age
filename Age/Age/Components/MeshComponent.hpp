@@ -22,6 +22,5 @@ namespace a_game_engine
 		static void addModel(Node& node, const ModelResource& model);
 		static void addResModelNode(Node& node, const ModelResource::Node& model);
 		static void setShader(Node& node, const Shader& s);
-		static std::unique_ptr<Node> createModel(const ModelResource& m);
 	};
 }
