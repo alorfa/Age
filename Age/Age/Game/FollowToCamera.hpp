@@ -18,6 +18,13 @@ namespace a_game
 		const Camera* camera = nullptr;
 	public:
 		FollowToCamera(Node& node, const Camera& camera);
+		inline FollowToCamera(Node& node)
+			: node(&node) {}
+
+		inline FollowToCamera& setCamera(const Camera& camera) {
+			this->camera = &camera;
+			return *this;
+		}
 
 		void update(float delta) override;
 	};

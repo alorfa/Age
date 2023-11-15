@@ -5,7 +5,7 @@
 
 namespace a_game_engine
 {
-	void PointLightComponent::addModel(Node& n)
+	PointLightComponent& PointLightComponent::addModel(Node& n)
 	{
 		auto meshes = n.findAllComponents<MeshComponent>();
 		for (auto* m : meshes)
@@ -14,6 +14,7 @@ namespace a_game_engine
 			{
 				addModel(node);
 			});
+		return *this;
 	}
 	void PointLightComponent::update(float delta)
 	{
@@ -21,26 +22,41 @@ namespace a_game_engine
 		for (auto& m : emissionMeshes)
 			m->mesh.material.setValue("emission", ShaderProperty(_light.color));
 	}
-	void PointLightComponent::setColor(const vec3& color)
+	PointLightComponent& PointLightComponent::setColor(const vec3& color, float ambientRatio)
+	{
+		_light.ambient = color * ambientRatio;
+		_light.color = color - _light.ambient;
+		return *this;
+	}
+	PointLightComponent& PointLightComponent::setDirect(const vec3& color)
 	{
 		_light.color = color;
-		//TODO: use the model and set the emission color(all the light types)
+		return *this;
 	}
-	void PointLightComponent::setAmbient(const vec3& color)
+	PointLightComponent& PointLightComponent::setAmbient(const vec3& color)
 	{
 		_light.ambient = color;
+		return *this;
 	}
 	void SpotLightComponent::update(float delta)
 	{
 		_light.pos = node->getTransform().getPosition();
 		_light.dir = Math::getForwardDir(node->getTransform().getRotation());
 	}
-	void SpotLightComponent::setColor(const vec3& color)
+	SpotLightComponent& SpotLightComponent::setColor(const vec3& color, float ambientRatio)
+	{
+		_light.ambient = color * ambientRatio;
+		_light.color = color - _light.ambient;
+		return *this;
+	}
+	SpotLightComponent& SpotLightComponent::setDirect(const vec3& color)
 	{
 		_light.color = color;
+		return *this;
 	}
-	void SpotLightComponent::setAmbient(const vec3& color)
+	SpotLightComponent& SpotLightComponent::setAmbient(const vec3& color)
 	{
 		_light.ambient = color;
+		return *this;
 	}
 }

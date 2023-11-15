@@ -13,6 +13,12 @@ namespace a_game_engine
 			mesh.material.props = m->props;
 		}
 	}
+	MeshComponent& MeshComponent::setMesh(const ModelResource::Mesh& m)
+	{
+		mesh.buffer = &m.buffer;
+		mesh.material.props = m.props;
+		return *this;
+	}
 	void MeshComponent::draw(const SceneInfo& info) const
 	{
 		if (not mesh.buffer or

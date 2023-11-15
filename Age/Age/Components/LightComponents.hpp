@@ -18,11 +18,12 @@ namespace a_game_engine
 		inline PointLightComponent(const Node& n)
 			: node(&n) {}
 
-		void setColor(const vec3& color);
-		void setAmbient(const vec3& color);
+		PointLightComponent& setColor(const vec3& color, float ambientRatio);
+		PointLightComponent& setDirect(const vec3& color);
+		PointLightComponent& setAmbient(const vec3& color);
 		inline const PointLight& getLight() const { return _light; }
 
-		void addModel(Node& n);
+		PointLightComponent& addModel(Node& n);
 
 		void update(float delta) override;
 	};
@@ -36,8 +37,9 @@ namespace a_game_engine
 		inline SpotLightComponent(const Node& n)
 			: node(&n) {}
 
-		void setColor(const vec3& color);
-		void setAmbient(const vec3& color);
+		SpotLightComponent& setColor(const vec3& color, float ambientRatio);
+		SpotLightComponent& setDirect(const vec3& color);
+		SpotLightComponent& setAmbient(const vec3& color);
 		inline const SpotLight& getLight() const { return _light; }
 
 		void update(float delta) override;
@@ -47,5 +49,8 @@ namespace a_game_engine
 	{
 	public:
 		DirLight light;
+
+		inline DirLightComponent(const Node& n) {}
+		DirLightComponent() = default;
 	};
 }

@@ -91,7 +91,16 @@ namespace a_game_engine
 			}
 			return result;
 		}
+
 		void addComponent(std::unique_ptr<Component>&& comp);
+		template <typename T>
+		T& addComponent()
+		{
+			auto comp = std::make_unique<T>(*this);
+			T* result = comp.get();
+			addComponent(std::move(comp));
+			return *result;
+		}
 
 		void addChild(std::unique_ptr<Node>&& node);
 		Node& addChild(Type type = Opaque);

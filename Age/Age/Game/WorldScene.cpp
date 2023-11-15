@@ -34,26 +34,24 @@ namespace a_game
 		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/cube.obj"));
 		MeshComponent::setShader(*objs[0], egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/default.asl"));
-		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
-		auto spotLight = std::make_unique<SpotLightComponent>(*objs[2]);
-		auto pointLight = std::make_unique<PointLightComponent>(*objs[3]);
-		auto pointLight2 = std::make_unique<PointLightComponent>(*objs[4]);
-		pointLight->addModel(*objs[3]);
-		pointLight2->addModel(*objs[4]);
-		spotLight->setColor({ 0.6f, 0.6f, 1.f });
-		spotLight->setAmbient({ 0.06f, 0.06f, 0.1f });
-		pointLight->setColor({ 1.5f, 0.9f, 0.3f });
-		pointLight->setAmbient({ 0.15f, 0.09f, 0.03f });
-		pointLight2->setColor({ 1.0f, 0.1f, 0.1f });
-		pointLight2->setAmbient({ 0.1f, 0.01f, 0.01f });
-		objs[2]->addComponent(std::move(spotLight));
-		objs[2]->addComponent(std::make_unique<FollowToCamera>(*objs[2], *activeCamera));
-		objs[3]->addComponent(std::move(pointLight));
-		objs[4]->addComponent(std::move(pointLight2));
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(*objs[3], lightShader);
 		MeshComponent::setShader(*objs[4], lightShader);
+		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
+
+		objs[2]->addComponent<SpotLightComponent>()
+			.setColor({ 1.f, 1.f, 2.4f }, 0.1f);
+		objs[2]->addComponent<FollowToCamera>()
+			.setCamera(*activeCamera);
+
+		objs[3]->addComponent<PointLightComponent>()
+			.setColor({ 2.f, 1.2f, 0.5f }, 0.1f)
+			.addModel(*objs[3]);
+		objs[4]->addComponent<PointLightComponent>()
+			.setColor({ 1.3f, 0.2f, 0.2f }, 0.1f)
+			.addModel(*objs[4]);
+		objs[5]->addComponent<DirLightComponent>();
 
 		objs[0]->changeTransform().changePosition() = {-3, 5, 0};
 		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
@@ -61,7 +59,6 @@ namespace a_game
 		objs[3]->changeTransform().changeScale() *= 0.15f;
 		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
 		objs[4]->changeTransform().changeScale() *= 0.15f;
-		objs[5]->addComponent(std::make_unique<DirLightComponent>());
 
 		std::filesystem::path cubePaths[6];
 		cubePaths[0] = egd.res / "img/sky/+x.jpg";
