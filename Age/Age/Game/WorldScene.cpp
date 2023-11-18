@@ -10,11 +10,13 @@
 #include <Age/Components/LightComponents.hpp>
 #include "Age/Object/Node.hpp"
 #include "SceneController.hpp"
+#include "ControlController.hpp"
 
 namespace a_game
 {
 	WorldScene::WorldScene()
 	{
+		rootNode->addComponent<ControlController>();
 		rootNode->addComponent<SceneController>();
 	}
 	void WorldScene::load()

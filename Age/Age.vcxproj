@@ -181,6 +181,7 @@
   <ItemGroup>
     <ClInclude Include="Age\Application.hpp" />
     <ClInclude Include="Age\Components\MeshComponent.hpp" />
+    <ClInclude Include="Age\Game\ControlController.hpp" />
     <ClInclude Include="Age\Game\SceneController.hpp" />
     <ClInclude Include="Age\Other\DEBUG.hpp" />
     <ClInclude Include="Age\Other\print_math.hpp" />
@@ -239,6 +240,7 @@
     <ClCompile Include="Age\Components\LightComponents.cpp" />
     <ClCompile Include="Age\Components\MeshComponent.cpp" />
     <ClCompile Include="Age\EventHandler.cpp" />
+    <ClCompile Include="Age\Game\ControlController.cpp" />
     <ClCompile Include="Age\Game\FollowToCamera.cpp" />
     <ClCompile Include="Age\Game\Rotate.cpp" />
     <ClCompile Include="Age\Game\SceneController.cpp" />

@@ -10,10 +10,6 @@ namespace a_game
 	class TestGame : public Application
 	{
 	public:
-		ivec2 stopMouse;
-		float sensitivity = 3.f;
-		float time = 0.f;
-		bool mouseIsCamera = false;
 		std::unique_ptr<WorldScene> world;
 
 		void init() override;

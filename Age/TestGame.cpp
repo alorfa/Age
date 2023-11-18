@@ -130,70 +130,14 @@ namespace a_game
 	}
 	void TestGame::handleRawEvents(const sf::Event& ev)
 	{
-		if (ev.type == sf::Event::Resized)
-		{
-			uvec2 newSize = { ev.size.width ,ev.size.height };
-			egd.camera.setAspectRatio(newSize);
-		}
-
 		world->handleRawEvents(ev);
 	}
 	void TestGame::handleEvents(float delta)
 	{
-		const auto direction = Math::getForwardDir(egd.camera.transform.getRotation());
-		if (_eventHandler.getEvent("w"))
-			egd.camera.transform.changePosition() += direction * (delta * 4);
-		if (_eventHandler.getEvent("s"))
-			egd.camera.transform.changePosition() -= direction * (delta * 4);
-
-		const auto rightDir = Math::getRightDir(egd.camera.transform.getRotation());
-		if (_eventHandler.getEvent("a"))
-			egd.camera.transform.changePosition() -= rightDir * (delta * 4);
-		if (_eventHandler.getEvent("d"))
-			egd.camera.transform.changePosition() += rightDir * (delta * 4);
-
-		const auto up = Math::getUpDir(egd.camera.transform.getRotation());
-
-		if (_eventHandler.getEvent("mouseLeft"))
-		{
-			auto sfPos = sf::Mouse::getPosition(_window);
-			stopMouse.x = sfPos.x;
-			stopMouse.y = sfPos.y;
-			_window.setMouseCursorVisible(false);
-			mouseIsCamera = true;
-		}
-		if (_eventHandler.getEvent("mouseLeftReleased"))
-		{
-			_window.setMouseCursorVisible(true);
-			mouseIsCamera = false;
-		}
-
-		if (mouseIsCamera)
-		{
-			auto windowSize = _window.getSize();
-			auto curPos = sf::Mouse::getPosition(_window);
-			ivec2 mouseOffset = { curPos.x - stopMouse.x, stopMouse.y - curPos.y };
-			sf::Mouse::setPosition(sf::Vector2i(stopMouse.x, stopMouse.y), _window);
-			vec2 cameraOffset{
-				(float)mouseOffset.x / (float)windowSize.y * sensitivity,
-				(float)mouseOffset.y / (float)windowSize.y * sensitivity
-			};
-			vec3 rot = egd.camera.transform.getRotation();
-			rot.x += cameraOffset.y;
-			rot.y -= cameraOffset.x;
-			float minrot = glm::radians(0.1f);
-			float maxrot = glm::radians(179.9f);
-			if (rot.x <= minrot)
-				rot.x = minrot;
-			if (rot.x >= maxrot)
-				rot.x = maxrot;
-			egd.camera.transform.changeRotation() = rot;
-		}
 		world->handleEvents(_eventHandler, delta);
 	}
 	void TestGame::update(float delta)
 	{
-		time += delta;
 		world->update(delta);
 	}
 	void TestGame::draw() const
