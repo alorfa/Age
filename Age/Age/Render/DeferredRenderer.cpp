@@ -5,6 +5,7 @@
 #include "Age/Scene/SkyBox.hpp"
 #include "Age/Scene/Scene.hpp"
 #include "Age/LL/opengl.h"
+#include "Age/Components/LightComponents.hpp"
 
 namespace a_game_engine
 {
@@ -48,68 +49,70 @@ namespace a_game_engine
 
 	void DeferredRenderer::drawObject(const Node& o, const SceneInfo& info)
 	{
-		o.draw(info);
-		o.forEachConstLocal([&](const Node& n)
-			{
-				drawObject(n, info);
-			});
+		o.forEachConst([&](const Node& n) {
+			n.draw(info);
+		});
 	}
 
 	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos)
 	{
-		/*const DirLightSource* dir = node.as<DirLightSource>();
-		if (dir)
-		{
-			dirLightPass->use();
-			dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
-			dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
-			dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
-			dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), dir->light.dir);
-			dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), dir->light.ambient);
-			dirLightPass->setUniform(dirLightPass->getLocation("light.color"), dir->light.color);
-			dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
-			VertexBuffer::getDefFramebuf().draw();
-		}
-		const PointLightSource* point = node.as<PointLightSource>();
-		if (point)
-		{
-			pointLightPass->use();
-			pointLightPass->setUniform(pointLightPass->getLocation("baseColor_roughness_map"), 0);
-			pointLightPass->setUniform(pointLightPass->getLocation("normal_metalness_map"), 1);
-			pointLightPass->setUniform(pointLightPass->getLocation("pos_map"), 2);
-			pointLightPass->setUniform(pointLightPass->getLocation("light.pos"), point->light.pos);
-			pointLightPass->setUniform(pointLightPass->getLocation("light.ambient"), point->light.ambient);
-			pointLightPass->setUniform(pointLightPass->getLocation("light.color"), point->light.color);
-			pointLightPass->setUniform(pointLightPass->getLocation("light.constant"), point->light.constant);
-			pointLightPass->setUniform(pointLightPass->getLocation("light.linear"), point->light.linear);
-			pointLightPass->setUniform(pointLightPass->getLocation("light.quadratic"), point->light.quadratic);
-			pointLightPass->setUniform(pointLightPass->getLocation("cameraPos"), cameraPos);
-			VertexBuffer::getDefFramebuf().draw();
-		}
-		const SpotLightSource* spot = node.as<SpotLightSource>();
-		if (spot)
-		{
-			spotLightPass->use();
-			spotLightPass->setUniform(spotLightPass->getLocation("baseColor_roughness_map"), 0);
-			spotLightPass->setUniform(spotLightPass->getLocation("normal_metalness_map"), 1);
-			spotLightPass->setUniform(spotLightPass->getLocation("pos_map"), 2);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.pos"), spot->light.pos);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.ambient"), spot->light.ambient);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.color"), spot->light.color);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.constant"), spot->light.constant);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.linear"), spot->light.linear);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.quadratic"), spot->light.quadratic);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.dir"), spot->light.dir);
-			spotLightPass->setUniform(spotLightPass->getLocation("light.cutOff"), cos(spot->light.cutOff));
-			spotLightPass->setUniform(spotLightPass->getLocation("light.outerCutOff"), cos(spot->light.outerCutOff));
-			spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
-			VertexBuffer::getDefFramebuf().draw();
-		}*/
-		node.forEachConstLocal([&](const Node& n)
+		node.forEachConst([&](const Node& n) {
+			for (auto& comp : n.components)
 			{
-				drawLightSources(n, cameraPos);
-			});
-		
+				const auto* const point = comp->as<PointLightComponent>(); 
+				if (point)
+				{
+					const auto& l = point->getLight();
+					pointLightPass->use();
+					pointLightPass->setUniform(pointLightPass->getLocation("baseColor_roughness_map"), 0);
+					pointLightPass->setUniform(pointLightPass->getLocation("normal_metalness_map"), 1);
+					pointLightPass->setUniform(pointLightPass->getLocation("pos_map"), 2);
+					pointLightPass->setUniform(pointLightPass->getLocation("light.pos"), l.pos);
+					pointLightPass->setUniform(pointLightPass->getLocation("light.ambient"), l.ambient);
+					pointLightPass->setUniform(pointLightPass->getLocation("light.color"), l.color);
+					pointLightPass->setUniform(pointLightPass->getLocation("light.constant"), l.constant);
+					pointLightPass->setUniform(pointLightPass->getLocation("light.linear"), l.linear);
+					pointLightPass->setUniform(pointLightPass->getLocation("light.quadratic"), l.quadratic);
+					pointLightPass->setUniform(pointLightPass->getLocation("cameraPos"), cameraPos);
+					VertexBuffer::getDefFramebuf().draw();
+					continue;
+				}
+				const auto* const spot = comp->as<SpotLightComponent>();
+				if (spot)
+				{
+					const auto& l = spot->getLight();
+					spotLightPass->use();
+					spotLightPass->setUniform(spotLightPass->getLocation("baseColor_roughness_map"), 0);
+					spotLightPass->setUniform(spotLightPass->getLocation("normal_metalness_map"), 1);
+					spotLightPass->setUniform(spotLightPass->getLocation("pos_map"), 2);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.pos"), l.pos);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.ambient"), l.ambient);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.color"), l.color);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.constant"), l.constant);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.linear"), l.linear);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.quadratic"), l.quadratic);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.dir"), l.dir);
+					spotLightPass->setUniform(spotLightPass->getLocation("light.cutOff"), cos(l.cutOff));
+					spotLightPass->setUniform(spotLightPass->getLocation("light.outerCutOff"), cos(l.outerCutOff));
+					spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
+					VertexBuffer::getDefFramebuf().draw();
+					continue;
+				}
+				const auto* const dir = comp->as<DirLightComponent>(); 
+				if (dir)
+				{
+					dirLightPass->use();
+					dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
+					dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
+					dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
+					dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), dir->light.dir);
+					dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), dir->light.ambient);
+					dirLightPass->setUniform(dirLightPass->getLocation("light.color"), dir->light.color);
+					dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
+					VertexBuffer::getDefFramebuf().draw();
+				}
+			}
+		});		
 	}
 
 	void DeferredRenderer::drawScene(const Scene& scene, const Camera& camera)
@@ -141,7 +144,7 @@ namespace a_game_engine
 		Pipeline::setStencilOp(StencilOp::Replace);
 		drawObject(*scene.rootNode, info);
 
-		gbufferTime = clock.restart().asMicroseconds();
+		gbufferTime = (int)clock.restart().asMicroseconds();
 
 		info.drawingCondition = [](const Material& m) {
 			return m.shader->opaque && 
@@ -166,7 +169,7 @@ namespace a_game_engine
 		gbuffer.textures[2].activate(2);
 		drawLightSources(*scene.rootNode, camera.transform.getPosition());
 
-		lightTime = clock.restart().asMicroseconds();
+		lightTime = (int)clock.restart().asMicroseconds();
 
 		//draw on the screen
 		Pipeline::enableStencil(false);
@@ -178,7 +181,7 @@ namespace a_game_engine
 
 		//debug
 		debugPass->use();
-		debugPass->setUniform(debugPass->getLocation("offset"), {0.8f, 0.8f});
+		debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.8f });
 		debugPass->setUniform(debugPass->getLocation("scale"), { 0.2f, 0.2f });
 		debugPass->setUniform(debugPass->getLocation("tex"), 0);
 		rectangleVerts->draw();
@@ -189,6 +192,6 @@ namespace a_game_engine
 		debugPass->setUniform(debugPass->getLocation("tex"), 2);
 		rectangleVerts->draw();
 
-		screenTime = clock.restart().asMicroseconds();
+		screenTime = (int)clock.restart().asMicroseconds();
 	}
 }
