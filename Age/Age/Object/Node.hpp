@@ -37,8 +37,8 @@ namespace a_game_engine
 		using Container = std::forward_list<std::unique_ptr<Node>>;
 
 		const Type type = Type::Opaque;
-		Scene* scene;
-		Node* parent;
+		Scene* scene = nullptr;
+		Node* parent = nullptr;
 		Container children;
 		Container transparentChildren;
 		std::vector<std::unique_ptr<Component>> components;

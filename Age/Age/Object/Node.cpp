@@ -54,29 +54,21 @@ namespace a_game_engine
 	}
 	void Node::forEach(std::function<void(Node&)> func)
 	{
+		func(*this);
 		for (const auto& node : children)
-		{
-			func(*node);
 			node->forEach(func);
-		}
+
 		for (const auto& node : transparentChildren)
-		{
-			func(*node);
 			node->forEach(func);
-		}
 	}
 	void Node::forEachConst(std::function<void(const Node&)> func) const
 	{
+		func(*this);
 		for (const auto& node : children)
-		{
-			func(*node);
 			node->forEachConst(func);
-		}
+
 		for (const auto& node : transparentChildren)
-		{
-			func(*node);
 			node->forEachConst(func);
-		}
 	}
 	void Node::forEachLocal(std::function<void(Node&)> func)
 	{
@@ -94,30 +86,24 @@ namespace a_game_engine
 	}
 	void Node::handleRawEvents(const sf::Event& ev)
 	{
-		for (auto& comp : components)
-			comp->handleRawEvents(ev);
-
-		forEachLocal([&](Node& n) {
-			n.handleRawEvents(ev);
+		forEach([&](Node& n) {
+			for (auto& comp : n.components)
+				comp->handleRawEvents(ev);
 		});
 	}
 	void Node::handleEvents(const EventHandler& ev, float delta)
 	{
-		for (auto& comp : components)
-			comp->handleEvents(ev, delta);
-
-		forEachLocal([&](Node& n) {
-			n.handleEvents(ev, delta);
-		});
+		forEach([&](Node& n) {
+			for (auto& comp : n.components)
+				comp->handleEvents(ev, delta);
+			});
 	}
 	void Node::update(float delta)
 	{
-		for (auto& comp : components)
-			comp->update(delta);
-
-		forEachLocal([&](Node& n) {
-			n.update(delta);
-		});
+		forEach([&](Node& n) {
+			for (auto& comp : n.components)
+				comp->update(delta);
+			});
 	}
 	void Node::draw(const SceneInfo& info) const
 	{

@@ -41,18 +41,23 @@ namespace a_game
 		MeshComponent::setShader(*objs[4], lightShader);
 		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
-		objs[2]->addComponent<SpotLightComponent>()
-			.setColor({ 1.f, 1.f, 2.4f }, 0.1f);
+		/*objs[2]->addComponent<SpotLightComponent>()
+			.setColor({ 1.f, 1.f, 2.4f }, 0.05f);
 		objs[2]->addComponent<FollowToCamera>()
-			.setCamera(*activeCamera);
+			.setCamera(*activeCamera);*/
 
-		objs[3]->addComponent<PointLightComponent>()
-			.setColor({ 2.f, 1.2f, 0.5f }, 0.1f)
-			.addModel(*objs[3]);
+		/*objs[3]->addComponent<PointLightComponent>()
+			.setColor({ 2.f, 1.2f, 0.5f }, 0.0f)
+			.addModel(*objs[3]);*/
+		objs[3]->forEach([](Node& n) {
+			auto meshes = n.findAllComponents<MeshComponent>();
+			for (auto& m : meshes)
+				m->mesh.material.setValue("emission", ShaderProperty(vec3{0.f}));
+		});
 		objs[4]->addComponent<PointLightComponent>()
-			.setColor({ 1.3f, 0.2f, 0.2f }, 0.1f)
+			.setColor({ 1.0f, 0.1f, 0.1f }, 0.f)
 			.addModel(*objs[4]);
-		objs[5]->addComponent<DirLightComponent>();
+		//objs[5]->addComponent<DirLightComponent>();
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
 		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
@@ -89,8 +94,8 @@ namespace a_game
 						mesh->mesh.material.setValue("roughness", ShaderProperty((float)j * 0.1f));
 					}
 				});
-				sphere.setPosition({ (float)i, (float)j, -2.f });
-				sphere.setScale({ 0.5f });
+				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f, -3.f });
+				sphere.setScale({ 0.2f });
 			}
 	
 

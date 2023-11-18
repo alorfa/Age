@@ -27,11 +27,9 @@ namespace a_game_engine
 	}
 	void ForwardRenderer::drawObject(const Node& o, const SceneInfo& info)
 	{
-		o.draw(info);
-		o.forEachConstLocal([&](const Node& n)
-			{
-				drawObject(n, info);
-			});
+		o.forEachConst([&](const Node& n) {
+			n.draw(info);
+		});
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera)
 	{

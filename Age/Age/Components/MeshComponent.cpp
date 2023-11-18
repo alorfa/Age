@@ -55,14 +55,13 @@ namespace a_game_engine
 	}
 	void MeshComponent::setShader(Node& node, const Shader& s)
 	{
-		for (auto& comp : node.components)
-		{
-			auto ptr = dynamic_cast<MeshComponent*>(comp.get());
-			if (ptr)
-				ptr->mesh.material.shader = &s;
-		}
-		node.forEachLocal([&](Node& n){
-			setShader(n, s);
-			});
+		node.forEach([&](Node& n) {
+			for (auto& comp : n.components)
+			{
+				auto ptr = dynamic_cast<MeshComponent*>(comp.get());
+				if (ptr)
+					ptr->mesh.material.shader = &s;
+			}
+		});
 	}
 }

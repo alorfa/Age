@@ -7,12 +7,10 @@ namespace a_game_engine
 {
 	PointLightComponent& PointLightComponent::addModel(Node& n)
 	{
-		auto meshes = n.findAllComponents<MeshComponent>();
-		for (auto* m : meshes)
-			emissionMeshes.push_back(m);
-		n.forEachLocal([this](Node& node)
-			{
-				addModel(node);
+		n.forEach([this](Node& node) {
+			auto meshes = node.findAllComponents<MeshComponent>();
+			for (auto* m : meshes)
+				emissionMeshes.push_back(m);
 			});
 		return *this;
 	}
