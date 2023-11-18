@@ -36,11 +36,11 @@ float getDepth(float n, float f)
     return (gl_FragCoord.z - n) / (f - n);
 }
 
-float normalDistribution_GGX(float specFactor)
+float normalDistribution_GGX(float NH)
 {
-    float a2 = age_roughness * age_roughness;
-    a2 *= a2;
-    float spec2 = specFactor * specFactor;
+    float a = age_roughness * age_roughness;
+    float a2 = a * a;
+    float spec2 = NH * NH;
     //float denom = spec2 * ((a2 * 0.99 + 0.01) - 1.) + 1.;
     float denom = spec2 * (a2 - 1.) + 1.;
     float result = a2 / (denom * denom * PI);
@@ -55,16 +55,17 @@ float geometrySchlickGGX(float cosTheta)
     float denominator = cosTheta * (1. - k) + k;
     return cosTheta / denominator;
 }
-float geometry_Smith(float viewCos, float diffFactor)
+float geometry_Smith(float NV, float NL)
 {
-    float ggx1 = geometrySchlickGGX(viewCos);
-    float ggx2 = geometrySchlickGGX(diffFactor);
+    float ggx1 = geometrySchlickGGX(NV);
+    float ggx2 = geometrySchlickGGX(NL);
     
     return ggx1 * ggx2;
 }
-vec3 fresnelSchlick(float specFactor, vec3 materialSpec)
+vec3 fresnelSchlick(float HV, vec3 materialSpec)
 {
-    return materialSpec + (1. - materialSpec) * pow(clamp(1. - specFactor, 0., 1.), 5.);
+    //return materialSpec; //for tests
+    return materialSpec + (1. - materialSpec) * pow(max(1. - HV, 0.), 5.);
 }
 
 vec3 blinnPhong_computeRay()
@@ -79,24 +80,25 @@ vec3 blinnPhong_computeRay()
 }
 vec3 pbr_computeRay()
 {
-    float age_viewCos = max(dot(age_normal, age_viewDir), 0.);
+    float NV = max(dot(age_normal, age_viewDir), 0.);
 
     vec3 halfwayDir = normalize(age_viewDir + age_ray.dir);
-    float diffFactor = max(dot(age_ray.dir, age_normal), 0.);
-    float specFactor = max(dot(age_normal, halfwayDir), 0.);
-    float halfViewCos = max(dot(age_viewDir, halfwayDir), 0.);
+    float NL = max(dot(age_ray.dir, age_normal), 0.);
+    float NH = max(dot(age_normal, halfwayDir), 0.);
+    float HV = max(dot(age_viewDir, halfwayDir), 0.);
 
     vec3 materialSpec = mix(vec3(0.04), age_base_color, age_metalness);
-    vec3 specColor = fresnelSchlick(halfViewCos, materialSpec);
-    //vec3 diffColor = (vec3(1.) - specColor) * (1. - age_metalness);
-    vec3 diffColor = (vec3(1.) - specColor);
-    float normalDistrib = normalDistribution_GGX(specFactor);
-    float geometryLet = geometry_Smith(age_viewCos, diffFactor);
+    vec3 specColor = fresnelSchlick(HV, materialSpec);
+    vec3 diffColor = (vec3(1.) - specColor) * (1. - age_metalness);
+    //diffColor = (vec3(1.) - specColor);
+    float normalDistrib = normalDistribution_GGX(NH);
+    float geometryLet = geometry_Smith(NV, NL);
 
     vec3 numerator = normalDistrib * geometryLet * specColor;
-    float denominator = 4. * age_viewCos * diffFactor + 0.0001;
+    float denominator = 4. * NV * NL + 0.0001;
     vec3 specular = numerator / denominator;
-    vec3 directLight = (diffColor * age_base_color * INV_PI + specular) * age_ray.color * diffFactor;
+    vec3 directLight = (diffColor * age_base_color * INV_PI + specular) * age_ray.color * NL;
+    //directLight = min(directLight, age_ray.color);
 
     return age_ray.ambient * age_base_color + directLight;
 }
