@@ -119,6 +119,11 @@ namespace a_game
 				return e.type == sf::Event::MouseButtonReleased &&
 					e.mouseButton.button == sf::Mouse::Left;
 			});
+		_eventHandler.setEvent("camera", [](const sf::Event& e)
+			{
+				return e.type == sf::Event::KeyPressed &&
+					e.key.code == sf::Keyboard::C;
+			});
 	}
 	void TestGame::loadResources()
 	{

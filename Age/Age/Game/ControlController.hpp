@@ -14,9 +14,11 @@ namespace a_game
 		float sensitivity = 3.f;
 		bool mouseIsCamera = false;
 	public:
-		inline ControlController(const Node& n) {}
+		ControlController(const Node& n);
 
 		void handleRawEvents(const sf::Event& ev) override;
 		void handleEvents(const EventHandler& ev, float delta) override;
+
+		void setCameraActive(bool value);
 	};
 }

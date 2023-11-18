@@ -6,6 +6,9 @@
 
 namespace a_game
 {
+	ControlController::ControlController(const Node& n)
+	{
+	}
 	void ControlController::handleRawEvents(const sf::Event& ev)
 	{
 		if (ev.type == sf::Event::Resized)
@@ -30,19 +33,8 @@ namespace a_game
 
 		const auto up = Math::getUpDir(egd.camera.transform.getRotation());
 
-		if (ev.getEvent("mouseLeft"))
-		{
-			auto sfPos = sf::Mouse::getPosition(*egd.window);
-			stopMouse.x = sfPos.x;
-			stopMouse.y = sfPos.y;
-			egd.window->setMouseCursorVisible(false);
-			mouseIsCamera = true;
-		}
-		if (ev.getEvent("mouseLeftReleased"))
-		{
-			egd.window->setMouseCursorVisible(true);
-			mouseIsCamera = false;
-		}
+		if (ev.getEvent("camera"))
+			setCameraActive(!mouseIsCamera);
 
 		if (mouseIsCamera)
 		{
@@ -64,6 +56,24 @@ namespace a_game
 			if (rot.x >= maxrot)
 				rot.x = maxrot;
 			egd.camera.transform.changeRotation() = rot;
+		}
+	}
+	void ControlController::setCameraActive(bool value)
+	{
+		if (value == mouseIsCamera)
+			return;
+
+		mouseIsCamera = value;
+		if (mouseIsCamera)
+		{
+			auto sfPos = sf::Mouse::getPosition(*egd.window);
+			stopMouse.x = sfPos.x;
+			stopMouse.y = sfPos.y;
+			egd.window->setMouseCursorVisible(false);
+		}
+		else
+		{
+			egd.window->setMouseCursorVisible(true);
 		}
 	}
 }
