@@ -25,8 +25,8 @@ void fragmentControl()
     //age_metalness = 0.3;
     //age_shininess = 64.f;
     //age_base_color = vec3(1.);
-    age_metalness = 0.2;
-    age_roughness = 0.5;
+    age_metalness = 0.1;
+    age_roughness = 0.35;
 }
 #define AGE_LIGHT_MODE_PBR
 

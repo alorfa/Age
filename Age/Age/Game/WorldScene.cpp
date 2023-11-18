@@ -9,11 +9,13 @@
 #include <Age/Components/MeshComponent.hpp>
 #include <Age/Components/LightComponents.hpp>
 #include "Age/Object/Node.hpp"
+#include "SceneController.hpp"
 
 namespace a_game
 {
 	WorldScene::WorldScene()
 	{
+		rootNode->addComponent<SceneController>();
 	}
 	void WorldScene::load()
 	{
@@ -41,14 +43,14 @@ namespace a_game
 		MeshComponent::setShader(*objs[4], lightShader);
 		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
-		/*objs[2]->addComponent<SpotLightComponent>()
+		objs[2]->addComponent<SpotLightComponent>()
 			.setColor({ 1.f, 1.f, 2.4f }, 0.05f);
 		objs[2]->addComponent<FollowToCamera>()
-			.setCamera(*activeCamera);*/
+			.setCamera(*activeCamera);
 
-		/*objs[3]->addComponent<PointLightComponent>()
+		objs[3]->addComponent<PointLightComponent>()
 			.setColor({ 2.f, 1.2f, 0.5f }, 0.0f)
-			.addModel(*objs[3]);*/
+			.addModel(*objs[3]);
 		objs[3]->forEach([](Node& n) {
 			auto meshes = n.findAllComponents<MeshComponent>();
 			for (auto& m : meshes)
@@ -57,7 +59,7 @@ namespace a_game
 		objs[4]->addComponent<PointLightComponent>()
 			.setColor({ 1.0f, 0.1f, 0.1f }, 0.f)
 			.addModel(*objs[4]);
-		//objs[5]->addComponent<DirLightComponent>();
+		objs[5]->addComponent<DirLightComponent>();
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
 		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
@@ -94,42 +96,17 @@ namespace a_game
 					}
 				});
 				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f, -3.f });
-				sphere.setScale({ 0.2f });
+				sphere.setScale({ 0.3f });
 			}
 	
 
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
 	}
-	void WorldScene::handleRawEvents(const sf::Event& ev)
+	void WorldScene::draw(const Camera* c) const
 	{
-		if (ev.type == ev.Resized)
-		{
-			forwardRenderer.updateSize({ ev.size.width ,ev.size.height });
-			deferredRenderer.updateSize({ ev.size.width ,ev.size.height });
-		}
-		if (ev.type == ev.KeyPressed)
-		{
-			if (ev.key.code == sf::Keyboard::Left)
-				activeRenderer = &forwardRenderer;
-			if (ev.key.code == sf::Keyboard::Right)
-				activeRenderer = &deferredRenderer;
-		}
-		rootNode->handleRawEvents(ev);
-	}
-	void WorldScene::handleEvents(const EventHandler& ev, float delta)
-	{
-		if (ev.getEvent("escape"))
-			egd.window->close();
-		rootNode->handleEvents(ev, delta);
-	}
-	void WorldScene::update(float delta)
-	{
-		rootNode->update(delta);
-	}
-	void WorldScene::draw(const Camera&, const ShaderProgram* s) const
-	{
-		activeRenderer->drawScene(*this, *activeCamera);
+		const Camera* camera = c ? c : activeCamera;
+		activeRenderer->drawScene(*this, *camera);
 		if (activeRenderer == &deferredRenderer)
 			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",
 				deferredRenderer.gbufferTime, deferredRenderer.lightTime, deferredRenderer.screenTime));

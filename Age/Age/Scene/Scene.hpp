@@ -25,11 +25,12 @@ namespace a_game_engine
 
 		Scene();
 
-		virtual void load() = 0;
 		virtual void handleRawEvents(const sf::Event& ev);
 		virtual void handleEvents(const EventHandler& ev, float delta);
 		virtual void update(float delta);
-		virtual void draw(const Camera& c, const ShaderProgram* s) const = 0;
+
+		virtual void load() = 0;
+		virtual void draw(const Camera* c) const = 0;
 
 		virtual ~Scene() = default;
 	};

@@ -54,6 +54,7 @@
     <ClInclude Include="Age\Game\Rotate.hpp" />
     <ClInclude Include="Age\Resource\ModelResource.hpp" />
     <ClInclude Include="Age\Components\MeshComponent.hpp" />
+    <ClInclude Include="Age\Game\SceneController.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -94,5 +95,6 @@
     <ClCompile Include="Age\Game\Rotate.cpp" />
     <ClCompile Include="Age\Components\MeshComponent.cpp" />
     <ClCompile Include="Age\Components\LightComponents.cpp" />
+    <ClCompile Include="Age\Game\SceneController.cpp" />
   </ItemGroup>
 </Project>

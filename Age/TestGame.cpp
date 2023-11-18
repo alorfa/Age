@@ -198,7 +198,7 @@ namespace a_game
 	}
 	void TestGame::draw() const
 	{
-		world->draw(*world->activeCamera, nullptr);
+		world->draw(nullptr);
 	}
 	void TestGame::onExit()
 	{
