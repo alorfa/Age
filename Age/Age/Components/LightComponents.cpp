@@ -16,9 +16,11 @@ namespace a_game_engine
 	}
 	void PointLightComponent::update(float delta)
 	{
-		_light.pos = node->getTransform().getPosition(); //TODO: use world matrix(all the light types)
+		//TODO: use world matrix(all the light types)
+		//TODO: move to the getLight method?
+		_light.pos = node->getTransform().getPosition();
 		for (auto& m : emissionMeshes)
-			m->mesh.material.setValue("emission", ShaderProperty(_light.color));
+			m->mesh.material.setValue("emission", ShaderProperty(_light.color + _light.ambient));
 	}
 	PointLightComponent& PointLightComponent::setColor(const vec3& color, float ambientRatio)
 	{

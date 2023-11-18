@@ -2,7 +2,7 @@
 
 namespace a_game_engine
 {
-	class Mesh;
+	class VertexBuffer;
 	class CubeMap;
 	class ShaderProgram;
 	class Camera;
@@ -11,7 +11,7 @@ namespace a_game_engine
 	class SkyBox
 	{
 	public:
-		static const Mesh* cube;
+		static const VertexBuffer* cube;
 
 		const ShaderProgram* shader = nullptr;
 		const CubeMap* cubemap = nullptr;

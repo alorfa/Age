@@ -7,7 +7,7 @@
 
 namespace a_game_engine
 {
-	const Mesh* SkyBox::cube = nullptr;
+	const VertexBuffer* SkyBox::cube = nullptr;
 
 	SkyBox::SkyBox(Scene& scene)
 		: scene(&scene)
@@ -19,7 +19,7 @@ namespace a_game_engine
 		if (s == nullptr)
 			s = shader;
 
-		if (cubemap && cube && cube->buffer)
+		if (cubemap && cube)
 		{
 			Pipeline::setDepthFunc(DepthFunc::LEqual);
 			s->use();
@@ -28,10 +28,10 @@ namespace a_game_engine
 			s->setUniform(s->getLocation("view"), view);
 			s->setUniform(s->getLocation("projection"), camera.getProjection());
 			s->setUniform(s->getLocation("skybox"), *cubemap, 0);
-			cube->buffer->draw();
+			cube->draw();
 		}
 	}
-	int SkyBox::getSlot()
+	int SkyBox::getSlot() //TODO: is this really necessary
 	{
 		static int maxSlots = 16;
 		if (maxSlots == 0)

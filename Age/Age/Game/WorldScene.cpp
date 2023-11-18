@@ -73,11 +73,10 @@ namespace a_game
 		cubePaths[3] = egd.res / "img/sky/-y.jpg";
 		cubePaths[4] = egd.res / "img/sky/+z.jpg";
 		cubePaths[5] = egd.res / "img/sky/-z.jpg";
-		//SkyBox::cube = egd.models.load(egd.res / "model/skybox.obj").meshes[0].get();
-		//skyBox.cubemap = &egd.textures.loadCubeMap(cubePaths, TextureLoader::CubemapSettings{
-		//	TextureFiltering::Linear, TextureWrap::ClampToEdge, TextureFormat::SRGB, -1});
-		//skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
-
+		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
+		skyBox.cubemap = &egd.textures.loadCubeMap(cubePaths, TextureLoader::CubemapSettings{
+			TextureFiltering::Linear, TextureWrap::ClampToEdge, TextureFormat::SRGB, -1});
+		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
 
 		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)
