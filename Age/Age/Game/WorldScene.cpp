@@ -55,7 +55,7 @@ namespace a_game
 			.addModel(*objs[3]);
 		objs[3]->forEach([](Node& n) {
 			auto meshes = n.findAllComponents<MeshComponent>();
-			for (auto& m : meshes)
+			for (auto m : meshes)
 				m->mesh.material.setValue("emission", ShaderProperty(vec3{0.f}));
 		});
 		objs[4]->addComponent<PointLightComponent>()
@@ -86,7 +86,7 @@ namespace a_game
 			for (uint j = 0; j < 11; j++)
 			{
 				auto& sphere = rootNode->addChild();
-				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/smoothsus.obj",
+				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/sphere.obj",
 					ModelLoader::Settings{vec3{1.f}, false}));
 				MeshComponent::setShader(sphere, egd.shaders.load(egd.res / "shader/testSus.asl"));
 				sphere.forEach([&](Node& n) {
@@ -98,7 +98,7 @@ namespace a_game
 					}
 				});
 				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f, -3.f });
-				sphere.setScale({ 0.3f });
+				sphere.setScale({ 0.25f });
 			}
 	
 
