@@ -53,9 +53,17 @@ float normalDistribution_GGX(float NH/*, vec3 N, vec3 L, vec3 lightPos*/)
     vec3 closestPoint = L + centerToRay * clamp(0.1 / length(centerToRay), 0., 1.);
     vec3 l = normalize(closestPoint);*/
     float raw = rawNDF_GGX(NH);
-
-    //return raw;
     return min(raw, PI);
+}
+float NDF_AGE(float NH, float sourceRadius)
+{
+    float angle = clamp(1 - NH, 0., 1.);
+    float brightness = (1. - age_roughness) * 0.88 + 0.12;
+    float lSmoothness = (1. / clamp(age_roughness, 0.01, 1.)-1.) * 0.3;
+    float smValue = lSmoothness * 150.;
+    float denom = pow(angle, 1 + sourceRadius * 5.) + 1.;
+    float value = 1. / denom;
+    return pow(value, smValue) * brightness * PI;
 }
 float geometrySchlickGGX(float cosTheta)
 {
@@ -101,12 +109,14 @@ vec3 pbr_computeRay()
     vec3 specColor = fresnelSchlick(HV, materialSpec);
     vec3 diffColor = (vec3(1.) - specColor) * (1. - age_metalness);
     float NDF = normalDistribution_GGX(NH);
+    NDF = NDF_AGE(NH, 0.1);
     float G = geometry_Smith(NV, NL);
 
     vec3 numerator = NDF * G * specColor;
     float denominator = 4. * NV * NL + 0.0001;
     vec3 specular = numerator / denominator;
     vec3 directLight = (diffColor * age_base_color * INV_PI + specular) * age_ray.color * NL;
+    //return vec3(NDF);
     return age_ray.ambient * age_base_color + directLight;
 }
 
