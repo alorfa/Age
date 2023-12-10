@@ -6,8 +6,7 @@ namespace a_game_engine
 {
 	Transform& Node::changeTransform()
 	{
-		forEach([](Node& n)
-			{
+		forEach([](Node& n) {
 				n.getTransform().markParent();
 			});
 		return _transform;
@@ -35,15 +34,47 @@ namespace a_game_engine
 	{
 		components.push_back(std::move(comp));
 	}
+
+	void Node::sortChildren(const vec3& point, Type nodeType, SortMode mode)
+	{
+		std::list<std::unique_ptr<Node>> nnodes;
+		auto proj = [&](const std::unique_ptr<Node>& node) -> float {
+			return (node->getTransform().getPosition() - point).square_length();
+			};
+		auto opFunc = [&](float left, float right)
+			{
+				if (mode == SortMode::Near or mode == SortMode::Default)
+					return left < right;
+				return left > right;
+			};
+		auto trFunc = [&](float left, float right)
+			{
+				if (mode == SortMode::Near)
+					return left < right;
+				return left > right;
+			};
+
+		if ((int)nodeType & (int)Type::Opaque)
+			std::ranges::sort(children, opFunc, proj);
+
+		if ((int)nodeType & (int)Type::Transparent)
+			std::ranges::sort(transparentChildren, trFunc, proj);
+	}
+	void Node::sortBranch(const vec3& point, Type nodeType, SortMode mode)
+	{
+		forEach([&](Node& n) {
+				sortChildren(point, nodeType, mode);
+			});
+	}
 	void Node::addChild(std::unique_ptr<Node>&& node)
 	{
 		node->_transform._parent = &_transform;
 		node->parent = this;
 		node->scene = scene;
 		if (node->isTransparent())
-			transparentChildren.push_front(std::move(node));
+			transparentChildren.push_back(std::move(node));
 		else
-			children.push_front(std::move(node));
+			children.push_back(std::move(node));
 	}
 	Node& Node::addChild(Type type)
 	{

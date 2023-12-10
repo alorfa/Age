@@ -59,8 +59,8 @@ float NDF_AGE(float NH, float sourceRadius)
 {
     float angle = clamp(1 - NH, 0., 1.);
     float brightness = (1. - age_roughness) * 0.88 + 0.12;
-    float lSmoothness = (1. / clamp(age_roughness, 0.01, 1.)-1.) * 0.3;
-    float smValue = lSmoothness * 150.;
+    float lSmoothness = (1. / clamp(age_roughness, 0.01, 1.)-1.);
+    float smValue = lSmoothness * lSmoothness * 160.;
     float denom = pow(angle, 1 + sourceRadius * 5.) + 1.;
     float value = 1. / denom;
     return pow(value, smValue) * brightness * PI;
@@ -109,7 +109,7 @@ vec3 pbr_computeRay()
     vec3 specColor = fresnelSchlick(HV, materialSpec);
     vec3 diffColor = (vec3(1.) - specColor) * (1. - age_metalness);
     float NDF = normalDistribution_GGX(NH);
-    NDF = NDF_AGE(NH, 0.1);
+    //NDF = NDF_AGE(NH, 0.1);
     float G = geometry_Smith(NV, NL);
 
     vec3 numerator = NDF * G * specColor;
