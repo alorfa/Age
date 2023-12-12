@@ -1,6 +1,7 @@
 #include "Node.hpp"
 #include <SFML/Window/Event.hpp>
 #include "Age/EventHandler.hpp"
+#include "Age/Other/Logger.hpp"
 
 namespace a_game_engine
 {
@@ -35,7 +36,7 @@ namespace a_game_engine
 		components.push_back(std::move(comp));
 	}
 
-	void Node::sortChildren(const vec3& point, Type nodeType, SortMode mode)
+	void Node::sortChildren(const vec3& point, uint nodeType, SortMode mode)
 	{
 		std::list<std::unique_ptr<Node>> nnodes;
 		auto proj = [&](const std::unique_ptr<Node>& node) -> float {
@@ -60,7 +61,7 @@ namespace a_game_engine
 		if ((int)nodeType & (int)Type::Transparent)
 			std::ranges::sort(transparentChildren, trFunc, proj);
 	}
-	void Node::sortBranch(const vec3& point, Type nodeType, SortMode mode)
+	void Node::sortBranch(const vec3& point, uint nodeType, SortMode mode)
 	{
 		forEach([&](Node& n) {
 				sortChildren(point, nodeType, mode);

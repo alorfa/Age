@@ -20,7 +20,7 @@ struct SpotLight
 uniform vec3 cameraPos;
 
 vec3 age_emission, age_base_color, age_specular, age_normal;
-float age_metalness, age_roughness, age_shininess;
+float age_metalness, age_roughness, age_shininess, age_opacity = 1.;
 
 DirLight age_ray;
 vec3 age_viewDir;

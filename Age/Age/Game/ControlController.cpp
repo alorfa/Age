@@ -19,25 +19,23 @@ namespace a_game
 	}
 	void ControlController::handleEvents(const EventHandler& ev, float delta)
 	{
-		const auto direction = Math::getForwardDir(egd.camera.transform.getRotation());
-		if (ev.getEvent("w"))
-			egd.camera.transform.changePosition() += direction * (delta * 4);
-		if (ev.getEvent("s"))
-			egd.camera.transform.changePosition() -= direction * (delta * 4);
-
-		const auto rightDir = Math::getRightDir(egd.camera.transform.getRotation());
-		if (ev.getEvent("a"))
-			egd.camera.transform.changePosition() -= rightDir * (delta * 4);
-		if (ev.getEvent("d"))
-			egd.camera.transform.changePosition() += rightDir * (delta * 4);
-
-		const auto up = Math::getUpDir(egd.camera.transform.getRotation());
-
 		if (ev.getEvent("camera"))
-			setCameraActive(!mouseIsCamera);
+			setCameraActive(!enableControl);
 
-		if (mouseIsCamera)
+		if (enableControl)
 		{
+			const auto direction = Math::getForwardDir(egd.camera.transform.getRotation());
+			if (ev.getEvent("w"))
+				egd.camera.transform.changePosition() += direction * (delta * 4);
+			if (ev.getEvent("s"))
+				egd.camera.transform.changePosition() -= direction * (delta * 4);
+
+			const auto rightDir = Math::getRightDir(egd.camera.transform.getRotation());
+			if (ev.getEvent("a"))
+				egd.camera.transform.changePosition() -= rightDir * (delta * 4);
+			if (ev.getEvent("d"))
+				egd.camera.transform.changePosition() += rightDir * (delta * 4);
+
 			auto windowSize = egd.window->getSize();
 			auto curPos = sf::Mouse::getPosition(*egd.window);
 			ivec2 mouseOffset = { curPos.x - stopMouse.x, stopMouse.y - curPos.y };
@@ -60,11 +58,11 @@ namespace a_game
 	}
 	void ControlController::setCameraActive(bool value)
 	{
-		if (value == mouseIsCamera)
+		if (value == enableControl)
 			return;
 
-		mouseIsCamera = value;
-		if (mouseIsCamera)
+		enableControl = value;
+		if (enableControl)
 		{
 			auto sfPos = sf::Mouse::getPosition(*egd.window);
 			stopMouse.x = sfPos.x;

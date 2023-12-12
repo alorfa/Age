@@ -12,7 +12,7 @@ namespace a_game
 	{
 		ivec2 stopMouse;
 		float sensitivity = 3.f;
-		bool mouseIsCamera = false;
+		bool enableControl = false;
 	public:
 		ControlController(const Node& n);
 

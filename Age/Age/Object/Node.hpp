@@ -29,7 +29,7 @@ namespace a_game_engine
 		void setEulerRotation(const vec3& rot);
 		void setScale(const vec3& scale);
 
-		enum class Type : uint
+		enum Type : uint
 		{
 			Opaque = 1,
 			Transparent = 2
@@ -107,8 +107,8 @@ namespace a_game_engine
 			return *result;
 		}
 
-		void sortChildren(const vec3& point, Type nodeType, SortMode mode = SortMode::Default);
-		void sortBranch(const vec3& point, Type nodeType, SortMode mode = SortMode::Default);
+		void sortChildren(const vec3& point, uint nodeType, SortMode mode = SortMode::Default);
+		void sortBranch(const vec3& point, uint nodeType, SortMode mode = SortMode::Default);
 
 		void addChild(std::unique_ptr<Node>&& node);
 		Node& addChild(Type type = Type::Opaque);
@@ -118,7 +118,7 @@ namespace a_game_engine
 		void forEachConstLocal(std::function<void(const Node&)> func) const;
 
 		bool isTransparent() const {
-			return bool((uint)type & (uint)Type::Transparent);
+			return bool(type & Type::Transparent);
 		}
 
 		void handleRawEvents(const sf::Event& ev);

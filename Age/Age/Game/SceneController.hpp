@@ -11,10 +11,12 @@ namespace a_game
 	class SceneController : public Component
 	{
 		WorldScene* _scene = nullptr;
+		float _time = -5.f;
 	public:
 		SceneController(const Node& n);
 
 		void handleRawEvents(const sf::Event& ev) override;
 		void handleEvents(const EventHandler& ev, float delta) override;
+		void update(float delta) override;
 	};
 }
