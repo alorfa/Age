@@ -27,6 +27,7 @@ namespace a_game_engine
 		CubeMap(CubeMap&& other);
 		CubeMap& operator=(CubeMap&& other);
 		~CubeMap();
+		void destroy();
 		void create(const Settings& s);
 		void activate(int number = 0) const;
 

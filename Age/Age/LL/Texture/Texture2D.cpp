@@ -37,7 +37,7 @@ namespace a_game_engine
 		int outerType, outerFormat;
 		const int innerFormat = TexEnums::toOglFormat(s.internal);
 		TexEnums::toOglOuterFormat(s.img.format, outerFormat, outerType);
-		const int maxMipLevels = TexEnums::computeMipLevels(std::max(s.img.size.x, s.img.size.y));
+		const int maxMipLevels = TexEnums::computeMipLevels(s.img.size);
 		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
 		glTextureStorage2D(_id, mipLevels, innerFormat, _size.x, _size.y);
 		glTextureSubImage2D(_id, 0, 0, 0, _size.x, _size.y, outerFormat, outerType, s.img.data);

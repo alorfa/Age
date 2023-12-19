@@ -21,18 +21,27 @@ namespace a_game_engine
 	}
 	CubeMap::~CubeMap()
 	{
+		destroy();
+	}
+	void CubeMap::destroy()
+	{
 		if (_id)
+		{
 			glDeleteTextures(1, &_id);
+			_id = 0;
+		}
 	}
 	void CubeMap::create(const Settings& s)
 	{
-		if (_id == 0)
-			glGenTextures(1, &_id);
-
-		glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
+		destroy();
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_id);
 
 		static int indices[6] = { 0, 1, 5, 4, 2, 3 };
+		const int maxMipLevels = TexEnums::computeMipLevels(s.imageArea);
+		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
 
+		glTextureStorage2D(_id, mipLevels, TexEnums::toOglFormat(s.internal),
+			s.imageArea, s.imageArea);
 		for (uint i = 0; i < 6; i++)
 		{
 			const auto& img = s.images[indices[i]];
@@ -40,8 +49,8 @@ namespace a_game_engine
 			{
 				int outerType, outerFormat;
 				TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, TexEnums::toOglFormat(s.internal),
-					s.imageArea, s.imageArea, 0, outerFormat, outerType, img.data);
+				glTextureSubImage3D(_id, 0, 0, 0, i, s.imageArea, s.imageArea, 1,
+					outerFormat, outerType, img.data);
 			}
 		}
 		setWrap(TextureWrap::ClampToEdge);
