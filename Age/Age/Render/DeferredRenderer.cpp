@@ -20,6 +20,15 @@ namespace a_game_engine
 		screenFb.textures.resize(1);
 	}
 
+	void DeferredRenderer::clear()
+	{
+		gbuffer.depthStencil.destroy();
+		gbuffer.textures[0].destroy();
+		gbuffer.textures[1].destroy();
+		gbuffer.textures[2].destroy();
+		screenFb.textures[0].destroy();
+	}
+
 	void DeferredRenderer::updateSize(const uvec2& newSize)
 	{
 		size = newSize;

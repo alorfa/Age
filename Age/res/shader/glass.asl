@@ -13,13 +13,15 @@ vec4 vertexProcess()
 #endif
 #ifdef AGE_FRAGMENT
 
+uniform vec3 color;
+
 void fragmentControl()
 {
-    age_base_color = vec3(1., 0.1, 0.1);
+    age_base_color = color;
     age_normal = normalize(fragTBN[2]);
     age_roughness = 0.15;
     age_metalness = 0.99;
-    age_alpha = 0.0;
+    age_alpha = 0.4;
 }
 #define AGE_LIGHT_MODE_PBR
 

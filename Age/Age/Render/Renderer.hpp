@@ -15,6 +15,7 @@ namespace a_game_engine
 	protected:
 		uvec2 size;
 	public:
+		virtual void clear() = 0;
 		virtual void updateSize(const uvec2& newSize) = 0;
 		virtual void drawObject(const Node& o, const SceneInfo& info) = 0;
 		virtual void drawScene(const Scene& scene, const Camera& camera) = 0;

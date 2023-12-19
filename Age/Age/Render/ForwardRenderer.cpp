@@ -15,6 +15,10 @@ namespace a_game_engine
 		shader = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
 		mainFb.textures.resize(1);
 	}
+	void ForwardRenderer::clear()
+	{
+		mainFb.textures[0].destroy();
+	}
 	void ForwardRenderer::updateSize(const uvec2& newSize)
 	{
 		size = newSize;

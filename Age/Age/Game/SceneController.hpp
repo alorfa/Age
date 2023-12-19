@@ -11,6 +11,7 @@ namespace a_game
 	class SceneController : public Component
 	{
 		WorldScene* _scene = nullptr;
+		uvec2 _windowSize;
 		float _time = -5.f;
 	public:
 		SceneController(const Node& n);

@@ -10,21 +10,33 @@ namespace a_game
 	SceneController::SceneController(const Node& n)
 	{
 		_scene = dynamic_cast<WorldScene*>(n.scene);
+		_windowSize = uvec2(egd.window->getSize().x, egd.window->getSize().y);
 	}
 
 	void SceneController::handleRawEvents(const sf::Event& ev)
 	{
 		if (ev.type == ev.Resized)
 		{
-			_scene->forwardRenderer.updateSize({ ev.size.width ,ev.size.height });
-			_scene->deferredRenderer.updateSize({ ev.size.width ,ev.size.height });
+			_windowSize = { ev.size.width ,ev.size.height };
+			_scene->activeRenderer->updateSize(_windowSize);
 		}
 		if (ev.type == ev.KeyPressed)
 		{
 			if (ev.key.code == sf::Keyboard::Left)
-				_scene->activeRenderer = &_scene->forwardRenderer;
+			{
+				if (_scene->activeRenderer != &_scene->forwardRenderer)
+				{
+					_scene->activeRenderer->clear();
+					_scene->activeRenderer = &_scene->forwardRenderer;
+					_scene->activeRenderer->updateSize(_windowSize);
+				}
+			}
 			if (ev.key.code == sf::Keyboard::Right)
+			{
+				_scene->activeRenderer->clear();
 				_scene->activeRenderer = &_scene->deferredRenderer;
+				_scene->activeRenderer->updateSize(_windowSize);
+			}
 		}
 	}
 	void SceneController::handleEvents(const EventHandler& ev, float delta)

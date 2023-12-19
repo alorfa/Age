@@ -20,6 +20,7 @@ namespace a_game_engine
 
 		DeferredRenderer();
 
+		void clear() override;
 		void updateSize(const uvec2& newSize);
 		void drawObject(const Node& o, const SceneInfo& info) override;
 		void drawLightSources(const Node& node, const vec3& cameraPos);

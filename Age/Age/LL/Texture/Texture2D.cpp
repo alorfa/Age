@@ -53,7 +53,10 @@ namespace a_game_engine
 	void Texture2D::destroy()
 	{
 		if (_id)
+		{
 			glDeleteTextures(1, &_id);
+			_id = 0;
+		}
 		_size = { 0, 0 };
 	}
 

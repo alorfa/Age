@@ -23,7 +23,6 @@ namespace a_game
 	{
 		auto nativeSize = egd.window->getSize();
 		forwardRenderer.updateSize({ nativeSize.x, nativeSize.y });
-		deferredRenderer.updateSize({ nativeSize.x, nativeSize.y });
 		activeRenderer = &forwardRenderer;
 
 		activeCamera = &egd.camera;
@@ -35,8 +34,8 @@ namespace a_game
 			ModelLoader::Settings{ vec3{5.f}, false, false, true }));
 		MeshComponent::addModel(*objs[1], egd.models.load(egd.res / "model/kirara/scene.gltf",
 			ModelLoader::Settings{ vec3{10.f}, false}));
-		MeshComponent::addModel(*objs[3], egd.models.load(egd.res / "model/cube.obj"));
-		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/cube.obj"));
+		MeshComponent::addModel(*objs[3], egd.models.load(egd.res / "model/sphere.obj"));
+		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/sphere.obj"));
 		MeshComponent::setShader(*objs[0], egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/default.asl"));
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
@@ -107,6 +106,11 @@ namespace a_game
 				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f, -3.f });
 				sphere.setScale({ 0.25f });
 			}
+		vec3 colors[3][3] = {
+			vec3{1.f, 0.1f, 0.1f}, vec3{0.1f, 1.f, 0.1f}, vec3{0.1f, 0.1f, 1.f},
+			vec3{1.f, 1.f, 0.1f}, vec3{0.1f, 1.f, 1.f}, vec3{1.f, 0.1f, 1.f},
+			vec3{1.f, 1.f, 1.f}, vec3{0.5f, 0.5f, 0.5f}, vec3{0.1f, 0.1f, 0.1f}
+		};
 		egd.shaders.load(egd.res / "shader/glass.asl").opaque = false;
 		for (uint i = 0; i < 3; i++)
 			for (uint j = 0; j < 3; j++)
@@ -115,10 +119,14 @@ namespace a_game
 				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/sphere.obj",
 					ModelLoader::Settings{ vec3{1.f}, false }));
 				MeshComponent::setShader(sphere, egd.shaders.load(egd.res / "shader/glass.asl"));
-				sphere.setPosition({ (float)i - 4.f, (float)j + 1.f, -2.2f});
+				sphere.setPosition({ (float)i - 4.f, (float)j + 1.f, -2.3f});
 				sphere.setScale({ 0.3f });
+				sphere.forEach([&](Node& n) {
+					auto meshes = n.findAllComponents<MeshComponent>();
+					for (auto& mesh : meshes)
+						mesh->mesh.material.setValue("color", ShaderProperty(colors[i][j]));
+				});
 			}
-
 
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
