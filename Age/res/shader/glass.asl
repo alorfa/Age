@@ -19,7 +19,7 @@ void fragmentControl()
     age_normal = normalize(fragTBN[2]);
     age_roughness = 0.15;
     age_metalness = 0.99;
-    age_alpha = 0.4;
+    age_alpha = 0.0;
 }
 #define AGE_LIGHT_MODE_PBR
 

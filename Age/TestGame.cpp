@@ -167,6 +167,10 @@ int main()
 		"age_FragColor1.a = age_metalness;\n"
 		"age_FragColor2.rgb = fragPos;\n"
 		});
+	ShaderSettings::additionalDefines.push_back("#define AGE_DISABLE_SPECULAR\n");
+	ShaderSettings::additionalDefines.push_back(
+		"#define AGE_DISABLE_AMBIENT\n"
+		"#define AGE_DISABLE_DIFFUSE\n");
 
 	ShaderSettings::postprocVsh = File::readAllText(egd.res / "shader/lib/postproc.vsh");
 

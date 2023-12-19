@@ -20,6 +20,7 @@ namespace a_game_engine
 		struct Forward
 		{
 			uint dirLights = 0, pointLights = 0, spotLights = 0;
+			int definesIndex = -1;
 
 			bool operator<(const Forward& other) const;
 			bool operator==(const Forward& other) const;
@@ -32,6 +33,7 @@ namespace a_game_engine
 		struct Deferred
 		{
 			int implIndex = -1;
+			int definesIndex = -1;
 
 			bool operator<(const Deferred& other) const;
 			bool operator==(const Deferred& other) const;
@@ -43,7 +45,6 @@ namespace a_game_engine
 				Undefined, Forward, Deferred
 			} type = Type::Undefined;
 			std::variant<Forward, Deferred> settings;
-			int definesIndex = -1;
 
 			Common();
 			Common(const Forward& s);

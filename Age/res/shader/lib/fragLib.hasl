@@ -101,7 +101,7 @@ vec3 blinnPhong_computeRay()
 #ifndef AGE_DISABLE_DIFFUSE
     diffuse = age_base_color * NL;
 #endif 
-#ifndef AGE_DISABLE_SPEC
+#ifndef AGE_DISABLE_SPECULAR
     specular = age_specular * NH;
 #endif
 
@@ -120,7 +120,7 @@ vec3 pbr_computeRay()
     vec3 diffColor = (vec3(1.) - F) * (1. - age_metalness);
     vec3 finalSpecular = vec3(0.);
     vec3 finalDiffuse = vec3(0.);
-#ifndef AGE_DISABLE_SPEC
+#ifndef AGE_DISABLE_SPECULAR
     float NDF = normalDistribution_GGX(NH);
     //NDF = NDF_AGE(NH, 0.1);
     float G = geometry_Smith(NV, NL);

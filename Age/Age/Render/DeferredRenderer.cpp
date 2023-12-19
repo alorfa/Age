@@ -130,7 +130,6 @@ namespace a_game_engine
 		ShaderSettings::Deferred deferred;
 		deferred.implIndex = 0;
 		deferredInfo.shaderSettings = deferred;
-		forwardInfo.props.clear();
 		forwardInfo.camera = deferredInfo.camera = &camera;
 		forwardInfo.props.push_back({ "skybox", SkyBox::getSlot() });
 		forwardInfo.addLights(*scene.rootNode);

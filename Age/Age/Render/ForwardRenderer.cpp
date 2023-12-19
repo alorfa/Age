@@ -45,6 +45,15 @@ namespace a_game_engine
 		info.drawingCondition = [](const Material& m) {
 			return m.shader->opaque;
 			};
+		SceneInfo transparentInfo = info;
+		transparentInfo.drawingCondition = [](const Material& m) {
+			return !m.shader->opaque;
+			};
+		settings.definesIndex = 0;
+		transparentInfo.shaderSettings = settings;
+		SceneInfo transparentSpecInfo = transparentInfo;
+		settings.definesIndex = 1;
+		transparentSpecInfo.shaderSettings = settings;
 
 		Pipeline::set3DContext();
 		mainFb.use();
@@ -54,13 +63,14 @@ namespace a_game_engine
 		drawObject(*sc.rootNode, info);
 		sc.skyBox.draw(camera, nullptr);
 
-		info.drawingCondition = [](const Material& m) {
-			return !m.shader->opaque;
-			};
 		sc.rootNode->forEachConst([&](const Node& n)
 			{
-				n.draw(info);
+				Pipeline::setBlendMode(BlendMode::Lerp);
+				n.draw(transparentInfo);
+				Pipeline::setBlendMode(BlendMode::Add);
+				n.draw(transparentSpecInfo);
 			});
+		Pipeline::setBlendMode(BlendMode::Lerp);
 
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();

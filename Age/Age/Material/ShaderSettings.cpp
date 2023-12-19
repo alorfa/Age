@@ -6,7 +6,7 @@ namespace a_game_engine
     ShaderSettings::Include ShaderSettings::include;
     ShaderSettings::Include ShaderSettings::rawInclude;
     std::vector<ShaderSettings::DeferredImpl> ShaderSettings::deferredImpls;
-    std::vector<std::string> additionalDefines;
+    std::vector<std::string> ShaderSettings::additionalDefines;
     std::string ShaderSettings::postprocVsh;
 
     bool ShaderSettings::Forward::operator<(const Forward& other) const
@@ -17,6 +17,8 @@ namespace a_game_engine
             return true;
         if (spotLights < other.spotLights)
             return true;
+        if (definesIndex < other.definesIndex)
+            return true;
         return false;
     }
     bool ShaderSettings::Forward::operator==(const Forward& other) const
@@ -24,16 +26,17 @@ namespace a_game_engine
         return
             dirLights == other.dirLights &&
             pointLights == other.pointLights &&
-            spotLights == other.spotLights;
+            spotLights == other.spotLights &&
+            definesIndex == other.definesIndex;
     }
     bool ShaderSettings::Deferred::operator<(const Deferred& other) const
     {
-        return implIndex < other.implIndex;
+        return implIndex < other.implIndex && definesIndex < other.definesIndex;
     }
 
     bool ShaderSettings::Deferred::operator==(const Deferred& other) const
     {
-        return implIndex == other.implIndex;
+        return implIndex == other.implIndex && definesIndex == other.definesIndex;
     }
 
     ShaderSettings::Common::Common()
@@ -98,12 +101,16 @@ namespace a_game_engine
             "#define AGE_MAX_POINT_LIGHTS {}\n"
             "#define AGE_MAX_SPOT_LIGHTS {}\n"
             "#define AGE_RENDERING_MODE_FORWARD\n", f.dirLights, f.pointLights, f.spotLights);
+        if (f.definesIndex >= 0)
+            defines += ShaderSettings::additionalDefines[f.definesIndex];
     }
     void ShaderSettings::Detailed::create(const Deferred& d)
     {
         bindings = deferredImpls[d.implIndex].bindings;
         defines = "#define AGE_RENDERING_MODE_DEFERRED\n";
         paintingFunc = &deferredImpls[d.implIndex].paintingFunc;
+        if (d.definesIndex >= 0)
+            defines += ShaderSettings::additionalDefines[d.definesIndex];
     }
     void ShaderSettings::Detailed::create(const Common& f)
     {
@@ -115,7 +122,5 @@ namespace a_game_engine
         {
             create(std::get<Deferred>(f.settings));
         }
-
-        //for (uint i = 0; i <)
     }
 }
