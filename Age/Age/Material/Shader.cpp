@@ -16,7 +16,7 @@ namespace a_game_engine
         result.vert = std::format("#define AGE_VERTEX\n{}\n{}\n{}\n{}\n{}",
             s.defines, s.include->vertLib, s.include->vertInc, source, s.include->vertMain);
         std::string fragment;
-        if (s.paintingFuncIndex < 0)
+        if (s.paintingFunc == nullptr)
         {
             result.frag = std::format("#define AGE_FRAGMENT\n{}\n{}\n{}\n{}\n{}\n{}",
                 s.defines, bindings, s.include->fragLib, s.include->fragInc, source, s.include->fragMain);
@@ -25,7 +25,7 @@ namespace a_game_engine
         {
             const std::string fullFunctionCode =
                 "void force_paintOver()\n{\n" +
-                ShaderSettings::paintingFunctions[s.paintingFuncIndex] + "}\n";
+                *s.paintingFunc + "}\n";
             result.frag = std::format("#define AGE_FRAGMENT\n#define AGE_LIGHT_MODE_FORCE\n"
                 "{}\n{}{}\n{}\n{}\n{}{}",
                 s.defines, bindings, s.include->fragLib, s.include->fragInc, source, fullFunctionCode, s.include->fragMain);

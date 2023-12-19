@@ -128,8 +128,7 @@ namespace a_game_engine
 				not m.shader->customRendering;
 			};
 		ShaderSettings::Deferred deferred;
-		deferred.bindings = { 4, 4, 3 };
-		deferred.paintingFuncIndex = 0;
+		deferred.implIndex = 0;
 		deferredInfo.shaderSettings = deferred;
 		forwardInfo.props.clear();
 		forwardInfo.camera = deferredInfo.camera = &camera;

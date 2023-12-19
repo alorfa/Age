@@ -159,12 +159,14 @@ int main()
 {
 	egd.res = "res";
 	egd.user = "user";
-	ShaderSettings::paintingFunctions.push_back(
+	ShaderSettings::deferredImpls.push_back({
+		{4, 4, 3},
 		"age_FragColor.rgb = age_base_color.rgb;\n"
 		"age_FragColor.a = age_roughness;\n"
 		"age_FragColor1.rgb = age_normal.rgb * 0.5 + 0.5;\n"
 		"age_FragColor1.a = age_metalness;\n"
-		"age_FragColor2.rgb = fragPos;\n");
+		"age_FragColor2.rgb = fragPos;\n"
+		});
 
 	ShaderSettings::postprocVsh = File::readAllText(egd.res / "shader/lib/postproc.vsh");
 

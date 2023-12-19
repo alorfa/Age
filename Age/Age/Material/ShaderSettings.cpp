@@ -5,7 +5,8 @@ namespace a_game_engine
 {
     ShaderSettings::Include ShaderSettings::include;
     ShaderSettings::Include ShaderSettings::rawInclude;
-    std::vector<std::string> ShaderSettings::paintingFunctions;
+    std::vector<ShaderSettings::DeferredImpl> ShaderSettings::deferredImpls;
+    std::vector<std::string> additionalDefines;
     std::string ShaderSettings::postprocVsh;
 
     bool ShaderSettings::Forward::operator<(const Forward& other) const
@@ -27,21 +28,12 @@ namespace a_game_engine
     }
     bool ShaderSettings::Deferred::operator<(const Deferred& other) const
     {
-        if (bindings.size() < other.bindings.size())
-            return true;
-        for (uint i = 0; i < (uint)bindings.size(); i++)
-        {
-            if (bindings[i] < other.bindings[i])
-                return true;
-        }
-        return paintingFuncIndex < other.paintingFuncIndex;
+        return implIndex < other.implIndex;
     }
 
     bool ShaderSettings::Deferred::operator==(const Deferred& other) const
     {
-        return
-            bindings == other.bindings &&
-            paintingFuncIndex == other.paintingFuncIndex;
+        return implIndex == other.implIndex;
     }
 
     ShaderSettings::Common::Common()
@@ -109,9 +101,9 @@ namespace a_game_engine
     }
     void ShaderSettings::Detailed::create(const Deferred& d)
     {
-        bindings = d.bindings;
+        bindings = deferredImpls[d.implIndex].bindings;
         defines = "#define AGE_RENDERING_MODE_DEFERRED\n";
-        paintingFuncIndex = d.paintingFuncIndex;
+        paintingFunc = &deferredImpls[d.implIndex].paintingFunc;
     }
     void ShaderSettings::Detailed::create(const Common& f)
     {
@@ -123,5 +115,7 @@ namespace a_game_engine
         {
             create(std::get<Deferred>(f.settings));
         }
+
+        //for (uint i = 0; i <)
     }
 }

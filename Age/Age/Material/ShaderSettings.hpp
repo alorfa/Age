@@ -24,10 +24,14 @@ namespace a_game_engine
 			bool operator<(const Forward& other) const;
 			bool operator==(const Forward& other) const;
 		};
-		struct Deferred
+		struct DeferredImpl
 		{
 			std::vector<uint> bindings;
-			int paintingFuncIndex = -1;
+			std::string paintingFunc;
+		};
+		struct Deferred
+		{
+			int implIndex = -1;
 
 			bool operator<(const Deferred& other) const;
 			bool operator==(const Deferred& other) const;
@@ -39,6 +43,7 @@ namespace a_game_engine
 				Undefined, Forward, Deferred
 			} type = Type::Undefined;
 			std::variant<Forward, Deferred> settings;
+			int definesIndex = -1;
 
 			Common();
 			Common(const Forward& s);
@@ -51,7 +56,7 @@ namespace a_game_engine
 		{
 			const Include* include;
 			std::string defines;
-			int paintingFuncIndex = -1;
+			const std::string* paintingFunc = nullptr;
 			std::vector<uint> bindings;
 
 			Detailed(const Include& include);
@@ -64,8 +69,8 @@ namespace a_game_engine
 		};
 
 		static Include include, rawInclude;
-		static std::vector<std::string> paintingFunctions;
+		static std::vector<DeferredImpl> deferredImpls;
+		static std::vector<std::string> additionalDefines;
 		static std::string postprocVsh;
-	private:
 	};
 }
