@@ -37,10 +37,8 @@ namespace a_game
 		_time += delta;
 		if (_time >= 5.f)
 		{
-			sf::Clock clock;
 			_time = 0.f;
 			_scene->rootNode->sortChildren(egd.camera.transform.getPosition(), Node::Opaque);
-			Logger::logDebug(std::format("Opaque nodes has sorted in {} ms", clock.restart().asMilliseconds()));
 		}
 	}
 }

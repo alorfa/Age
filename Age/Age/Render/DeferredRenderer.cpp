@@ -121,17 +121,25 @@ namespace a_game_engine
 		//setup
 		auto* rectangleVerts = &VertexBuffer::getDefFramebuf();
 
-		SceneInfo info;
-		info.camera = &camera;
-		info.drawingCondition = [](const Material& m) { 
+		SceneInfo deferredInfo, forwardInfo;
+		deferredInfo.drawingCondition = [](const Material& m) {
 			return m.shader->opaque &&
 				not m.shader->requiresEmission &&
 				not m.shader->customRendering;
-		};
+			};
 		ShaderSettings::Deferred deferred;
 		deferred.bindings = { 4, 4, 3 };
 		deferred.paintingFuncIndex = 0;
-		info.shaderSettings = deferred;
+		deferredInfo.shaderSettings = deferred;
+		forwardInfo.props.clear();
+		forwardInfo.camera = deferredInfo.camera = &camera;
+		forwardInfo.props.push_back({ "skybox", SkyBox::getSlot() });
+		forwardInfo.addLights(*scene.rootNode);
+		ShaderSettings::Forward forwardSettings;
+		forwardSettings.pointLights = forwardInfo.lights.point;
+		forwardSettings.dirLights = forwardInfo.lights.dir;
+		forwardSettings.spotLights = forwardInfo.lights.spot;
+		forwardInfo.shaderSettings = forwardSettings;
 
 		//gbuffer pass
 		gbuffer.use();
@@ -142,11 +150,11 @@ namespace a_game_engine
 		Pipeline::clear({ 0.f, 0.f, 0.f });
 		Pipeline::setStencilFunc(DepthFunc::Always, 0xFF);
 		Pipeline::setStencilOp(StencilOp::Replace);
-		drawObject(*scene.rootNode, info);
+		drawObject(*scene.rootNode, deferredInfo);
 
 		gbufferTime = (int)clock.restart().asMicroseconds();
 
-		info.drawingCondition = [](const Material& m) {
+		forwardInfo.drawingCondition = [](const Material& m) {
 			return m.shader->opaque && 
 				(m.shader->requiresEmission || 
 					m.shader->customRendering);
@@ -156,7 +164,7 @@ namespace a_game_engine
 		Pipeline::clear({ 0.f, 0.f, 0.f });
 		screenFb.copyFrom(gbuffer, FrameBuffer::Depth | FrameBuffer::Stencil);
 		Pipeline::setStencilWrite(2);
-		drawObject(*scene.rootNode, info);
+		drawObject(*scene.rootNode, forwardInfo);
 		Pipeline::setStencilWrite(0);
 		scene.skyBox.draw(camera, nullptr);
 
@@ -171,26 +179,37 @@ namespace a_game_engine
 
 		lightTime = (int)clock.restart().asMicroseconds();
 
-		//draw on the screen
+		//transparent objects
+		Pipeline::setBlendMode(BlendMode::Lerp);
+		Pipeline::set3DContext();
 		Pipeline::enableStencil(false);
+		forwardInfo.drawingCondition = [](const Material& m) {
+			return !m.shader->opaque;
+			};
+		drawObject(*scene.rootNode, forwardInfo);
+
+		//draw on the screen
 		Pipeline::setBlendMode(BlendMode::Disable);
+		Pipeline::set2DContext();
 		FrameBuffer::useDefault(size);
 		postprocPass->use();
 		postprocPass->setUniform(postprocPass->getLocation("tex"), screenFb.textures[0], 3);
 		rectangleVerts->draw();
 
-		//debug
-		debugPass->use();
-		debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.8f });
-		debugPass->setUniform(debugPass->getLocation("scale"), { 0.2f, 0.2f });
-		debugPass->setUniform(debugPass->getLocation("tex"), 0);
-		rectangleVerts->draw();
-		debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.4f });
-		debugPass->setUniform(debugPass->getLocation("tex"), 1);
-		rectangleVerts->draw();
-		debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
-		debugPass->setUniform(debugPass->getLocation("tex"), 2);
-		rectangleVerts->draw();
+		if (debug)
+		{
+			debugPass->use();
+			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.8f });
+			debugPass->setUniform(debugPass->getLocation("scale"), { 0.2f, 0.2f });
+			debugPass->setUniform(debugPass->getLocation("tex"), 0);
+			rectangleVerts->draw();
+			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.4f });
+			debugPass->setUniform(debugPass->getLocation("tex"), 1);
+			rectangleVerts->draw();
+			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
+			debugPass->setUniform(debugPass->getLocation("tex"), 2);
+			rectangleVerts->draw();
+		}
 
 		screenTime = (int)clock.restart().asMicroseconds();
 	}

@@ -107,7 +107,18 @@ namespace a_game
 				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f, -3.f });
 				sphere.setScale({ 0.25f });
 			}
-	
+		egd.shaders.load(egd.res / "shader/glass.asl").opaque = false;
+		for (uint i = 0; i < 3; i++)
+			for (uint j = 0; j < 3; j++)
+			{
+				auto& sphere = rootNode->addChild(Node::Transparent);
+				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/sphere.obj",
+					ModelLoader::Settings{ vec3{1.f}, false }));
+				MeshComponent::setShader(sphere, egd.shaders.load(egd.res / "shader/glass.asl"));
+				sphere.setPosition({ (float)i - 4.f, (float)j + 1.f, -2.2f});
+				sphere.setScale({ 0.3f });
+			}
+
 
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
@@ -115,6 +126,7 @@ namespace a_game
 	void WorldScene::draw(const Camera* c) const
 	{
 		const Camera* camera = c ? c : activeCamera;
+		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);
 		activeRenderer->drawScene(*this, *camera);
 		if (activeRenderer == &deferredRenderer)
 			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",

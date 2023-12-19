@@ -42,13 +42,25 @@ namespace a_game_engine
 		settings.pointLights = info.lights.point;
 		settings.spotLights = info.lights.spot;
 		info.shaderSettings = settings;
+		info.drawingCondition = [](const Material& m) {
+			return m.shader->opaque;
+			};
 
 		Pipeline::set3DContext();
 		mainFb.use();
+		Pipeline::setBlendMode(BlendMode::Lerp);
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f }, true, false);
 		sc.skyBox.cubemap->activate(SkyBox::getSlot());
 		drawObject(*sc.rootNode, info);
 		sc.skyBox.draw(camera, nullptr);
+
+		info.drawingCondition = [](const Material& m) {
+			return !m.shader->opaque;
+			};
+		sc.rootNode->forEachConst([&](const Node& n)
+			{
+				n.draw(info);
+			});
 
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();

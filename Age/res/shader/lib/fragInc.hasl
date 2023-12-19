@@ -48,7 +48,7 @@ void phong_paintOver()
         light += blinnPhong_computeRay() * attenuation;
     }
 #endif
-    age_FragColor = vec4(light, 1.f);
+    age_FragColor = vec4(light, age_alpha);
 }
 void pbr_paintOver()
 {
@@ -75,5 +75,5 @@ void pbr_paintOver()
         light += pbr_computeRay() * attenuation;
     }
 #endif
-    age_FragColor = vec4(light, 1.f);
+    age_FragColor = vec4(light, age_alpha);
 }
