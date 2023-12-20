@@ -53,6 +53,8 @@ namespace a_game_engine
 					outerFormat, outerType, img.data);
 			}
 		}
+		if (s.mipmaps)
+			generateMipmaps();
 		setWrap(TextureWrap::ClampToEdge);
 	}
 	void CubeMap::activate(int number) const
@@ -77,5 +79,9 @@ namespace a_game_engine
 	void CubeMap::setFiltering(TextureFiltering filter)
 	{
 		setFiltering(filter, filter);
+	}
+	void CubeMap::generateMipmaps()
+	{
+		glGenerateTextureMipmap(_id);
 	}
 }

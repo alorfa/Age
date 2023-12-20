@@ -35,5 +35,6 @@ namespace a_game_engine
 		void setWrap(TextureWrap wrap);
 		void setFiltering(TextureFiltering min, TextureFiltering mag);
 		void setFiltering(TextureFiltering filter);
+		void generateMipmaps();
 	};
 }
