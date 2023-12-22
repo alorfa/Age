@@ -38,22 +38,21 @@ float getDepth(float n, float f)
 
 float rawNDF_GGX(float NH)
 {
-    float a = age_roughness * age_roughness;
-    float a2 = a * a;
+    float localRoughness = max(age_roughness, 0.03);
+    float a2 = pow(localRoughness, 3.);
+    //float a2 = localRoughness * localRoughness;
+    //float a2 = a * a;
     float spec2 = NH * NH;
     float denom = spec2 * (a2 - 1.) + 1.;
     float result = a2 / (denom * denom * PI);
     return result;
 }
 
-float normalDistribution_GGX(float NH/*, vec3 N, vec3 L, vec3 lightPos*/)
+float normalDistribution_GGX(float NH, float scatterSin)
 {
-    /*vec3 reflectedRay = reflect(L, N);
-    vec3 centerToRay = dot(reflectedRay, L) * reflectedRay - L;
-    vec3 closestPoint = L + centerToRay * clamp(0.1 / length(centerToRay), 0., 1.);
-    vec3 l = normalize(closestPoint);*/
-    float raw = rawNDF_GGX(NH);
-    return min(raw, PI);
+    float raw = rawNDF_GGX(clamp(NH + scatterSin, 0., 1.));
+    float maxValue = max(rawNDF_GGX(1.) * INV_PI, 1.);
+    return raw / maxValue;
 }
 float NDF_AGE(float NH, float sourceRadius)
 {
@@ -121,7 +120,7 @@ vec3 pbr_computeRay()
     vec3 finalSpecular = vec3(0.);
     vec3 finalDiffuse = vec3(0.);
 #ifndef AGE_DISABLE_SPECULAR
-    float NDF = normalDistribution_GGX(NH);
+    float NDF = normalDistribution_GGX(NH, 1. - cos(atan(0.05)));
     //NDF = NDF_AGE(NH, 0.1);
     float G = geometry_Smith(NV, NL);
 

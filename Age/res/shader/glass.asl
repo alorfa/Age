@@ -19,7 +19,7 @@ void fragmentControl()
 {
     age_base_color = color;
     age_normal = normalize(fragTBN[2]);
-    age_roughness = 0.15;
+    age_roughness = 0.08;
     age_metalness = 0.99;
     age_alpha = 0.4;
 }
