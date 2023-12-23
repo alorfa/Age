@@ -20,6 +20,7 @@ namespace a_game_engine
 					props.push_back({ std::format("pointLightSources[{}].constant", lights.point), pointLight->getLight().constant });
 					props.push_back({ std::format("pointLightSources[{}].linear", lights.point), pointLight->getLight().linear });
 					props.push_back({ std::format("pointLightSources[{}].quadratic", lights.point), pointLight->getLight().quadratic });
+					props.push_back({ std::format("pointLightSources[{}].radius", lights.point), pointLight->getLight().radius });
 					lights.point++;
 					continue;
 				}
@@ -35,6 +36,7 @@ namespace a_game_engine
 					props.push_back({ std::format("spotLightSources[{}].dir", lights.spot), spotLight->getLight().dir });
 					props.push_back({ std::format("spotLightSources[{}].cutOff", lights.spot), Math::cos(spotLight->getLight().cutOff) });
 					props.push_back({ std::format("spotLightSources[{}].outerCutOff", lights.spot), Math::cos(spotLight->getLight().outerCutOff) });
+					props.push_back({ std::format("spotLightSources[{}].radius", lights.spot), spotLight->getLight().radius });
 					lights.spot++;
 					continue;
 				}
@@ -44,6 +46,7 @@ namespace a_game_engine
 					props.push_back({ std::format("dirLightSources[{}].color", lights.dir), dirLight->light.color });
 					props.push_back({ std::format("dirLightSources[{}].ambient", lights.dir), dirLight->light.ambient });
 					props.push_back({ std::format("dirLightSources[{}].dir", lights.dir), dirLight->light.dir });
+					props.push_back({ std::format("dirLightSources[{}].scatter", lights.dir), dirLight->light.scatter });
 					lights.dir++;
 					continue;
 				}

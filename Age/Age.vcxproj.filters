@@ -98,5 +98,6 @@
     <ClCompile Include="Age\Components\LightComponents.cpp" />
     <ClCompile Include="Age\Game\SceneController.cpp" />
     <ClCompile Include="Age\Game\ControlController.cpp" />
+    <ClCompile Include="Age\Light\Light.cpp" />
   </ItemGroup>
 </Project>

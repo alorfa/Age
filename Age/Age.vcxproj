@@ -246,6 +246,7 @@
     <ClCompile Include="Age\Game\SceneController.cpp" />
     <ClCompile Include="Age\Game\WorldScene.cpp" />
     <ClCompile Include="Age\Game\Gdata.cpp" />
+    <ClCompile Include="Age\Light\Light.cpp" />
     <ClCompile Include="Age\LL\Buffers\FrameBuffer2D.cpp" />
     <ClCompile Include="Age\LL\Buffers\VertexBuffer.cpp" />
     <ClCompile Include="Age\LL\Pipeline.cpp" />

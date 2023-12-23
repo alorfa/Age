@@ -49,7 +49,7 @@ namespace a_game
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		objs[4]->addComponent<PointLightComponent>()
-			.setColor({ 1.0f, 0.1f, 0.1f }, 0.f)
+			.setColor({ 1.0f, 0.1f, 0.1f }, 0.03f)
 			.addModel(*objs[4]);
 		if (light_test)
 		{
@@ -62,11 +62,12 @@ namespace a_game
 		else
 		{
 			objs[2]->addComponent<SpotLightComponent>()
-				.setColor({ 1.f, 1.f, 2.4f }, 0.05f);
+				.setColor({ 1.f, 1.f, 2.4f }, 0.03f);
 			objs[3]->addComponent<PointLightComponent>()
-				.setColor({ 2.f, 1.2f, 0.5f }, 0.0f)
+				.setColor({ 2.f, 1.2f, 0.5f }, 0.03f)
 				.addModel(*objs[3]);
-			objs[5]->addComponent<DirLightComponent>();
+			objs[5]->addComponent<DirLightComponent>()
+				.light.scatter = DirLight::computeScatter(0.1f);
 		}
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
