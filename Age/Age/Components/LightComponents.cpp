@@ -38,6 +38,11 @@ namespace a_game_engine
 		_light.ambient = color;
 		return *this;
 	}
+	PointLightComponent& PointLightComponent::setRadius(float radius)
+	{
+		_light.radius = radius;
+		return *this;
+	}
 	void SpotLightComponent::update(float delta)
 	{
 		_light.pos = node->getTransform().getPosition();
@@ -57,6 +62,16 @@ namespace a_game_engine
 	SpotLightComponent& SpotLightComponent::setAmbient(const vec3& color)
 	{
 		_light.ambient = color;
+		return *this;
+	}
+	SpotLightComponent& SpotLightComponent::setRadius(float radius)
+	{
+		_light.radius = radius;
+		return *this;
+	}
+	DirLightComponent& DirLightComponent::setRadius(float radius)
+	{
+		light.radius = radius;
 		return *this;
 	}
 }

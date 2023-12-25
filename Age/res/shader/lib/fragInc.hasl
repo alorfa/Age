@@ -30,7 +30,7 @@ void phong_paintOver()
 #if defined(AGE_MAX_DIR_LIGHTS) && AGE_MAX_DIR_LIGHTS > 0 
     for (int i = 0; i < AGE_MAX_DIR_LIGHTS; i++)
     { 
-        DIR_LIGHT_SETUP(dirLightSources[i]);
+        DIR_LIGHT_SETUP(dirLightSources[i], fragPos);
         light += blinnPhong_computeRay();
     } 
 #endif 
@@ -57,7 +57,7 @@ void pbr_paintOver()
 #if defined(AGE_MAX_DIR_LIGHTS) && AGE_MAX_DIR_LIGHTS > 0 
     for (int i = 0; i < AGE_MAX_DIR_LIGHTS; i++)
     { 
-        DIR_LIGHT_SETUP(dirLightSources[i]);
+        DIR_LIGHT_SETUP(dirLightSources[i], fragPos);
         light += pbr_computeRay();
     } 
 #endif 

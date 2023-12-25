@@ -46,6 +46,21 @@ namespace a_game
 
 		const bool light_test = false;
 
+		vec2 floorPositions[3][3] = {
+			{vec2{-10.f, -10.f}, vec2{-10.f, 0.f}, vec2{-10.f, 10.f}},
+			{vec2{0.f, -10.f}, vec2{0.f, 0.f}, vec2{0.f, 10.f}},
+			{vec2{10.f, -10.f}, vec2{10.f, 0.f}, vec2{10.f, 10.f}}
+		};
+		for (uint i = 0; i < 3; i++)
+			for (uint j = 0; j < 3; j++)
+			{
+				auto& floor = rootNode->addChild();
+				MeshComponent::addModel(floor, egd.models.load(egd.res / "model/10m.obj", ModelLoader::Settings{
+					vec3{1.f}, true, false, false, false }));
+				MeshComponent::setShader(floor, egd.shaders.load(egd.res / "shader/floor.asl"));
+				floor.setPosition({ floorPositions[i][j].x, floorPositions[i][j].y, -4.f});
+			}
+
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		objs[4]->addComponent<PointLightComponent>()
@@ -62,12 +77,14 @@ namespace a_game
 		else
 		{
 			objs[2]->addComponent<SpotLightComponent>()
-				.setColor({ 1.f, 1.f, 2.4f }, 0.03f);
+				.setColor({ 1.f, 1.f, 2.4f }, 0.03f)
+				.setRadius(0.05f);
 			objs[3]->addComponent<PointLightComponent>()
 				.setColor({ 2.f, 1.2f, 0.5f }, 0.03f)
-				.addModel(*objs[3]);
+				.addModel(*objs[3])
+				.setRadius(0.05f);
 			objs[5]->addComponent<DirLightComponent>()
-				.light.scatter = DirLight::computeScatter(0.1f);
+				.setRadius(0.05f);
 		}
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };

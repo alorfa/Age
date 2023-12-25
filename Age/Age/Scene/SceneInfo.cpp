@@ -46,7 +46,7 @@ namespace a_game_engine
 					props.push_back({ std::format("dirLightSources[{}].color", lights.dir), dirLight->light.color });
 					props.push_back({ std::format("dirLightSources[{}].ambient", lights.dir), dirLight->light.ambient });
 					props.push_back({ std::format("dirLightSources[{}].dir", lights.dir), dirLight->light.dir });
-					props.push_back({ std::format("dirLightSources[{}].scatter", lights.dir), dirLight->light.scatter });
+					props.push_back({ std::format("dirLightSources[{}].radius", lights.dir), dirLight->light.radius });
 					lights.dir++;
 					continue;
 				}

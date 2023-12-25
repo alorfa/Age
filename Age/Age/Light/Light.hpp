@@ -7,9 +7,7 @@ namespace a_game_engine
 	struct DirLight
 	{
 		vec3 dir = { 0.f, 0.f, 1.f }, ambient, color = { 1.f, 1.f, 1.f };
-		float scatter = 0.f;
-
-		static float computeScatter(float radius);
+		float radius = 0.1f;
 	};
 
 	struct PointLight

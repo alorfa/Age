@@ -4,7 +4,7 @@ const float INV_PI = 1. / PI;
 struct DirLight
 {
     vec3 dir, ambient, color;
-    float scatter;
+    float radius;
 };
 struct PointLight
 {
@@ -19,13 +19,18 @@ struct SpotLight
     float constant, linear, quadratic;
     float radius;
 };
+struct AgeRay
+{
+    vec3 dir, ambient, color;
+    float scatter;
+};
 
 uniform vec3 cameraPos;
 
 vec3 age_emission, age_base_color, age_specular, age_normal;
 float age_metalness, age_roughness, age_shininess, age_alpha = 1.;
 
-DirLight age_ray;
+AgeRay age_ray;
 vec3 age_viewDir;
 
 vec4 sampleCubemap(samplerCube cubemap, in vec3 texCoord)
@@ -42,7 +47,7 @@ float getDepth(float n, float f)
 float rawNDF_GGX(float NH)
 {
     float localRoughness = max(age_roughness, 0.03);
-    float a2 = pow(localRoughness, 3.);
+    float a2 = pow(localRoughness, 4.);
     //float a2 = localRoughness * localRoughness;
     //float a2 = a * a;
     float spec2 = NH * NH;
@@ -134,19 +139,21 @@ vec3 pbr_computeRay()
 
 #define LIGHT_SETUP(fragmentPos) age_viewDir = normalize(cameraPos - fragmentPos)
 
-#define DIR_LIGHT_SETUP(just_light) \
+#define DIR_LIGHT_SETUP(just_light, fragmentPos) \
+float cameraDist = distance(cameraPos, fragmentPos); \
 age_ray.dir = just_light.dir; \
 age_ray.color = just_light.color; \
 age_ray.ambient = just_light.ambient; \
-age_ray.scatter = just_light.scatter
+age_ray.scatter = sin(atan(just_light.radius * 0.5 / (cameraDist * cameraDist)))
 
 #define POINT_LIGHT_SETUP(just_light, fragmentPos) \
 float dist = distance(just_light.pos, fragmentPos); \
+float cameraDist = distance(cameraPos, fragmentPos); \
 float attenuation = 1. / (just_light.constant + just_light.linear * dist + just_light.quadratic * (dist * dist)); \
 age_ray.dir = normalize(just_light.pos - fragmentPos); \
 age_ray.color = just_light.color; \
 age_ray.ambient = just_light.ambient; \
-age_ray.scatter = 1. - cos(atan(just_light.radius / (1. + dist)))
+age_ray.scatter = sin(atan(just_light.radius * 0.5 / (dist * dist + cameraDist * cameraDist)))
 
 #define SPOT_LIGHT_SETUP(just_light, fragmentPos) \
 POINT_LIGHT_SETUP(just_light, fragmentPos); \
