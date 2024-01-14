@@ -8,6 +8,7 @@ namespace a_game_engine
 	{
 	public:
 		static const float PI;
+		static const float TAU;
 
 		static float sin(float value);
 		static float cos(float value);

@@ -11,6 +11,7 @@
 #include "Age/Object/Node.hpp"
 #include "SceneController.hpp"
 #include "ControlController.hpp"
+#include "RotateComp.hpp"
 
 namespace a_game
 {
@@ -64,8 +65,12 @@ namespace a_game
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		objs[4]->addComponent<PointLightComponent>()
+			.setRadius(0.05f)
 			.setColor({ 1.0f, 0.1f, 0.1f }, 0.03f)
 			.addModel(*objs[4]);
+		objs[4]->addComponent<RotateComp>()
+			.init(vec3(-2.f, 1.5f, -2.f), vec3(-3.f, 3.f, 0.f), 0.5f);
+
 		if (light_test)
 		{
 			objs[3]->forEach([](Node& n) {
@@ -84,7 +89,7 @@ namespace a_game
 				.addModel(*objs[3])
 				.setRadius(0.05f);
 			objs[5]->addComponent<DirLightComponent>()
-				.setRadius(0.05f);
+				.setRadius(0.003f);
 		}
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
