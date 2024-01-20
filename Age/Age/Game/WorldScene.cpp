@@ -65,11 +65,11 @@ namespace a_game
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		objs[4]->addComponent<PointLightComponent>()
-			.setRadius(0.05f)
+			.setRadius(0.1f)
 			.setColor({ 1.0f, 0.1f, 0.1f }, 0.03f)
 			.addModel(*objs[4]);
 		objs[4]->addComponent<RotateComp>()
-			.init(vec3(-2.f, 1.5f, -2.f), vec3(-3.f, 3.f, 0.f), 0.5f);
+			.init(vec3(-2.f, 1.5f, -3.5f), vec3(-3.f, 3.f, 0.f), 0.5f);
 
 		if (light_test)
 		{
@@ -87,17 +87,17 @@ namespace a_game
 			objs[3]->addComponent<PointLightComponent>()
 				.setColor({ 2.f, 1.2f, 0.5f }, 0.03f)
 				.addModel(*objs[3])
-				.setRadius(0.05f);
+				.setRadius(0.1f);
 			objs[5]->addComponent<DirLightComponent>()
-				.setRadius(0.003f);
+				.setRadius(0.03f);
 		}
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
 		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
 		objs[3]->changeTransform().changePosition() = vec3(-1.f, 5, 2);
-		objs[3]->changeTransform().changeScale() *= 0.15f;
+		objs[3]->changeTransform().changeScale() *= 0.1f;
 		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
-		objs[4]->changeTransform().changeScale() *= 0.15f;
+		objs[4]->changeTransform().changeScale() *= 0.1f;
 
 		std::filesystem::path cubePaths[6];
 		cubePaths[0] = egd.res / "img/sky/+x.jpg";

@@ -15,9 +15,8 @@ void main()
     age_normal = normal_metalness.xyz * 2.0 - 1.0;
     age_metalness = normal_metalness.a;
     LIGHT_SETUP(fragPos);
-    POINT_LIGHT_SETUP(light, fragPos);
 
-    vec3 outColor = pbr_computeRay() * attenuation;
+    vec3 outColor = pbr_computeRay(light, fragPos);
 
     FragColor = vec4(outColor, 1.0);
 }
