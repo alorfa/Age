@@ -65,6 +65,7 @@ namespace a_game_engine
 
 	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos)
 	{
+		/*
 		node.forEachConst([&](const Node& n) {
 			for (auto& comp : n.components)
 			{
@@ -122,6 +123,7 @@ namespace a_game_engine
 				}
 			}
 		});		
+		*/
 	}
 
 	void DeferredRenderer::drawScene(const Scene& scene, const Camera& camera)

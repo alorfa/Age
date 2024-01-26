@@ -65,11 +65,11 @@ namespace a_game
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		objs[4]->addComponent<PointLightComponent>()
-			.setRadius(0.1f)
-			.setColor({ 1.0f, 0.1f, 0.1f }, 0.03f)
+			.setSize(0.1f)
+			.setColor({ 5.0f, 0.5f, 0.5f }, 0.03f)
 			.addModel(*objs[4]);
-		objs[4]->addComponent<RotateComp>()
-			.init(vec3(-2.f, 1.5f, -3.5f), vec3(-3.f, 3.f, 0.f), 0.5f);
+		/*objs[4]->addComponent<RotateComp>()
+			.init(vec3(-2.f, 1.5f, -3.5f), vec3(-3.f, 3.f, 0.f), 0.5f);*/
 
 		if (light_test)
 		{
@@ -82,14 +82,14 @@ namespace a_game
 		else
 		{
 			objs[2]->addComponent<SpotLightComponent>()
-				.setColor({ 1.f, 1.f, 2.4f }, 0.03f)
-				.setRadius(0.05f);
-			objs[3]->addComponent<PointLightComponent>()
-				.setColor({ 2.f, 1.2f, 0.5f }, 0.03f)
-				.addModel(*objs[3])
+				.setColor({ 5.f, 5.f, 12.f }, 0.03f)
 				.setRadius(0.1f);
+			objs[3]->addComponent<PointLightComponent>()
+				.setColor({ 10.f, 6.f, 2.5f }, 0.03f)
+				.addModel(*objs[3])
+				.setSize(0.2f);
 			objs[5]->addComponent<DirLightComponent>()
-				.setRadius(0.03f);
+				.setSize(0.1f);
 		}
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };

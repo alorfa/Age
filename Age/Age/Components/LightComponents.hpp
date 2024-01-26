@@ -21,7 +21,7 @@ namespace a_game_engine
 		PointLightComponent& setColor(const vec3& color, float ambientRatio);
 		PointLightComponent& setDirect(const vec3& color);
 		PointLightComponent& setAmbient(const vec3& color);
-		PointLightComponent& setRadius(float radius);
+		PointLightComponent& setSize(float size);
 		inline const PointLight& getLight() const { return _light; }
 
 		PointLightComponent& addModel(Node& n);
@@ -41,7 +41,7 @@ namespace a_game_engine
 		SpotLightComponent& setColor(const vec3& color, float ambientRatio);
 		SpotLightComponent& setDirect(const vec3& color);
 		SpotLightComponent& setAmbient(const vec3& color);
-		SpotLightComponent& setRadius(float radius);
+		SpotLightComponent& setRadius(float size);
 		inline const SpotLight& getLight() const { return _light; }
 
 		void update(float delta) override;
@@ -55,6 +55,6 @@ namespace a_game_engine
 		inline DirLightComponent(const Node& n) {}
 		DirLightComponent() = default;
 
-		DirLightComponent& setRadius(float radius);
+		DirLightComponent& setSize(float size);
 	};
 }

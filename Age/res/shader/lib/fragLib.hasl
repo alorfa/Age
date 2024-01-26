@@ -4,25 +4,23 @@ const float INV_PI = 1. / PI;
 struct DirLight
 {
     vec3 dir, ambient, color;
-    float radius;
+    float sourceRadius;
 };
 struct PointLight
 {
     vec3 pos, ambient, color;
-    float constant, linear, quadratic;
-    float radius;
+    float sourceRadius, attOffset, maxDist;
 };
 struct SpotLight
 {
     vec3 pos, dir, ambient, color;
     float cutOff, outerCutOff;
-    float constant, linear, quadratic;
-    float radius;
+    float sourceRadius, attOffset, maxDist;
 };
 
 struct LightContext
 {
-    float NL, NH, HV, distSqr; 
+    float NL, NH, HV, falloff; 
 };
 
 uniform vec3 cameraPos;
@@ -45,7 +43,9 @@ PointLight toPointLight(SpotLight light, vec3 fragmentPos)
     PointLight result;
     result.pos = light.pos;
     result.ambient = light.ambient;
-    result.radius = light.radius;
+    result.sourceRadius = light.sourceRadius;
+    result.attOffset = light.attOffset;
+    result.maxDist = light.maxDist;
     float theta = dot(normalize(light.pos - fragmentPos), normalize(-light.dir)); 
     float epsilon = light.cutOff - light.outerCutOff; 
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0., 1.); 
@@ -70,22 +70,23 @@ float D_GGX(float NH2, float a2)
     return a2 / (denom * denom * PI);
 }
 
-LightContext computeLightData_Sphere(vec3 Lwl, vec3 V, vec3 R, vec3 N, float sourceRadius)
+LightContext computeLightData_Sphere(vec3 Lwl, vec3 V, vec3 R, vec3 N, float sourceRadius, float lightRadius, float distOffset)
 {
     LightContext result;
     vec3 centerToRay = dot(Lwl, R) * R - Lwl;
-    vec3 Loffset = centerToRay * clamp(sourceRadius / length(centerToRay), 0., 1.);
-    vec3 newLwl = Lwl + Loffset;
-    result.distSqr = dot(newLwl, newLwl);
-    vec3 newL = newLwl / sqrt(result.distSqr);
+    float distLtoNewL = sourceRadius / length(centerToRay);
+    vec3 newLwl = Lwl + centerToRay * min(distLtoNewL, 1.);
+    float distSqr = dot(newLwl, newLwl);
+    float dist = sqrt(distSqr);
+    vec3 newL = newLwl / dist;
     vec3 H = normalize(V + newL);
     result.HV = max(dot(H, V), 0.);
-    result.NH = max(dot(N, H), 0.); //TODO: fix smooth surfaces
-    //result.NH = length(Loffset) < (sourceRadius * 0.5) ? 1. : max(dot(N, H), 0.);
+    result.NH = distLtoNewL > 1. ? 1. : max(dot(N, H), 0.);
     result.NL = max(dot(N, newL), 0.);
+    result.falloff = pow2(clamp(1. - pow4(dist / lightRadius), 0., 1.)) / (distSqr + distOffset);
     return result;
 }
-LightContext computeLightData_Point(vec3 L, vec3 V, vec3 N)
+LightContext computeLightData_Point(vec3 Lwl, vec3 L, vec3 V, vec3 N)
 {
     LightContext result;
     vec3 H = normalize(V + L);
@@ -162,7 +163,7 @@ vec3 pbr_computeRay(DirLight light)
     
     vec3 R = reflect(-age_V, age_normal);
     //LightContext c = computeLightData_Point(normalize(Lwl), age_V, age_normal);
-    LightContext c = computeLightData_Sphere(light.dir, age_V, R, age_normal, light.radius);
+    LightContext c = computeLightData_Sphere(light.dir, age_V, R, age_normal, light.sourceRadius, 1., 1.);
     //computeLightData_Sphere(L, age_V, age_R, age_normal, light.radius, HV, NH, NL, distSqr);
     vec3 materialSpec = mix(vec3(0.04), age_base_color, age_metalness);
     vec3 F = F_Schlick(c.HV, materialSpec);
@@ -198,7 +199,7 @@ vec3 pbr_computeRay(PointLight light, vec3 fragmentPos)
     vec3 Lwl = light.pos - fragmentPos;
     vec3 R = reflect(-age_V, age_normal);
     //LightContext c = computeLightData_Point(normalize(Lwl), age_V, age_normal);
-    LightContext c = computeLightData_Sphere(Lwl, age_V, R, age_normal, light.radius);
+    LightContext c = computeLightData_Sphere(Lwl, age_V, R, age_normal, light.sourceRadius, light.maxDist, light.attOffset);
     //computeLightData_Sphere(L, age_V, age_R, age_normal, light.radius, HV, NH, NL, distSqr);
     vec3 materialSpec = mix(vec3(0.04), age_base_color, age_metalness);
     vec3 F = F_Schlick(c.HV, materialSpec);
@@ -221,9 +222,9 @@ vec3 pbr_computeRay(PointLight light, vec3 fragmentPos)
     vec3 directLight = (finalDiffuse + finalSpecular) * light.color * c.NL;
 
 #ifdef AGE_DISABLE_AMBIENT
-    return directLight;
+    return directLight * c.falloff;
 #else
-    return light.ambient * age_base_color + directLight;
+    return (light.ambient * age_base_color + directLight) * c.falloff;
 #endif
 }
 

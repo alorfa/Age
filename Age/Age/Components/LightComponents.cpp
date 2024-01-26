@@ -38,9 +38,9 @@ namespace a_game_engine
 		_light.ambient = color;
 		return *this;
 	}
-	PointLightComponent& PointLightComponent::setRadius(float radius)
+	PointLightComponent& PointLightComponent::setSize(float size)
 	{
-		_light.radius = radius;
+		_light.size = size;
 		return *this;
 	}
 	void SpotLightComponent::update(float delta)
@@ -64,14 +64,14 @@ namespace a_game_engine
 		_light.ambient = color;
 		return *this;
 	}
-	SpotLightComponent& SpotLightComponent::setRadius(float radius)
+	SpotLightComponent& SpotLightComponent::setRadius(float size)
 	{
-		_light.radius = radius;
+		_light.size = size;
 		return *this;
 	}
-	DirLightComponent& DirLightComponent::setRadius(float radius)
+	DirLightComponent& DirLightComponent::setSize(float size)
 	{
-		light.radius = radius;
+		light.size = size;
 		return *this;
 	}
 }
