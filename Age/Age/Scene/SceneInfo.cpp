@@ -14,7 +14,7 @@ namespace a_game_engine
 				auto* pointLight = dynamic_cast<const PointLightComponent*>(comp.get());
 				if (pointLight)
 				{
-					props.push_back({ std::format("pointLightSources[{}].color", lights.point), pointLight->getLight().color});
+					props.push_back({ std::format("pointLightSources[{}].color", lights.point), pointLight->getLight().color * pointLight->getLight().attOffset});
 					props.push_back({ std::format("pointLightSources[{}].ambient", lights.point), pointLight->getLight().ambient });
 					props.push_back({ std::format("pointLightSources[{}].pos", lights.point), pointLight->getLight().pos });
 					props.push_back({ std::format("pointLightSources[{}].attOffset", lights.point), pointLight->getLight().attOffset });
@@ -26,7 +26,7 @@ namespace a_game_engine
 				auto* spotLight = dynamic_cast<const SpotLightComponent*>(comp.get());
 				if (spotLight)
 				{
-					props.push_back({ std::format("spotLightSources[{}].color", lights.spot), spotLight->getLight().color });
+					props.push_back({ std::format("spotLightSources[{}].color", lights.spot), spotLight->getLight().color * spotLight->getLight().attOffset });
 					props.push_back({ std::format("spotLightSources[{}].ambient", lights.spot), spotLight->getLight().ambient });
 					props.push_back({ std::format("spotLightSources[{}].pos", lights.spot), spotLight->getLight().pos });
 					props.push_back({ std::format("spotLightSources[{}].attOffset", lights.spot), spotLight->getLight().attOffset });

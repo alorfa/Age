@@ -43,6 +43,16 @@ namespace a_game_engine
 		_light.size = size;
 		return *this;
 	}
+	PointLightComponent& PointLightComponent::setRadius(float radius)
+	{
+		_light.radius = radius;
+		return *this;
+	}
+	PointLightComponent& PointLightComponent::setOffset(float offset)
+	{
+		_light.attOffset = offset;
+		return *this;
+	}
 	void SpotLightComponent::update(float delta)
 	{
 		_light.pos = node->getTransform().getPosition();
@@ -64,14 +74,29 @@ namespace a_game_engine
 		_light.ambient = color;
 		return *this;
 	}
-	SpotLightComponent& SpotLightComponent::setRadius(float size)
+	SpotLightComponent& SpotLightComponent::setSize(float size)
 	{
 		_light.size = size;
+		return *this;
+	}
+	SpotLightComponent& SpotLightComponent::setRadius(float radius)
+	{
+		_light.radius = radius;
+		return *this;
+	}
+	SpotLightComponent& SpotLightComponent::setOffset(float offset)
+	{
+		_light.attOffset = offset;
 		return *this;
 	}
 	DirLightComponent& DirLightComponent::setSize(float size)
 	{
 		light.size = size;
+		return *this;
+	}
+	DirLightComponent& DirLightComponent::setDirection(vec3 dir)
+	{
+		light.dir = dir.new_normalized();
 		return *this;
 	}
 }
