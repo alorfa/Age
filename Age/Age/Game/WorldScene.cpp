@@ -43,7 +43,7 @@ namespace a_game
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(*objs[3], lightShader);
 		MeshComponent::setShader(*objs[4], lightShader);
-		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
+		objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
 		const bool light_test = false;
 
@@ -65,7 +65,7 @@ namespace a_game
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		objs[4]->addComponent<PointLightComponent>()
-			.setSize(0.1f)
+			.setSize(0.2f)
 			.setOffset(2.f)
 			.setColor({ 3.0f, 0.3f, 0.3f }, 0.03f)
 			.addModel(*objs[4]);

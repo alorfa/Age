@@ -21,6 +21,21 @@ namespace a_game_engine
 		static vec3 getUpDir(const vec3& euler);
 
 		template <typename T>
+		static T max(T v1, T v2)
+		{
+			if (v1 > v2)
+				return v1;
+			return v2;
+		}
+		template <typename T>
+		static T min(T v1, T v2)
+		{
+			if (v1 < v2)
+				return v1;
+			return v2;
+		}
+
+		template <typename T>
 		static T clamp(T value, T min, T max)
 		{
 			if (value < min)
@@ -28,6 +43,18 @@ namespace a_game_engine
 			if (value > max)
 				return max;
 			return value;
+		}
+		static float saturate(float value);
+
+		template <typename T>
+		static T lerp(T first, T second, float t)
+		{
+			return first + (second - first) * t;
+		}
+		template <typename T>
+		static T smooth(T first, T second, float t)
+		{
+			return lerp(first, second, saturate(t));
 		}
 	};
 }

@@ -22,7 +22,7 @@ void fragmentControl()
     age_base_color = texture(base_color_map, fragUv).rgb;
     age_normal = normalize(fragTBN[2]);
     age_roughness = 0.1;
-    age_metalness = 0.9;
+    age_metalness = 0.6;
 }
 #define AGE_LIGHT_MODE_PBR
 

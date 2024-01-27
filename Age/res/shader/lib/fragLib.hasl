@@ -208,8 +208,9 @@ vec3 pbr_computeRay(PointLight light, vec3 fragmentPos)
     vec3 finalDiffuse = vec3(0.);
 #ifndef AGE_DISABLE_SPECULAR
     float clampedRoughness = max(age_roughness, 0.03);
-    float DMaxValue = max(D_GGX(1., pow4(clampedRoughness)) * INV_PI, 1.);
-    float D = D_GGX(pow2(c.NH), pow4(clampedRoughness)) / DMaxValue;
+    float r4 = pow4(clampedRoughness);
+    float DMaxValue = max(D_GGX(1., r4) * INV_PI, 1.);
+    float D = D_GGX(pow2(c.NH), r4) / DMaxValue;
     float G = G_Smith(NV, c.NL);
 
     vec3 numerator = D * G * F;

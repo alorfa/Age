@@ -157,4 +157,8 @@ namespace a_game_engine
         sinz = sin(euler.z);
         return { -siny * cosx, cosx * cosy, sinx * cosz }; //TODO: z-axis may not be processed correctly
     }
+    float Math::saturate(float value)
+    {
+        return clamp(value, 0.f, 1.f);
+    }
 }
