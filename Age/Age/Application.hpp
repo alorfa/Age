@@ -22,7 +22,7 @@ namespace a_game_engine
 		virtual void handleRawEvents(const sf::Event& ev) = 0;
 		virtual void handleEvents(float delta) = 0;
 		virtual void update(float delta) = 0;
-		virtual void draw() const = 0;
+		virtual void draw(float delta) const = 0;
 		virtual void onExit() = 0;
 	};
 }

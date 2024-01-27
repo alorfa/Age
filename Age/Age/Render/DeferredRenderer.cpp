@@ -56,13 +56,6 @@ namespace a_game_engine
 		screenFb.create();
 	}
 
-	void DeferredRenderer::drawObject(const Node& o, const SceneInfo& info)
-	{
-		o.forEachConst([&](const Node& n) {
-			n.draw(info);
-		});
-	}
-
 	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos)
 	{
 		node.forEachConst([&](const Node& n) {
@@ -125,7 +118,7 @@ namespace a_game_engine
 		});		
 	}
 
-	void DeferredRenderer::drawScene(const Scene& scene, const Camera& camera)
+	void DeferredRenderer::drawScene(const Scene& scene, const Camera& camera, float delta)
 	{
 		sf::Clock clock;
 		//setup
@@ -158,7 +151,9 @@ namespace a_game_engine
 		Pipeline::clear({ 0.f, 0.f, 0.f });
 		Pipeline::setStencilFunc(DepthFunc::Always, 0xFF);
 		Pipeline::setStencilOp(StencilOp::Replace);
-		drawObject(*scene.rootNode, deferredInfo);
+		scene.rootNode->forEachConst([&](const Node& n) {
+			n.draw(deferredInfo);
+		});
 
 		gbufferTime = (int)clock.restart().asMicroseconds();
 
@@ -172,7 +167,9 @@ namespace a_game_engine
 		Pipeline::clear({ 0.f, 0.f, 0.f });
 		screenFb.copyFrom(gbuffer, FrameBuffer::Depth | FrameBuffer::Stencil);
 		Pipeline::setStencilWrite(2);
-		drawObject(*scene.rootNode, forwardInfo);
+		scene.rootNode->forEachConst([&](const Node& n) {
+			n.draw(forwardInfo);
+		});
 		Pipeline::setStencilWrite(0);
 		scene.skyBox.draw(camera, nullptr);
 
@@ -194,7 +191,9 @@ namespace a_game_engine
 		forwardInfo.drawingCondition = [](const Material& m) {
 			return !m.shader->opaque;
 			};
-		drawObject(*scene.rootNode, forwardInfo);
+		scene.rootNode->forEachConst([&](const Node& n) {
+			n.draw(forwardInfo);
+			});
 
 		//draw on the screen
 		Pipeline::setBlendMode(BlendMode::Disable);

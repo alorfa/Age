@@ -158,11 +158,11 @@ namespace a_game
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
 	}
-	void WorldScene::draw(const Camera* c) const
+	void WorldScene::draw(const Camera* c, float delta) const
 	{
 		const Camera* camera = c ? c : activeCamera;
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);
-		activeRenderer->drawScene(*this, *camera);
+		activeRenderer->drawScene(*this, *camera, delta);
 		if (activeRenderer == &deferredRenderer)
 			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",
 				deferredRenderer.gbufferTime, deferredRenderer.lightTime, deferredRenderer.screenTime));

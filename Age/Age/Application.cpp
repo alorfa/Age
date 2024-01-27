@@ -51,7 +51,7 @@ namespace a_game_engine
 
 			handleEvents(delta);
 			update(delta);
-			draw();
+			draw(delta);
 
 			_window.display();
 		}

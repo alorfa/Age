@@ -29,13 +29,7 @@ namespace a_game_engine
 		mainFb.textures[0].setWrap(TextureWrap::ClampToEdge);
 		mainFb.create();
 	}
-	void ForwardRenderer::drawObject(const Node& o, const SceneInfo& info)
-	{
-		o.forEachConst([&](const Node& n) {
-			n.draw(info);
-		});
-	}
-	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera)
+	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
 		ShaderSettings::Forward settings;
 		SceneInfo info;
@@ -64,7 +58,9 @@ namespace a_game_engine
 		Pipeline::setBlendMode(BlendMode::Lerp);
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f }, true, false);
 		sc.skyBox.cubemap->activate(SkyBox::getSlot());
-		drawObject(*sc.rootNode, info);
+		sc.rootNode->forEachConst([&](const Node& n) {
+			n.draw(info);
+		});
 		sc.skyBox.draw(camera, nullptr);
 
 		sc.rootNode->forEachConst([&](const Node& n)

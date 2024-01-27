@@ -17,7 +17,7 @@ namespace a_game
 		void handleRawEvents(const sf::Event& ev) override;
 		void handleEvents(float delta) override;
 		void update(float delta) override;
-		void draw() const override;
+		void draw(float delta) const override;
 		void onExit() override;
 	};
 }

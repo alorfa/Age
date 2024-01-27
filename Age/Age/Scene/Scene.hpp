@@ -30,7 +30,7 @@ namespace a_game_engine
 		virtual void update(float delta);
 
 		virtual void load() = 0;
-		virtual void draw(const Camera* c) const = 0;
+		virtual void draw(const Camera* c, float delta) const = 0;
 
 		virtual ~Scene() = default;
 	};

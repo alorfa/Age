@@ -19,6 +19,6 @@ namespace a_game
 		Camera* activeCamera = nullptr;
 
 		void load() override;
-		void draw(const Camera* c) const override;
+		void draw(const Camera* c, float delta) const override;
 	};
 }

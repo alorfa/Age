@@ -145,9 +145,9 @@ namespace a_game
 	{
 		world->update(delta);
 	}
-	void TestGame::draw() const
+	void TestGame::draw(float delta) const
 	{
-		world->draw(nullptr);
+		world->draw(nullptr, delta);
 	}
 	void TestGame::onExit()
 	{
