@@ -15,11 +15,13 @@ namespace a_game_engine
 				if (pointLight)
 				{
 					props.push_back({ std::format("pointLightSources[{}].color", lights.point), pointLight->getLight().color * pointLight->getLight().attOffset});
-					props.push_back({ std::format("pointLightSources[{}].ambient", lights.point), pointLight->getLight().ambient });
+					props.push_back({ std::format("pointLightSources[{}].ambient", lights.point), pointLight->getLight().ambient * pointLight->getLight().attOffset });
 					props.push_back({ std::format("pointLightSources[{}].pos", lights.point), pointLight->getLight().pos });
 					props.push_back({ std::format("pointLightSources[{}].attOffset", lights.point), pointLight->getLight().attOffset });
 					props.push_back({ std::format("pointLightSources[{}].maxDist", lights.point), pointLight->getLight().radius });
-					props.push_back({ std::format("pointLightSources[{}].sourceRadius", lights.point), pointLight->getLight().size });
+					props.push_back({ std::format("pointLightSources[{}].attOffset", lights.spot), pointLight->getLight().attOffset });
+					props.push_back({ std::format("pointLightSources[{}].maxDist", lights.spot), pointLight->getLight().radius });
+					props.push_back({ std::format("pointLightSources[{}].sourceRadius", lights.point), pointLight->getLight().size * 0.5f });
 					lights.point++;
 					continue;
 				}
@@ -27,7 +29,7 @@ namespace a_game_engine
 				if (spotLight)
 				{
 					props.push_back({ std::format("spotLightSources[{}].color", lights.spot), spotLight->getLight().color * spotLight->getLight().attOffset });
-					props.push_back({ std::format("spotLightSources[{}].ambient", lights.spot), spotLight->getLight().ambient });
+					props.push_back({ std::format("spotLightSources[{}].ambient", lights.spot), spotLight->getLight().ambient * spotLight->getLight().attOffset });
 					props.push_back({ std::format("spotLightSources[{}].pos", lights.spot), spotLight->getLight().pos });
 					props.push_back({ std::format("spotLightSources[{}].attOffset", lights.spot), spotLight->getLight().attOffset });
 					props.push_back({ std::format("spotLightSources[{}].maxDist", lights.spot), spotLight->getLight().radius });
