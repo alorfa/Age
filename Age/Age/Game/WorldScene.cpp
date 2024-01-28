@@ -43,7 +43,7 @@ namespace a_game
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(*objs[3], lightShader);
 		MeshComponent::setShader(*objs[4], lightShader);
-		objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
+		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
 		const bool light_test = false;
 

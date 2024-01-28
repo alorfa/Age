@@ -13,6 +13,7 @@ namespace a_game_engine
 {
     const float Math::PI = 3.141592f;
     const float Math::TAU = Math::PI * 2.f;
+    const vec3 Math::LUMA = vec3(0.2126, 0.7152, 0.0722);
 
     namespace
     {

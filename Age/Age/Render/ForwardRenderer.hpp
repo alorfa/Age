@@ -9,6 +9,7 @@ namespace a_game_engine
 	class ForwardRenderer : public Renderer
 	{
 		mutable FrameBuffer2D mainFb;
+		float exposure = 1.f;
 
 		ShaderProgram* shader;
 	public:

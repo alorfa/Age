@@ -64,7 +64,7 @@ namespace a_game_engine
 	{
 		vec3 result;
 		if (_id)
-			glGetTextureImage(_id, TexEnums::computeMipLevels(_size), GL_RGB, GL_FLOAT, sizeof(vec3), &result);
+			glGetTextureImage(_id, TexEnums::computeMipLevels(_size) - 1, GL_RGB, GL_FLOAT, sizeof(vec3), &result);
 
 		return result;
 	}

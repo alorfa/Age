@@ -7,6 +7,7 @@
 #include "Age/LL/Buffers/VertexBuffer.hpp"
 #include "Age/egd.hpp"
 #include "Age/Scene/Scene.hpp"
+#include "Age/Math/Math.hpp"
 
 namespace a_game_engine
 {
@@ -24,7 +25,7 @@ namespace a_game_engine
 		size = newSize;
 		ImageInfo info{newSize, nullptr, TextureFormat::RGB_Float16};
 		mainFb.createRenderBuffer(newSize);
-		mainFb.textures[0].create({ info, false });
+		mainFb.textures[0].create({ info, true });
 		mainFb.textures[0].setFiltering(TextureFiltering::Linear);
 		mainFb.textures[0].setWrap(TextureWrap::ClampToEdge);
 		mainFb.create();
@@ -72,11 +73,19 @@ namespace a_game_engine
 			});
 		Pipeline::setBlendMode(BlendMode::Lerp);
 
+		mainFb.textures[0].generateMipmaps();
+		const vec3 midColor = mainFb.textures[0].getMidColor();
+		const float brightness = vec3::dot(midColor, Math::LUMA);
+		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
+		const float curExp = 0.35f / clampedBr;
+		exposure = Math::smooth(exposure, curExp, delta * 3.f);
+
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
 		shader->setUniform(shader->getLocation("tex"), mainFb.textures[0], 0);
+		shader->setUniform(shader->getLocation("exposure"), exposure);
 		verts->draw();
 	}
 }

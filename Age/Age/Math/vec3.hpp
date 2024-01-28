@@ -49,6 +49,10 @@ namespace a_game_engine
 		{
 			return !operator==(v);
 		}
+		static float dot(const vector3& v1, const vector3& v2)
+		{
+			return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+		}
 	};
 
 #define AGE_VECTOR3_OPERATOR_IMPL(oper)										\
