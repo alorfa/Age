@@ -15,76 +15,128 @@ namespace a_game_engine
 		if (_fbuf)
 			glDeleteFramebuffers(1, &_fbuf);
 		_fbuf = 0;
+		_depthStencil = nullptr;
+		for (auto& t : _textures)
+			t = nullptr;
 	}
-	void FrameBuffer2D::clearRenderBuffer()
+	FrameBuffer2D::FrameBuffer2D()
+	{
+		setTexturesCount(1);
+	}
+	FrameBuffer2D::~FrameBuffer2D()
+	{
+		clear();
+		removeRenderBuffer();
+	}
+	void FrameBuffer2D::setTexturesCount(uint count)
+	{
+		_textures.resize(count);
+	}
+	void FrameBuffer2D::setTexture(uint index, const Texture& t, int mipLevel)
+	{
+		create();
+
+		_textures[index] = &t;
+
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, t.getId(), mipLevel);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	void FrameBuffer2D::removeTexture(uint index, int mipLevel)
+	{
+		create();
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, 0, mipLevel);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		_textures[index] = nullptr;
+	}
+	void FrameBuffer2D::setDepthTexture(const Texture& t)
+	{
+		create();
+
+		const bool hasStencil = t.getFormat() == TextureFormat::Depth24_Stencil8;
+		const int attachment = hasStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT;
+		_depthStencil = &t;
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, t.getId(), 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	void FrameBuffer2D::removeDepthTexture()
+	{
+		if (_depthStencil == nullptr)
+			return;
+
+		create();
+		const bool hasStencil = _depthStencil->getFormat() == TextureFormat::Depth24_Stencil8;
+		const int attachment = hasStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT;
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, 0, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		_depthStencil = nullptr;
+	}
+	void FrameBuffer2D::createRenderBuffer(const uvec2& size, TextureFormat format)
+	{
+		create();
+		removeRenderBuffer();
+		const bool hasStencil = format == TextureFormat::Depth24_Stencil8;
+		const int attachment = hasStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT;
+		glGenRenderbuffers(1, &_rbuf);
+		glBindRenderbuffer(GL_RENDERBUFFER, _rbuf);
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
+		glRenderbufferStorage(GL_RENDERBUFFER, TexEnums::toOglFormat(format), size.x, size.y);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, _rbuf);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	void FrameBuffer2D::removeRenderBuffer()
 	{
 		if (_rbuf)
 			glDeleteRenderbuffers(1, &_rbuf);
 		_rbuf = 0;
 	}
-	FrameBuffer2D::FrameBuffer2D()
-	{
-	}
-	FrameBuffer2D::~FrameBuffer2D()
-	{
-		clear();
-		clearRenderBuffer();
-	}
-	void FrameBuffer2D::createRenderBuffer(const uvec2& size)
-	{
-		glGenRenderbuffers(1, &_rbuf);
-		glBindRenderbuffer(GL_RENDERBUFFER, _rbuf);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
-	}
 	void FrameBuffer2D::create()
 	{
-		clear();
-		glGenFramebuffers(1, &_fbuf);
-		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-
-		for (uint i = 0; i < textures.size(); i++)
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i].getId(), 0);
-
-		if (depthStencil.getId())
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencil.getId(), 0);
-		else if (_rbuf)
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _rbuf);
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		if (_fbuf == 0)
+			glGenFramebuffers(1, &_fbuf);
 	}
 	void FrameBuffer2D::use()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glDrawBuffers((int)textures.size(), attachments);
-		glViewport(0, 0, textures[0].getSize().x, textures[0].getSize().y);
+		glDrawBuffers((int)_textures.size(), attachments);
+		uvec2 size;
+		if (_textures[0] == nullptr)
+			size = _depthStencil->getSize();
+		else
+			size = _textures[0]->getSize();
+		glViewport(0, 0, size.x, size.y);
 	}
 	void FrameBuffer2D::copyFrom(const FrameBuffer2D& fb, int type, TextureFiltering filter)
 	{
-		uvec2 srcSize = fb.depthStencil.getSize(), dstSize = depthStencil.getSize();
-		if (fb.textures.size())
-			srcSize = fb.textures[0].getSize();
-		if (srcSize.x == 0 or srcSize.y == 0)
-		{ //TODO: add logger?
-			return;
-		}
+		//uvec2 srcSize = fb._depthStencil->getSize(), dstSize = _depthStencil->getSize();
+		//if (fb.textures.size())
+		//	srcSize = fb.textures[0].getSize();
+		//if (srcSize.x == 0 or srcSize.y == 0)
+		//{ //TODO: add logger?
+		//	return;
+		//}
 
-		if (textures.size())
-			dstSize = textures[0].getSize();
-		if (dstSize.x == 0 or dstSize.y == 0)
-			return;
+		//if (textures.size())
+		//	dstSize = textures[0].getSize();
+		//if (dstSize.x == 0 or dstSize.y == 0)
+		//	return;
 
-		int bitmask = 0;
-		if (type & BufferType::Color)
-			bitmask |= GL_COLOR_BUFFER_BIT;
-		if (type & BufferType::Depth)
-			bitmask |= GL_DEPTH_BUFFER_BIT;
-		if (type & BufferType::Stencil)
-			bitmask |= GL_STENCIL_BUFFER_BIT;
+		//int bitmask = 0;
+		//if (type & BufferType::Color)
+		//	bitmask |= GL_COLOR_BUFFER_BIT;
+		//if (type & BufferType::Depth)
+		//	bitmask |= GL_DEPTH_BUFFER_BIT;
+		//if (type & BufferType::Stencil)
+		//	bitmask |= GL_STENCIL_BUFFER_BIT;
 
-		glBlitNamedFramebuffer(fb._fbuf, _fbuf,
-			0, 0, srcSize.x, srcSize.y,
-			0, 0, dstSize.x, dstSize.y,
-			bitmask, TexEnums::toOglFilter(filter));
+		//glBlitNamedFramebuffer(fb._fbuf, _fbuf,
+		//	0, 0, srcSize.x, srcSize.y,
+		//	0, 0, dstSize.x, dstSize.y,
+		//	bitmask, TexEnums::toOglFilter(filter));
 	}
 	void FrameBuffer2D::useDefault(const uvec2& viewport)
 	{
@@ -97,14 +149,16 @@ namespace a_game_engine
 		return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 	}
 	FrameBuffer2D::FrameBuffer2D(FrameBuffer2D&& other)
-		: textures(std::move(other.textures))
+		: _textures(std::move(other._textures))
 	{
 		std::swap(_fbuf, other._fbuf);
 		std::swap(_rbuf, other._rbuf);
+		std::swap(_depthStencil, other._depthStencil);
 	}
 	FrameBuffer2D& FrameBuffer2D::operator=(FrameBuffer2D&& other)
 	{
-		std::swap(textures, other.textures);
+		std::swap(_textures, other._textures);
+		std::swap(_depthStencil, other._depthStencil);
 		std::swap(_fbuf, other._fbuf);
 		std::swap(_rbuf, other._rbuf);
 		return *this;

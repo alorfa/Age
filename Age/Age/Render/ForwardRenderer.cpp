@@ -14,21 +14,21 @@ namespace a_game_engine
 	ForwardRenderer::ForwardRenderer()
 	{
 		shader = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
-		mainFb.textures.resize(1);
+		mainFb.setTexturesCount(1);
 	}
 	void ForwardRenderer::clear()
 	{
-		mainFb.textures[0].destroy();
+		colorBuffer.destroy();
 	}
 	void ForwardRenderer::updateSize(const uvec2& newSize)
 	{
 		size = newSize;
 		ImageInfo info{newSize, nullptr, TextureFormat::RGB_Float16};
 		mainFb.createRenderBuffer(newSize);
-		mainFb.textures[0].create({ info, true });
-		mainFb.textures[0].setFiltering(TextureFiltering::Linear);
-		mainFb.textures[0].setWrap(TextureWrap::ClampToEdge);
-		mainFb.create();
+		colorBuffer.create({ info, true });
+		colorBuffer.setFiltering(TextureFiltering::Linear);
+		colorBuffer.setWrap(TextureWrap::ClampToEdge);
+		mainFb.setTexture(0, colorBuffer);
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
@@ -73,8 +73,8 @@ namespace a_game_engine
 			});
 		Pipeline::setBlendMode(BlendMode::Lerp);
 
-		mainFb.textures[0].generateMipmaps();
-		const vec3 midColor = mainFb.textures[0].getMidColor();
+		colorBuffer.generateMipmaps();
+		const vec3 midColor = colorBuffer.getMidColor();
 		const float brightness = vec3::dot(midColor, Math::LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
 		const float curExp = 0.35f / clampedBr;
@@ -84,7 +84,7 @@ namespace a_game_engine
 		Pipeline::set2DContext();
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
-		shader->setUniform(shader->getLocation("tex"), mainFb.textures[0], 0);
+		shader->setUniform(shader->getLocation("tex"), colorBuffer, 0);
 		shader->setUniform(shader->getLocation("exposure"), exposure);
 		verts->draw();
 	}

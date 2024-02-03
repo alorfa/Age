@@ -11,6 +11,7 @@ namespace a_game_engine
 	{
 		uint _id = 0;
 		uvec2 _size;
+		TextureFormat _format = TextureFormat::Undefined;
 	public:
 		struct Settings
 		{
@@ -41,6 +42,7 @@ namespace a_game_engine
 
 		inline uint getId() const { return _id; }
 		inline const uvec2& getSize() const { return _size; }
+		inline TextureFormat getFormat() const { return _format; }
 		void activate(int number = 0) const;
 	};
 

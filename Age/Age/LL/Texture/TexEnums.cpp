@@ -28,6 +28,12 @@ namespace a_game_engine
 			return GL_SRGB8;
 		case TextureFormat::SRGB_Alpha:
 			return GL_SRGB8_ALPHA8;
+		case TextureFormat::Depth16:
+			return GL_DEPTH_COMPONENT16;
+		case TextureFormat::Depth24:
+			return GL_DEPTH_COMPONENT24;
+		case TextureFormat::Depth32:
+			return GL_DEPTH_COMPONENT32F;
 		case TextureFormat::Depth24_Stencil8:
 			return GL_DEPTH24_STENCIL8;
 		}
@@ -46,10 +52,12 @@ namespace a_game_engine
 			break;
 		case TextureFormat::RGB_Float16:
 		case TextureFormat::RGBA_Float16:
+		case TextureFormat::Depth16:
 			type = GL_HALF_FLOAT; 
 			break;
 		case TextureFormat::RGB_Float32:
 		case TextureFormat::RGBA_Float32:
+		case TextureFormat::Depth32:
 			type = GL_FLOAT; 
 			break;
 		case TextureFormat::Depth24_Stencil8:
@@ -75,6 +83,11 @@ namespace a_game_engine
 			break;
 		case TextureFormat::Depth24_Stencil8:
 			format = GL_DEPTH_STENCIL;
+			break;
+		case TextureFormat::Depth16:
+		case TextureFormat::Depth24:
+		case TextureFormat::Depth32:
+			format = GL_DEPTH;
 			break;
 		case TextureFormat::R:
 			format = GL_RED;

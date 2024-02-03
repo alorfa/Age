@@ -24,6 +24,7 @@ namespace a_game_engine
 	{
 		std::swap(other._id, _id);
 		std::swap(other._size, _size);
+		std::swap(other._format, _format);
 		return *this;
 	}
 
@@ -33,6 +34,7 @@ namespace a_game_engine
 		glCreateTextures(GL_TEXTURE_2D, 1, &_id);
 
 		_size = s.img.size;
+		_format = s.internal;
 
 		int outerType, outerFormat;
 		const int innerFormat = TexEnums::toOglFormat(s.internal);

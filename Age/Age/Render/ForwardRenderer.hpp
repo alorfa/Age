@@ -8,7 +8,8 @@ namespace a_game_engine
 {
 	class ForwardRenderer : public Renderer
 	{
-		mutable FrameBuffer2D mainFb;
+		FrameBuffer2D mainFb;
+		Texture2D colorBuffer;
 		float exposure = 1.f;
 
 		ShaderProgram* shader;

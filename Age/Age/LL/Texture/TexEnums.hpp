@@ -7,13 +7,14 @@ namespace a_game_engine
 {
 	enum class TextureDataType
 	{
-		Ubyte, Float, Uint_24_8
+		Ubyte, Float, Uint_24_8, Uint_24
 	};
 	enum class TextureFormat
 	{
 		Undefined = 0, R = 1, RG, RGB, RGBA,
 		RGB_Float16, RGBA_Float16, RGB_Float32, RGBA_Float32,
-		SRGB, SRGB_Alpha, Depth24_Stencil8
+		SRGB, SRGB_Alpha, 
+		Depth16, Depth24, Depth32, Depth24_Stencil8
 	};
 	enum class TextureFiltering
 	{
