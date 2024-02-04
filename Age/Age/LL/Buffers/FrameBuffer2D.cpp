@@ -7,7 +7,27 @@ namespace a_game_engine
 	namespace
 	{
 		const GLenum attachments[] =
-		{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+		{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,
+		GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
+	}
+
+	void FrameBuffer2D::create()
+	{
+		if (_fbuf == 0)
+			glGenFramebuffers(1, &_fbuf);
+	}
+	uvec2 FrameBuffer2D::getSize() const
+	{
+		if (_depthStencil)
+			return _depthStencil->getSize();
+
+		if (_rbufSize.x && _rbufSize.y)
+			return _rbufSize;
+
+		if (_textures[0])
+			return _textures[0]->getSize();
+
+		return {};
 	}
 
 	void FrameBuffer2D::clear()
@@ -81,6 +101,7 @@ namespace a_game_engine
 		removeRenderBuffer();
 		const bool hasStencil = format == TextureFormat::Depth24_Stencil8;
 		const int attachment = hasStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT;
+		_rbufSize = size;
 		glGenRenderbuffers(1, &_rbuf);
 		glBindRenderbuffer(GL_RENDERBUFFER, _rbuf);
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
@@ -93,11 +114,7 @@ namespace a_game_engine
 		if (_rbuf)
 			glDeleteRenderbuffers(1, &_rbuf);
 		_rbuf = 0;
-	}
-	void FrameBuffer2D::create()
-	{
-		if (_fbuf == 0)
-			glGenFramebuffers(1, &_fbuf);
+		_rbufSize = uvec2{};
 	}
 	void FrameBuffer2D::use()
 	{
@@ -112,31 +129,27 @@ namespace a_game_engine
 	}
 	void FrameBuffer2D::copyFrom(const FrameBuffer2D& fb, int type, TextureFiltering filter)
 	{
-		//uvec2 srcSize = fb._depthStencil->getSize(), dstSize = _depthStencil->getSize();
-		//if (fb.textures.size())
-		//	srcSize = fb.textures[0].getSize();
-		//if (srcSize.x == 0 or srcSize.y == 0)
-		//{ //TODO: add logger?
-		//	return;
-		//}
+		uvec2 dstSize = getSize();
+		uvec2 srcSize = fb.getSize();
 
-		//if (textures.size())
-		//	dstSize = textures[0].getSize();
-		//if (dstSize.x == 0 or dstSize.y == 0)
-		//	return;
+		if (srcSize.x == 0 or srcSize.y == 0 or
+			dstSize.x == 0 or dstSize.y == 0)
+		{
+			return;
+		}
 
-		//int bitmask = 0;
-		//if (type & BufferType::Color)
-		//	bitmask |= GL_COLOR_BUFFER_BIT;
-		//if (type & BufferType::Depth)
-		//	bitmask |= GL_DEPTH_BUFFER_BIT;
-		//if (type & BufferType::Stencil)
-		//	bitmask |= GL_STENCIL_BUFFER_BIT;
+		int bitmask = 0;
+		if (type & BufferType::Color)
+			bitmask |= GL_COLOR_BUFFER_BIT;
+		if (type & BufferType::Depth)
+			bitmask |= GL_DEPTH_BUFFER_BIT;
+		if (type & BufferType::Stencil)
+			bitmask |= GL_STENCIL_BUFFER_BIT;
 
-		//glBlitNamedFramebuffer(fb._fbuf, _fbuf,
-		//	0, 0, srcSize.x, srcSize.y,
-		//	0, 0, dstSize.x, dstSize.y,
-		//	bitmask, TexEnums::toOglFilter(filter));
+		glBlitNamedFramebuffer(fb._fbuf, _fbuf,
+			0, 0, srcSize.x, srcSize.y,
+			0, 0, dstSize.x, dstSize.y,
+			bitmask, TexEnums::toOglFilter(filter));
 	}
 	void FrameBuffer2D::useDefault(const uvec2& viewport)
 	{
@@ -154,6 +167,7 @@ namespace a_game_engine
 		std::swap(_fbuf, other._fbuf);
 		std::swap(_rbuf, other._rbuf);
 		std::swap(_depthStencil, other._depthStencil);
+		std::swap(_rbufSize, other._rbufSize);
 	}
 	FrameBuffer2D& FrameBuffer2D::operator=(FrameBuffer2D&& other)
 	{
@@ -161,6 +175,7 @@ namespace a_game_engine
 		std::swap(_depthStencil, other._depthStencil);
 		std::swap(_fbuf, other._fbuf);
 		std::swap(_rbuf, other._rbuf);
+		std::swap(_rbufSize, other._rbufSize);
 		return *this;
 	}
 }

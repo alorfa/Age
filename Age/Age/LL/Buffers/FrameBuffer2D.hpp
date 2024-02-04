@@ -8,11 +8,13 @@ namespace a_game_engine
 	class FrameBuffer2D
 	{
 		uint _fbuf = 0, _rbuf = 0;
+		uvec2 _rbufSize;
 
 		std::vector<const Texture2D*> _textures;
 		const Texture2D* _depthStencil = nullptr;
 
-		void create(); 
+		void create();
+		uvec2 getSize() const;
 	public:
 		enum BufferType
 		{

@@ -16,17 +16,17 @@ namespace a_game_engine
 		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/dirLight.pasl");
 		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/pointLight.pasl");
 		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/spotLight.pasl");
-		/*gbuffer.textures.resize(3);
-		screenFb.textures.resize(1);*/
+		gbuffer.setTexturesCount(3);
 	}
 
 	void DeferredRenderer::clear()
 	{
-		/*gbuffer.depthStencil.destroy();
-		gbuffer.textures[0].destroy();
-		gbuffer.textures[1].destroy();
-		gbuffer.textures[2].destroy();
-		screenFb.textures[0].destroy();*/
+		gbuffer.removeRenderBuffer();
+		albedoRoughnessMap.destroy();
+		normalMetalnessMap.destroy();
+		posMap.destroy();
+		screenBuffer.destroy();
+		depthBuffer.destroy();
 	}
 
 	void DeferredRenderer::updateSize(const uvec2& newSize)
@@ -37,23 +37,28 @@ namespace a_game_engine
 			posRGB{ newSize, nullptr, TextureFormat::RGB_Float32 },
 			screenRGB{ newSize, nullptr, TextureFormat::RGB_Float16 },
 			depthStencil{ newSize, nullptr, TextureFormat::Depth24_Stencil8 };
-		//gbuffer.createRenderBuffer(newSize);
-		/*gbuffer.depthStencil.create({ depthStencil, false });
-		gbuffer.textures[0].create({ baseColorRGB_RoughnessA, false });
-		gbuffer.textures[1].create({ normalRGB_MetalnessA, false });
-		gbuffer.textures[2].create({ posRGB, false });
-		for (uint i = 0; i < gbuffer.textures.size(); i++)
-		{
-			gbuffer.textures[i].setFiltering(TextureFiltering::Near);
-			gbuffer.textures[i].setWrap(TextureWrap::ClampToEdge);
-		}
-		gbuffer.create();
 
-		screenFb.createRenderBuffer(newSize);
-		screenFb.textures[0].create({ screenRGB , false });
-		screenFb.textures[0].setFiltering(TextureFiltering::Near);
-		screenFb.textures[0].setWrap(TextureWrap::ClampToEdge);
-		screenFb.create();*/
+		albedoRoughnessMap.create({ baseColorRGB_RoughnessA, false });
+		normalMetalnessMap.create({ normalRGB_MetalnessA, false });
+		posMap.create({ posRGB, false });
+		screenBuffer.create({ screenRGB, false });
+		depthBuffer.create({ depthStencil, false });
+
+		albedoRoughnessMap.setFiltering(TextureFiltering::Near);
+		normalMetalnessMap.setFiltering(TextureFiltering::Near);
+		posMap.setFiltering(TextureFiltering::Near);
+		screenBuffer.setFiltering(TextureFiltering::Near);
+		albedoRoughnessMap.setWrap(TextureWrap::ClampToEdge);
+		normalMetalnessMap.setWrap(TextureWrap::ClampToEdge);
+		posMap.setWrap(TextureWrap::ClampToEdge);
+		screenBuffer.setWrap(TextureWrap::ClampToEdge);
+
+		gbuffer.setTexture(0, albedoRoughnessMap);
+		gbuffer.setTexture(1, normalMetalnessMap);
+		gbuffer.setTexture(2, posMap);
+		gbuffer.createRenderBuffer(size);
+		screenFb.setTexture(0, screenBuffer);
+		screenFb.setDepthTexture(depthBuffer);
 	}
 
 	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos)
@@ -177,9 +182,9 @@ namespace a_game_engine
 		Pipeline::set2DContext();
 		Pipeline::setBlendMode(BlendMode::Add);
 		Pipeline::setStencilFunc(DepthFunc::Equal, 1);
-		/*gbuffer.textures[0].activate(0);
-		gbuffer.textures[1].activate(1);
-		gbuffer.textures[2].activate(2);*/
+		albedoRoughnessMap.activate(0);
+		normalMetalnessMap.activate(1);
+		posMap.activate(2);
 		drawLightSources(*scene.rootNode, camera.transform.getPosition());
 
 		lightTime = (int)clock.restart().asMicroseconds();
@@ -200,7 +205,7 @@ namespace a_game_engine
 		Pipeline::set2DContext();
 		FrameBuffer::useDefault(size);
 		postprocPass->use();
-		//postprocPass->setUniform(postprocPass->getLocation("tex"), screenFb.textures[0], 3);
+		postprocPass->setUniform(postprocPass->getLocation("tex"), screenBuffer, 3);
 		rectangleVerts->draw();
 
 		if (debug)

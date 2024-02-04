@@ -24,11 +24,14 @@ namespace a_game_engine
 	{
 		size = newSize;
 		ImageInfo info{newSize, nullptr, TextureFormat::RGB_Float16};
-		mainFb.createRenderBuffer(newSize);
+		ImageInfo depthInfo{newSize, nullptr, TextureFormat::Depth24};
+		//mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
 		colorBuffer.create({ info, true });
 		colorBuffer.setFiltering(TextureFiltering::Linear);
 		colorBuffer.setWrap(TextureWrap::ClampToEdge);
+		depthBuffer.create({ depthInfo, false });
 		mainFb.setTexture(0, colorBuffer);
+		mainFb.setDepthTexture(depthBuffer);
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{

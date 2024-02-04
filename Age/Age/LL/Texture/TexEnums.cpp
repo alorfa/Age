@@ -52,16 +52,17 @@ namespace a_game_engine
 			break;
 		case TextureFormat::RGB_Float16:
 		case TextureFormat::RGBA_Float16:
-		case TextureFormat::Depth16:
 			type = GL_HALF_FLOAT; 
 			break;
 		case TextureFormat::RGB_Float32:
 		case TextureFormat::RGBA_Float32:
-		case TextureFormat::Depth32:
 			type = GL_FLOAT; 
 			break;
 		case TextureFormat::Depth24_Stencil8:
 			type = GL_UNSIGNED_INT_24_8;
+			break;
+		case TextureFormat::Depth16:
+			type = GL_UNSIGNED_SHORT;
 			break;
 		default:
 			type = GL_UNSIGNED_BYTE;
@@ -87,7 +88,7 @@ namespace a_game_engine
 		case TextureFormat::Depth16:
 		case TextureFormat::Depth24:
 		case TextureFormat::Depth32:
-			format = GL_DEPTH;
+			format = GL_DEPTH_COMPONENT;
 			break;
 		case TextureFormat::R:
 			format = GL_RED;

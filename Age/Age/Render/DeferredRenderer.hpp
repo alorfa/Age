@@ -10,6 +10,9 @@ namespace a_game_engine
 	{
 		FrameBuffer2D gbuffer, screenFb;
 
+		Texture2D albedoRoughnessMap, normalMetalnessMap, posMap;
+		Texture2D screenBuffer, depthBuffer;
+
 		const ShaderProgram 
 			*debugPass,
 			*pointLightPass, *dirLightPass, *spotLightPass,

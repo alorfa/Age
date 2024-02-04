@@ -9,7 +9,7 @@ namespace a_game_engine
 	class ForwardRenderer : public Renderer
 	{
 		FrameBuffer2D mainFb;
-		Texture2D colorBuffer;
+		Texture2D colorBuffer, depthBuffer;
 		float exposure = 1.f;
 
 		ShaderProgram* shader;
