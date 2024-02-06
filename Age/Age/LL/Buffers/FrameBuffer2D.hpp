@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Age/LL/Texture/Texture2D.hpp>
+#include <Age/LL/Texture/CubeMap.hpp>
 #include <vector>
 
 namespace a_game_engine
@@ -10,7 +11,13 @@ namespace a_game_engine
 		uint _fbuf = 0, _rbuf = 0;
 		uvec2 _rbufSize;
 
-		std::vector<const Texture2D*> _textures;
+		struct TexInfo
+		{
+			const Texture2D* tex2d = nullptr;
+			const CubeMap* cubemap = nullptr;
+			int face = 0;
+		};
+		std::vector<TexInfo> _textures;
 		const Texture2D* _depthStencil = nullptr;
 
 		void create();
@@ -30,6 +37,7 @@ namespace a_game_engine
 
 		void setTexturesCount(uint count);
 		void setTexture(uint index, const Texture& t, int mipLevel = 0);
+		void setCubemapTexture(uint index, const CubeMap& t, CubeMap::Face face, int mipLevel = 0);
 		void removeTexture(uint index, int mipLevel = 0);
 		void setDepthTexture(const Texture& t);
 		void removeDepthTexture();
@@ -39,7 +47,7 @@ namespace a_game_engine
 		void use();
 		void copyFrom(const FrameBuffer2D& fb, int type, TextureFiltering filter = TextureFiltering::Near);
 		static void useDefault(const uvec2& viewport);
-		static bool checkActiveBuffer();
+		bool isValid() const;
 	};
 
 	using FrameBuffer = FrameBuffer2D;

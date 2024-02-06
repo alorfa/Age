@@ -7,6 +7,7 @@ namespace a_game_engine
 	class CubeMap
 	{
 		uint _id = 0;
+		uint size = 0;
 	public:
 		struct Settings
 		{
@@ -36,5 +37,10 @@ namespace a_game_engine
 		void setFiltering(TextureFiltering min, TextureFiltering mag);
 		void setFiltering(TextureFiltering filter);
 		void generateMipmaps();
+
+		enum Face { X_Pos, X_Neg, Y_Pos, Y_Neg, Z_Pos, Z_Neg };
+
+		inline uint getId() const { return _id; }
+		inline uint getSize() const { return size; }
 	};
 }

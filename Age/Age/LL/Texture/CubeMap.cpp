@@ -40,8 +40,9 @@ namespace a_game_engine
 		const int maxMipLevels = TexEnums::computeMipLevels(s.imageArea);
 		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
 
-		glTextureStorage2D(_id, mipLevels, TexEnums::toOglFormat(s.internal),
-			s.imageArea, s.imageArea);
+		size = s.imageArea;
+
+		glTextureStorage2D(_id, mipLevels, TexEnums::toOglFormat(s.internal), size, size);
 		for (uint i = 0; i < 6; i++)
 		{
 			const auto& img = s.images[indices[i]];

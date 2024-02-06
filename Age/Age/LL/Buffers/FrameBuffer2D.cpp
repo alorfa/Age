@@ -14,7 +14,7 @@ namespace a_game_engine
 	void FrameBuffer2D::create()
 	{
 		if (_fbuf == 0)
-			glGenFramebuffers(1, &_fbuf);
+			glCreateFramebuffers(1, &_fbuf);
 	}
 	uvec2 FrameBuffer2D::getSize() const
 	{
@@ -24,8 +24,11 @@ namespace a_game_engine
 		if (_rbufSize.x && _rbufSize.y)
 			return _rbufSize;
 
-		if (_textures[0])
-			return _textures[0]->getSize();
+		if (_textures[0].tex2d)
+			return _textures[0].tex2d->getSize();
+
+		if (_textures[0].cubemap)
+			return uvec2(_textures[0].cubemap->getSize());
 
 		return {};
 	}
@@ -37,7 +40,7 @@ namespace a_game_engine
 		_fbuf = 0;
 		_depthStencil = nullptr;
 		for (auto& t : _textures)
-			t = nullptr;
+			t = TexInfo{};
 	}
 	FrameBuffer2D::FrameBuffer2D()
 	{
@@ -56,20 +59,35 @@ namespace a_game_engine
 	{
 		create();
 
-		_textures[index] = &t;
+		TexInfo info;
+		info.tex2d = &t;
+		_textures[index] = info;
 
-		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, t.getId(), mipLevel);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glNamedFramebufferTexture(_fbuf, GL_COLOR_ATTACHMENT0 + index, t.getId(), mipLevel);
+	}
+	void FrameBuffer2D::setCubemapTexture(uint index, const CubeMap& t, CubeMap::Face face, int mipLevel)
+	{
+		create();
+
+		TexInfo info;
+		info.cubemap = &t;
+		_textures[index] = info;
+
+		glNamedFramebufferTexture2DEXT(
+			_fbuf, GL_COLOR_ATTACHMENT0 + index, 
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, t.getId(), mipLevel);
 	}
 	void FrameBuffer2D::removeTexture(uint index, int mipLevel)
 	{
 		create();
 		
-		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, 0, mipLevel);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		_textures[index] = nullptr;
+		if (_textures[index].tex2d)
+			glNamedFramebufferTexture(_fbuf, GL_COLOR_ATTACHMENT0 + index, 0, mipLevel);
+		if (_textures[index].cubemap)
+			glNamedFramebufferTexture2DEXT(
+				_fbuf, GL_COLOR_ATTACHMENT0 + index,
+				GL_TEXTURE_CUBE_MAP_POSITIVE_X + _textures[index].face, 0, mipLevel);
+		_textures[index] = TexInfo{};
 	}
 	void FrameBuffer2D::setDepthTexture(const Texture& t)
 	{
@@ -78,9 +96,7 @@ namespace a_game_engine
 		const bool hasStencil = t.getFormat() == TextureFormat::Depth24_Stencil8;
 		const int attachment = hasStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT;
 		_depthStencil = &t;
-		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, t.getId(), 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glNamedFramebufferTexture(_fbuf, attachment, t.getId(), 0);
 	}
 	void FrameBuffer2D::removeDepthTexture()
 	{
@@ -90,9 +106,7 @@ namespace a_game_engine
 		create();
 		const bool hasStencil = _depthStencil->getFormat() == TextureFormat::Depth24_Stencil8;
 		const int attachment = hasStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT;
-		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, 0, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glNamedFramebufferTexture(_fbuf, attachment, 0, 0);
 		_depthStencil = nullptr;
 	}
 	void FrameBuffer2D::createRenderBuffer(const uvec2& size, TextureFormat format)
@@ -102,12 +116,9 @@ namespace a_game_engine
 		const bool hasStencil = format == TextureFormat::Depth24_Stencil8;
 		const int attachment = hasStencil ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT;
 		_rbufSize = size;
-		glGenRenderbuffers(1, &_rbuf);
-		glBindRenderbuffer(GL_RENDERBUFFER, _rbuf);
-		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glRenderbufferStorage(GL_RENDERBUFFER, TexEnums::toOglFormat(format), size.x, size.y);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, _rbuf);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glCreateRenderbuffers(1, &_rbuf);
+		glNamedRenderbufferStorage(_rbuf, TexEnums::toOglFormat(format), size.x, size.y);
+		glNamedFramebufferRenderbuffer(_fbuf, attachment, GL_RENDERBUFFER, _rbuf);
 	}
 	void FrameBuffer2D::removeRenderBuffer()
 	{
@@ -120,11 +131,7 @@ namespace a_game_engine
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
 		glDrawBuffers((int)_textures.size(), attachments);
-		uvec2 size;
-		if (_textures[0] == nullptr)
-			size = _depthStencil->getSize();
-		else
-			size = _textures[0]->getSize();
+		uvec2 size = getSize();
 		glViewport(0, 0, size.x, size.y);
 	}
 	void FrameBuffer2D::copyFrom(const FrameBuffer2D& fb, int type, TextureFiltering filter)
@@ -154,12 +161,11 @@ namespace a_game_engine
 	void FrameBuffer2D::useDefault(const uvec2& viewport)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glDrawBuffers(1, attachments);
 		glViewport(0, 0, viewport.x, viewport.y);
 	}
-	bool FrameBuffer2D::checkActiveBuffer()
+	bool FrameBuffer2D::isValid() const
 	{
-		return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+		return glCheckNamedFramebufferStatus(_fbuf, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 	}
 	FrameBuffer2D::FrameBuffer2D(FrameBuffer2D&& other)
 		: _textures(std::move(other._textures))

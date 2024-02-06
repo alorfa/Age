@@ -29,9 +29,10 @@ namespace a_game_engine
 		colorBuffer.create({ info, true });
 		colorBuffer.setFiltering(TextureFiltering::Linear);
 		colorBuffer.setWrap(TextureWrap::ClampToEdge);
-		depthBuffer.create({ depthInfo, false });
+		//depthBuffer.create({ depthInfo, false });
 		mainFb.setTexture(0, colorBuffer);
-		mainFb.setDepthTexture(depthBuffer);
+		//mainFb.setDepthTexture(depthBuffer);
+		mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
