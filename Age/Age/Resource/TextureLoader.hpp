@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Age/LL/Texture/Texture2D.hpp"
-#include "Age/LL/Texture/Image.hpp"
-#include "Age/LL/Texture/CubeMap.hpp"
 #include <map>
+#include "Age/LL/Texture/Texture2D.hpp"
+#include "Age/LL/Texture/CubeMap.hpp"
+#include "Image.hpp"
 
 namespace a_game_engine
 {

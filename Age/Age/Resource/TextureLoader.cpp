@@ -1,5 +1,4 @@
 #include "TextureLoader.hpp"
-#include "Age/LL/Texture/Image.hpp"
 #include "Age/Resource/ResourceLoader.hpp"
 #include "Age/Other/Logger.hpp"
 

@@ -200,7 +200,7 @@
     <ClInclude Include="Age\LL\Pipeline.hpp" />
     <ClInclude Include="Age\LL\Shader\ShaderProgram.hpp" />
     <ClInclude Include="Age\LL\Shader\ShaderModule.hpp" />
-    <ClInclude Include="Age\LL\Texture\Image.hpp" />
+    <ClInclude Include="Age\Resource\Image.hpp" />
     <ClInclude Include="Age\LL\Texture\Texture2D.hpp" />
     <ClInclude Include="Age\LL\Texture\CubeMap.hpp" />
     <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
@@ -255,7 +255,7 @@
     <ClCompile Include="Age\LL\Shader\ShaderProgram.cpp" />
     <ClCompile Include="Age\LL\Shader\ShaderModule.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
-    <ClCompile Include="Age\LL\Texture\Image.cpp" />
+    <ClCompile Include="Age\Resource\Image.cpp" />
     <ClCompile Include="Age\LL\Texture\Texture2D.cpp" />
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
     <ClCompile Include="Age\Material\Material.cpp" />
