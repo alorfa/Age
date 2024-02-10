@@ -50,8 +50,9 @@ namespace a_game_engine
 			{
 				int outerType, outerFormat;
 				TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
-				glTextureSubImage3D(_id, 0, 0, 0, i, s.imageArea, s.imageArea, 1,
-					outerFormat, outerType, img.data);
+				if (img.data)
+					glTextureSubImage3D(_id, 0, 0, 0, i, s.imageArea, s.imageArea, 1,
+						outerFormat, outerType, img.data);
 			}
 		}
 		if (s.mipmaps)

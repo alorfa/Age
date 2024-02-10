@@ -1,6 +1,11 @@
 #include "TextureLoader.hpp"
+#include "Age/egd.hpp"
 #include "Age/Resource/ResourceLoader.hpp"
 #include "Age/Other/Logger.hpp"
+#include "Age/egd.hpp"
+#include "Age/Math/Math.hpp"
+#include "Age/LL/Buffers/FrameBuffer2D.hpp"
+#include "Age/Object/Mesh.hpp"
 
 namespace a_game_engine
 {
@@ -77,6 +82,66 @@ namespace a_game_engine
 				result->setFiltering(s.minFilter, s.magFilter);
 				return result;
 			},
+			getDefaultCubeMap);
+	}
+	CubeMap& TextureLoader::loadCubeMap(const std::filesystem::path& path, const CubemapSettings& s)
+	{
+		return ResourceLoader::defaultLoad<CubeMap, std::filesystem::path>(newCubeMaps, path,
+			[&](const std::filesystem::path& p) -> std::unique_ptr<CubeMap>
+			{
+				Image img;
+				img.loadFromFile(path);
+				if (not img.info.isValid())
+					return std::unique_ptr<CubeMap>(nullptr);
+
+				Texture2D::Settings settings = { img.info, false };
+				Texture2D sphereMap(settings);
+
+				const float deg90 = Math::rad(90.f);
+				mat4 proj;
+				proj.setPerspective(deg90, 1.f, 0.1f, 10.f);
+				mat4 view[6];
+				view[0].setViewMatrix({ 0.f }, { 0.f, -deg90, 0.f });
+				view[1].setViewMatrix({ 0.f }, { 0.f, deg90, 0.f });
+				view[2].setViewMatrix({ 0.f }, {0.f});
+				view[3].setViewMatrix({ 0.f }, {0.f, Math::PI, 0.f});
+				view[4].setViewMatrix({ 0.f }, {});
+				view[5].setViewMatrix({ 0.f }, {});
+
+				auto& shader = egd.shaders.loadRaw(egd.res / "shader/tex2cubemap.rasl");
+
+				const bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear &&
+					s.minFilter <= TextureFiltering::NearMipNear;
+				const uint faceSize = s.faceSize < 0 ? img.info.size.y / 2 : s.faceSize;
+				ImageInfo images[6] = {
+					{uvec2{faceSize}, nullptr, s.internalFormat},
+					{uvec2{faceSize}, nullptr, s.internalFormat},
+					{uvec2{faceSize}, nullptr, s.internalFormat},
+					{uvec2{faceSize}, nullptr, s.internalFormat},
+					{uvec2{faceSize}, nullptr, s.internalFormat},
+					{uvec2{faceSize}, nullptr, s.internalFormat}
+				};
+				CubeMap::Settings cubeSettings{ images, faceSize, s.internalFormat, mipmaps };
+				auto result = std::make_unique<CubeMap>();
+				result->create(cubeSettings);
+				result->setWrap(s.wrapX, s.wrapY, s.wrapZ);
+				result->setFiltering(s.minFilter, s.magFilter);
+				
+				FrameBuffer2D fb;
+
+				for (uint i = 0; i < 6; i++)
+				{
+					fb.setCubemapTexture(0, *result, CubeMap::Face(i));
+					shader.use();
+					shader.setUniform(shader.getLocation("sphereMap"), sphereMap, 0);
+					shader.setUniform(shader.getLocation("projection"), proj);
+					shader.setUniform(shader.getLocation("view"), view[i]);
+					const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
+					skyboxMesh.meshes[0]->buffer.draw();
+				}
+
+				return result;
+			}, 
 			getDefaultCubeMap);
 	}
 	Texture2D& TextureLoader::getDefault()

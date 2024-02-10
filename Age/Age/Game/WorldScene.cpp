@@ -103,17 +103,20 @@ namespace a_game
 		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
 		objs[4]->changeTransform().changeScale() *= 0.1f;
 
-		std::filesystem::path cubePaths[6];
+		/*std::filesystem::path cubePaths[6];
 		cubePaths[0] = egd.res / "img/sky/+x.jpg";
 		cubePaths[1] = egd.res / "img/sky/-x.jpg";
 		cubePaths[2] = egd.res / "img/sky/+y.jpg";
 		cubePaths[3] = egd.res / "img/sky/-y.jpg";
 		cubePaths[4] = egd.res / "img/sky/+z.jpg";
 		cubePaths[5] = egd.res / "img/sky/-z.jpg";
-		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.cubemap = &egd.textures.loadCubeMap(cubePaths, TextureLoader::CubemapSettings{
-			TextureFiltering::LinearMipLinear, TextureFiltering::Linear});
+			TextureFiltering::LinearMipLinear, TextureFiltering::Linear});*/
+		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
+		skyBox.cubemap = &egd.textures.loadCubeMap(egd.res / "img/hdri.jpg", TextureLoader::CubemapSettings{
+			TextureFiltering::LinearMipLinear, TextureFiltering::Linear }
+		);
 
 		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)

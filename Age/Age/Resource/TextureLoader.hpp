@@ -16,6 +16,7 @@ namespace a_game_engine
 
 		static std::unique_ptr<CubeMap> defCubemap;
 		std::map<std::wstring, std::unique_ptr<CubeMap>> cubeMaps;
+		std::map<std::filesystem::path, std::unique_ptr<CubeMap>> newCubeMaps;
 	public:
 		static std::filesystem::path defaultImagePath;
 
@@ -72,6 +73,7 @@ namespace a_game_engine
 
 		// +X, -X, +Y, -Y, +Z, -Z
 		CubeMap& loadCubeMap(const std::filesystem::path* paths, const CubemapSettings& s = CubemapSettings());
+		CubeMap& loadCubeMap(const std::filesystem::path& path, const CubemapSettings& s = CubemapSettings());
 
 		static Texture2D& getDefault();
 		static CubeMap& getDefaultCubeMap();
