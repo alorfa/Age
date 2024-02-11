@@ -63,10 +63,7 @@ namespace a_game_engine
 		Pipeline::setBlendMode(BlendMode::Lerp);
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f }, true, false);
 
-		/*auto& skyBox = const_cast<Scene&>(sc).skyBox;
-		skyBox.cubemap = &egd.textures.loadCubeMap(egd.res / "img/hdri.jpg", TextureLoader::CubemapSettings{
-			   TextureFiltering::LinearMipLinear, TextureFiltering::Linear }
-		);*/
+		
 		sc.skyBox.cubemap->activate(SkyBox::getSlot());
 		sc.rootNode->forEachConst([&](const Node& n) {
 			n.draw(info);

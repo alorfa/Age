@@ -55,8 +55,15 @@ PointLight toPointLight(SpotLight light, vec3 fragmentPos)
 
 vec4 sampleCubemap(samplerCube cubemap, in vec3 texCoord)
 {
-    vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
-    return texture(cubemap, coord);
+    //vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
+    //return texture(cubemap, coord);
+    return texture(cubemap, texCoord);
+}
+const vec2 invAtan = vec2(0.1591, 0.3183);
+vec2 sampleSphericalMap(vec3 vec)
+{
+    vec2 uv = vec2(atan(vec.z, vec.x), asin(vec.y));
+    return uv * invAtan + 0.5;
 }
 
 float getDepth(float n, float f)

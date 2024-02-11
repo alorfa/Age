@@ -70,10 +70,8 @@ namespace a_game_engine
 		};
 
 		Texture2D& load(const std::filesystem::path& path, const Settings& s = Settings());
-
-		// +X, -X, +Y, -Y, +Z, -Z
-		CubeMap& loadCubeMap(const std::filesystem::path* paths, const CubemapSettings& s = CubemapSettings());
 		CubeMap& loadCubeMap(const std::filesystem::path& path, const CubemapSettings& s = CubemapSettings());
+		void removeCubeMap(const std::filesystem::path& path);
 
 		static Texture2D& getDefault();
 		static CubeMap& getDefaultCubeMap();

@@ -5,7 +5,7 @@
 #include "Age/egd.hpp"
 #include "Age/Math/Math.hpp"
 #include "Age/LL/Buffers/FrameBuffer2D.hpp"
-#include "Age/Object/Mesh.hpp"
+#include "Age/LL/Pipeline.hpp"
 
 namespace a_game_engine
 {
@@ -52,38 +52,7 @@ namespace a_game_engine
 			},
 			getDefault);
 	}
-	CubeMap& TextureLoader::loadCubeMap(const std::filesystem::path* paths, const CubemapSettings& s)
-	{
-		std::wstring strPaths;
-		for (uint i = 0; i < 6; i++)
-			strPaths += std::format(L"{}\n", paths[i].native());
 
-		return ResourceLoader::defaultLoad<CubeMap, std::wstring>(cubeMaps, strPaths,
-			[&](const std::wstring& strPaths)
-			{
-				Image img[6];
-				ImageInfo images[6];
-				for (uint i = 0; i < 6; i++)
-				{
-					img[i].loadFromFile(paths[i]);
-					if (not img[i].info.isValid())
-						return std::unique_ptr<CubeMap>(nullptr);
-					images[i].data = img[i].info.data;
-					images[i].format = img[i].info.format;
-				}
-
-				const bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear &&
-					s.minFilter <= TextureFiltering::NearMipNear;
-				const uint imageSize = s.faceSize == -1 ? img[0].info.size.y : s.faceSize;
-				CubeMap::Settings cubeSettings{images, imageSize, s.internalFormat, mipmaps};
-				auto result = std::make_unique<CubeMap>();
-				result->create(cubeSettings);
-				result->setWrap(s.wrapX, s.wrapY, s.wrapZ);
-				result->setFiltering(s.minFilter, s.magFilter);
-				return result;
-			},
-			getDefaultCubeMap);
-	}
 	CubeMap& TextureLoader::loadCubeMap(const std::filesystem::path& path, const CubemapSettings& s)
 	{
 		return ResourceLoader::defaultLoad<CubeMap, std::filesystem::path>(newCubeMaps, path,
@@ -96,19 +65,25 @@ namespace a_game_engine
 
 				Texture2D::Settings settings = { img.info, false };
 				Texture2D sphereMap(settings);
+				sphereMap.setWrap(TextureWrap::Repeat);
+				sphereMap.setFiltering(TextureFiltering::Near);
 
-				const float deg90 = Math::rad(90.f);
+				const vec3 x = { 1.f, 0.f, 0.f };
+				const vec3 y = { 0.f, 1.f, 0.f };
+				const vec3 z = { 0.f, 0.f, 1.f };
 				mat4 proj;
-				proj.setPerspective(deg90, 1.f, 0.1f, 10.f);
+				proj.setPerspective(Math::rad(90.f), 1.f, 0.1f, 10.f);
 				mat4 view[6];
-				view[0].setViewMatrix({ 0.f }, { 0.f, -deg90, 0.f });
-				view[1].setViewMatrix({ 0.f }, { 0.f, deg90, 0.f });
-				view[2].setViewMatrix({ 0.f }, {0.f});
-				view[3].setViewMatrix({ 0.f }, {0.f, Math::PI, 0.f});
-				view[4].setViewMatrix({ 0.f }, {});
-				view[5].setViewMatrix({ 0.f }, {});
+				view[0].setViewMatrix({ 0.f }, -z, -y, -x);
+				view[1].setViewMatrix({ 0.f }, z, -y, x);
+				view[2].setViewMatrix({ 0.f }, x, -z, y);
+				view[3].setViewMatrix({ 0.f }, x, z, -y);
+				view[4].setViewMatrix({ 0.f }, x, -y, -z);
+				view[5].setViewMatrix({ 0.f }, -x, -y, z);
 
 				auto& shader = egd.shaders.loadRaw(egd.res / "shader/tex2cubemap.rasl");
+
+				Pipeline::set2DContext();
 
 				const bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear &&
 					s.minFilter <= TextureFiltering::NearMipNear;
@@ -132,6 +107,7 @@ namespace a_game_engine
 				for (uint i = 0; i < 6; i++)
 				{
 					fb.setCubemapTexture(0, *result, CubeMap::Face(i));
+					fb.use();
 					shader.use();
 					shader.setUniform(shader.getLocation("sphereMap"), sphereMap, 0);
 					shader.setUniform(shader.getLocation("projection"), proj);
@@ -143,6 +119,10 @@ namespace a_game_engine
 				return result;
 			}, 
 			getDefaultCubeMap);
+	}
+	void TextureLoader::removeCubeMap(const std::filesystem::path& path)
+	{
+		newCubeMaps.erase(path);
 	}
 	Texture2D& TextureLoader::getDefault()
 	{

@@ -36,7 +36,6 @@ namespace a_game_engine
 		destroy();
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_id);
 
-		static int indices[6] = { 0, 1, 5, 4, 2, 3 };
 		const int maxMipLevels = TexEnums::computeMipLevels(s.imageArea);
 		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
 
@@ -45,7 +44,7 @@ namespace a_game_engine
 		glTextureStorage2D(_id, mipLevels, TexEnums::toOglFormat(s.internal), size, size);
 		for (uint i = 0; i < 6; i++)
 		{
-			const auto& img = s.images[indices[i]];
+			const auto& img = s.images[i];
 			if (img.data)
 			{
 				int outerType, outerFormat;

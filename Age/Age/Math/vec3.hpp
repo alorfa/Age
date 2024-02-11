@@ -40,6 +40,10 @@ namespace a_game_engine
 			float l = 1.f / length();
 			(*this) *= l;
 		}
+		vector3 operator-() const
+		{
+			return vector3(-x, -y, -z);
+		}
 
 		bool operator==(const vector3& v) const
 		{

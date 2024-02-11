@@ -13,7 +13,7 @@ namespace a_game_engine
 {
     const float Math::PI = 3.141592f;
     const float Math::TAU = Math::PI * 2.f;
-    const vec3 Math::LUMA = vec3(0.2126, 0.7152, 0.0722);
+    const vec3 Math::LUMA = vec3(0.2126f, 0.7152f, 0.0722f);
 
     namespace
     {
@@ -106,6 +106,21 @@ namespace a_game_engine
         reset();
         asGlm(*this) = glm::lookAt(asGlm(position),
             asGlm(position + Math::getForwardDir(euler)), glm::vec3(0, 0, 1));
+    }
+    void mat4::setViewMatrix(const vec3& offset, const vec3& forward, const vec3& right, const vec3& up)
+    {
+        data[0][0] = right.x;
+        data[0][1] = right.y;
+        data[0][2] = right.z;
+        data[1][0] = up.x;
+        data[1][1] = up.y;
+        data[1][2] = up.z;
+        data[2][0] = forward.x;
+        data[2][1] = forward.y;
+        data[2][2] = forward.z;
+        data[3][0] = offset.x;
+        data[3][1] = offset.y;
+        data[3][2] = offset.z;
     }
     void mat4::reset()
     {

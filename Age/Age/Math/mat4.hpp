@@ -20,6 +20,7 @@ namespace a_game_engine
 
 		void setModelMatrix(const vec3& position, const vec3& euler, const vec3& scale);
 		void setViewMatrix(const vec3& position, const vec3& euler);
+		void setViewMatrix(const vec3& offset, const vec3& forward, const vec3& right, const vec3& up);
 
 		void reset();
 	};
