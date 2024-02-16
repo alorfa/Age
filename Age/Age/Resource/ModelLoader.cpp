@@ -116,8 +116,7 @@ namespace a_game_engine
 		{
 			std::vector<Texture2D*> result;
 
-			TextureLoader::Settings settings;
-			settings.srgb = srgb;
+			TextureLoader::Settings settings{ {}, srgb ? TextureFormat::AutoSRGB : TextureFormat::Auto };
 
 			for (uint i = 0; i < mat->GetTextureCount(type); i++)
 			{

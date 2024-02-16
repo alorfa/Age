@@ -32,26 +32,17 @@ namespace a_game_engine
 	void DeferredRenderer::updateSize(const uvec2& newSize)
 	{
 		size = newSize;
-		ImageInfo baseColorRGB_RoughnessA{ newSize, nullptr, TextureFormat::RGBA_Float16 },
-			normalRGB_MetalnessA{ newSize, nullptr, TextureFormat::RGBA_Float16 },
-			posRGB{ newSize, nullptr, TextureFormat::RGB_Float32 },
-			screenRGB{ newSize, nullptr, TextureFormat::RGB_Float16 },
-			depthStencil{ newSize, nullptr, TextureFormat::Depth24_Stencil8 };
+		ImageInfo baseColorRGB_RoughnessA{ newSize, TextureFormat::RGBA_Float16 },
+			normalRGB_MetalnessA{ newSize, TextureFormat::RGBA_Float16 },
+			posRGB{ newSize, TextureFormat::RGB_Float32 },
+			screenRGB{ newSize, TextureFormat::RGB_Float16 },
+			depthStencil{ newSize, TextureFormat::Depth24_Stencil8 };
 
-		albedoRoughnessMap.create({ baseColorRGB_RoughnessA, false });
+		/*albedoRoughnessMap.create({ baseColorRGB_RoughnessA, false });
 		normalMetalnessMap.create({ normalRGB_MetalnessA, false });
 		posMap.create({ posRGB, false });
 		screenBuffer.create({ screenRGB, false });
-		depthBuffer.create({ depthStencil, false });
-
-		albedoRoughnessMap.setFiltering(TextureFiltering::Near);
-		normalMetalnessMap.setFiltering(TextureFiltering::Near);
-		posMap.setFiltering(TextureFiltering::Near);
-		screenBuffer.setFiltering(TextureFiltering::Near);
-		albedoRoughnessMap.setWrap(TextureWrap::ClampToEdge);
-		normalMetalnessMap.setWrap(TextureWrap::ClampToEdge);
-		posMap.setWrap(TextureWrap::ClampToEdge);
-		screenBuffer.setWrap(TextureWrap::ClampToEdge);
+		depthBuffer.create({ depthStencil, false });*/
 
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);

@@ -9,14 +9,21 @@ namespace a_game_engine
 {
 	class TextureLoader
 	{
+	public:
+		struct EnvCubeMap
+		{
+			CubeMap specular, diffuse;
+		};
+	private:
 		static std::unique_ptr<Image> defaultImage;
 
 		static std::unique_ptr<Texture2D> defaultTexture;
 		std::map<std::filesystem::path, std::unique_ptr<Texture2D>> textures;
 
 		static std::unique_ptr<CubeMap> defCubemap;
-		std::map<std::wstring, std::unique_ptr<CubeMap>> cubeMaps;
 		std::map<std::filesystem::path, std::unique_ptr<CubeMap>> newCubeMaps;
+
+		std::map<std::filesystem::path, std::unique_ptr<EnvCubeMap>> cubeMaps;
 	public:
 		static std::filesystem::path defaultImagePath;
 
@@ -26,52 +33,38 @@ namespace a_game_engine
 
 		struct Settings
 		{
-			TextureFiltering 
-				minFilter = TextureFiltering::LinearMipLinear, 
-				magFilter = TextureFiltering::Linear;
-			TextureWrap 
-				wrapX = TextureWrap::Repeat,  
-				wrapY = TextureWrap::Repeat;
-			bool srgb = false;
+			Sampler2DInfo sampler;
+			TextureFormat format;
+			MipmapSettings mipmaps;
 
-			inline Settings(
-				TextureFiltering min = TextureFiltering::LinearMipLinear,
-				TextureFiltering mag = TextureFiltering::Linear,
-				TextureWrap wrapX = TextureWrap::Repeat,
-				TextureWrap wrapY = TextureWrap::Repeat,
-				bool srgb = false)
-				: minFilter(min), magFilter(mag), wrapX(wrapX), wrapY(wrapY), srgb(srgb) {}
+			Settings(
+				const Sampler2DInfo& sampler = Sampler2DInfo{},
+				TextureFormat format = TextureFormat::AutoSRGB,
+				MipmapSettings mipmaps = MipmapSettings::Auto);
+
+			bool hasMipmaps() const;
 		};
-		struct CubemapSettings
+		struct CubeMapSettings
 		{
-			TextureFiltering
-				minFilter = TextureFiltering::Linear,
-				magFilter = TextureFiltering::Linear;
-			TextureWrap
-				wrapX = TextureWrap::ClampToEdge,
-				wrapY = TextureWrap::ClampToEdge,
-				wrapZ = TextureWrap::ClampToEdge;
-			TextureFormat internalFormat = TextureFormat::SRGB;
-			int faceSize = -1;
+			SamplerCubeInfo sampler;
+			TextureFormat internalFormat;
+			int resolution;
+			int diffuseResolution;
+			MipmapSettings mipmaps;
 
-			inline CubemapSettings(TextureFiltering filter = TextureFiltering::Linear,
-				TextureWrap wrap = TextureWrap::ClampToEdge, TextureFormat format = TextureFormat::SRGB, 
-				int faceSize = -1)
-					: minFilter(filter), magFilter(filter), wrapX(wrap), wrapY(wrap), wrapZ(wrap), 
-				internalFormat(format), faceSize(faceSize) {}
-			inline CubemapSettings(
-				TextureFiltering min, TextureFiltering mag,
-				TextureWrap wrapX = TextureWrap::ClampToEdge, 
-				TextureWrap wrapY = TextureWrap::ClampToEdge, 
-				TextureWrap wrapZ = TextureWrap::ClampToEdge, 
-				TextureFormat format = TextureFormat::SRGB, int faceSize = -1)
-				: faceSize(faceSize), minFilter(min), magFilter(mag),
-				wrapX(wrapX), wrapY(wrapY), wrapZ(wrapZ), internalFormat(format) {}
+			inline CubeMapSettings(const SamplerCubeInfo& sampler = SamplerCubeInfo{},
+				TextureFormat format = TextureFormat::SRGB, int diffuseResolution = 32, int resolution = -1, 
+				MipmapSettings mipmaps = MipmapSettings::Auto)
+					: sampler(sampler), internalFormat(format), diffuseResolution(diffuseResolution), 
+				resolution(resolution), mipmaps(mipmaps) {}
+
+			bool hasMipmaps() const;
 		};
 
-		Texture2D& load(const std::filesystem::path& path, const Settings& s = Settings());
-		CubeMap& loadCubeMap(const std::filesystem::path& path, const CubemapSettings& s = CubemapSettings());
+		Texture2D& load(const std::filesystem::path& path, const Settings& s = {});
+		CubeMap& loadCubeMap(const std::filesystem::path& path, const CubeMapSettings& s = {});
 		void removeCubeMap(const std::filesystem::path& path);
+		//EnvCubeMap& loadEnv(const std::filesystem::path& path, const CubeMapSettings& s = {});
 
 		static Texture2D& getDefault();
 		static CubeMap& getDefaultCubeMap();

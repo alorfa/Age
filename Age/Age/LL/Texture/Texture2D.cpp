@@ -2,6 +2,7 @@
 #include "Age/LL/opengl.h"
 #include <utility>
 #include <algorithm>
+#include "Age/Math/Math.hpp"
 
 namespace a_game_engine
 {
@@ -34,17 +35,19 @@ namespace a_game_engine
 		glCreateTextures(GL_TEXTURE_2D, 1, &_id);
 
 		_size = s.img.size;
-		_format = s.internal;
+		_format = TexEnums::chooseInternalFormat(s.img.format, s.internal);
 
 		int outerType, outerFormat;
-		const int innerFormat = TexEnums::toOglFormat(s.internal);
+		const int innerFormat = TexEnums::toOglFormat(_format);
 		TexEnums::toOglOuterFormat(s.img.format, outerFormat, outerType);
-		const int maxMipLevels = TexEnums::computeMipLevels(s.img.size);
-		const int mipLevels = s.mipmaps ? maxMipLevels : 1;
-		glTextureStorage2D(_id, mipLevels, innerFormat, _size.x, _size.y);
-		glTextureSubImage2D(_id, 0, 0, 0, _size.x, _size.y, outerFormat, outerType, s.img.data);
-		if (mipLevels > 1 and s.img.data != nullptr)
+		glTextureStorage2D(_id, s.mipmaps, innerFormat, _size.x, _size.y);
+		if (s.img.data)
+			glTextureSubImage2D(_id, 0, 0, 0, _size.x, _size.y, outerFormat, outerType, s.img.data);
+		if (s.mipmaps > 1 and s.img.data)
 			generateMipmaps();
+
+		setWrap(s.sampler.wrapX, s.sampler.wrapY);
+		setFiltering(s.sampler.min, s.sampler.mag);
 	}
 
 	void Texture2D::generateMipmaps()
@@ -60,6 +63,7 @@ namespace a_game_engine
 			_id = 0;
 		}
 		_size = { 0, 0 };
+		_format = TextureFormat::Undefined;
 	}
 
 	vec3 Texture2D::getMidColor() const
@@ -83,7 +87,7 @@ namespace a_game_engine
 	void Texture2D::setFiltering(TextureFiltering min, TextureFiltering mag)
 	{
 		glTextureParameteri(_id, GL_TEXTURE_MIN_FILTER, TexEnums::toOglFilter(min));
-		glTextureParameteri(_id, GL_TEXTURE_MAG_FILTER, TexEnums::toOglFilter(mag));
+		glTextureParameteri(_id, GL_TEXTURE_MAG_FILTER, TexEnums::toOglFilter(TexEnums::removeMipmaps(mag)));
 	}
 	void Texture2D::setFiltering(TextureFiltering filter)
 	{
@@ -94,10 +98,13 @@ namespace a_game_engine
 		glBindTextureUnit(number, _id);
 	}
 
-	Texture2D::Settings::Settings(const ImageInfo& img, TextureFormat internal, bool mipmaps)
-		: img(img), internal(internal), mipmaps(mipmaps)
-	{}
-	Texture2D::Settings::Settings(const ImageInfo& img, bool mipmaps)
-		: img(img), internal(img.format), mipmaps(mipmaps)
-	{}
+	Texture2D::Settings::Settings(const ImageInfo& img, TextureFormat internal, const Sampler2DInfo& sampler, int mipmaps)
+		: img(img), internal(internal), sampler(sampler)
+	{
+		const int maxMips = TexEnums::computeMipLevels(img.size);
+		if (mipmaps < 1)
+			this->mipmaps = maxMips;
+		else
+			this->mipmaps = Math::min(mipmaps, maxMips);
+	}
 }

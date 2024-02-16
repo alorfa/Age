@@ -17,10 +17,11 @@ namespace a_game_engine
 		{
 			ImageInfo img;
 			TextureFormat internal;
-			bool mipmaps = true;
+			Sampler2DInfo sampler;
+			int mipmaps;
 
-			Settings(const ImageInfo& img, TextureFormat internal, bool mipmaps = true);
-			Settings(const ImageInfo& img, bool mipmaps = true);
+			Settings(const ImageInfo& img, TextureFormat internal = TextureFormat::AutoSRGB,
+				const Sampler2DInfo& sampler = Sampler2DInfo{}, int mipmaps = -1);
 		};
 
 		Texture2D() = default;

@@ -34,26 +34,16 @@ namespace a_game_engine
 				if (not img.info.isValid())
 					return std::unique_ptr<Texture2D>(nullptr);
 					
-				const bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear && 
-					s.minFilter <= TextureFiltering::NearMipNear;
+				const bool mipmaps = s.hasMipmaps();
 				auto result = std::make_unique<Texture2D>();
-				Texture2D::Settings settings = { img.info, mipmaps };
-				if (s.srgb)
-				{
-					if (img.info.format == TextureFormat::RGB)
-						settings.internal = TextureFormat::SRGB;
-					else
-						settings.internal = TextureFormat::SRGB_Alpha;
-				}
+				Texture2D::Settings settings{ img.info, s.format, s.sampler, mipmaps ? -1 : 1 };
 				result->create(settings);
-				result->setWrap(s.wrapX, s.wrapY);
-				result->setFiltering(s.minFilter, s.magFilter); //TODO: log
 				return result;
 			},
 			getDefault);
 	}
 
-	CubeMap& TextureLoader::loadCubeMap(const std::filesystem::path& path, const CubemapSettings& s)
+	CubeMap& TextureLoader::loadCubeMap(const std::filesystem::path& path, const CubeMapSettings& s)
 	{
 		return ResourceLoader::defaultLoad<CubeMap, std::filesystem::path>(newCubeMaps, path,
 			[&](const std::filesystem::path& p) -> std::unique_ptr<CubeMap>
@@ -63,10 +53,9 @@ namespace a_game_engine
 				if (not img.info.isValid())
 					return std::unique_ptr<CubeMap>(nullptr);
 
-				Texture2D::Settings settings = { img.info, false };
+				Sampler2DInfo sampler = { TextureWrap::Repeat, TextureFiltering::Linear };
+				Texture2D::Settings settings = { img.info, TextureFormat::Auto, sampler, 1 };
 				Texture2D sphereMap(settings);
-				sphereMap.setWrap(TextureWrap::Repeat);
-				sphereMap.setFiltering(TextureFiltering::Near);
 
 				const vec3 x = { 1.f, 0.f, 0.f };
 				const vec3 y = { 0.f, 1.f, 0.f };
@@ -85,22 +74,12 @@ namespace a_game_engine
 
 				Pipeline::set2DContext();
 
-				const bool mipmaps = s.minFilter >= TextureFiltering::LinearMipLinear &&
-					s.minFilter <= TextureFiltering::NearMipNear;
-				const uint faceSize = s.faceSize < 0 ? img.info.size.y / 2 : s.faceSize;
-				ImageInfo images[6] = {
-					{uvec2{faceSize}, nullptr, s.internalFormat},
-					{uvec2{faceSize}, nullptr, s.internalFormat},
-					{uvec2{faceSize}, nullptr, s.internalFormat},
-					{uvec2{faceSize}, nullptr, s.internalFormat},
-					{uvec2{faceSize}, nullptr, s.internalFormat},
-					{uvec2{faceSize}, nullptr, s.internalFormat}
-				};
-				CubeMap::Settings cubeSettings{ images, faceSize, s.internalFormat, mipmaps };
+				const bool mipmaps = s.hasMipmaps();
+				const uint faceSize = s.resolution < 1 ? img.info.size.y / 2 : s.resolution;
+				const TextureFormat format = TexEnums::chooseInternalFormat(img.info.format, s.internalFormat);
+				CubeMap::Settings cubeSettings{ nullptr, faceSize, format, s.sampler, mipmaps ? -1 : 1 };
 				auto result = std::make_unique<CubeMap>();
 				result->create(cubeSettings);
-				result->setWrap(s.wrapX, s.wrapY, s.wrapZ);
-				result->setFiltering(s.minFilter, s.magFilter);
 				
 				FrameBuffer2D fb;
 
@@ -124,15 +103,21 @@ namespace a_game_engine
 	{
 		newCubeMaps.erase(path);
 	}
+	/*EnvCubeMap& TextureLoader::loadEnv(const std::filesystem::path& path, const CubeMapSettings& s)
+	{
+
+	}*/
 	Texture2D& TextureLoader::getDefault()
 	{
 		if (defaultTexture == nullptr)
 		{
 			const auto& img = getDefaultImage();
-			Texture2D::Settings settings = { img.info, false };
-			defaultTexture = std::make_unique<Texture2D>(settings);
-			defaultTexture->setWrap(TextureWrap::Repeat);
-			defaultTexture->setFiltering(TextureFiltering::Near);
+			defaultTexture = std::make_unique<Texture2D>();
+			defaultTexture->create({ 
+				img.info, 
+				TextureFormat::Auto, 
+				Sampler2DInfo{TextureWrap::Repeat, TextureFiltering::Linear}, 
+				1 });
 		}
 		return *defaultTexture;
 	}
@@ -147,11 +132,10 @@ namespace a_game_engine
 				info[i].data = img.info.data;
 				info[i].format = img.info.format;
 			}
-			CubeMap::Settings s = { info, img.info.size.y, TextureFormat::SRGB, false };
+			CubeMap::Settings settings{ info, img.info.size.y, TextureFormat::AutoSRGB,
+				SamplerCubeInfo{TextureWrap::Repeat, TextureFiltering::Near}, 1 };
 			defCubemap = std::make_unique<CubeMap>();
-			defCubemap->create(s);
-			defCubemap->setWrap(TextureWrap::ClampToEdge);
-			defCubemap->setFiltering(TextureFiltering::Near);
+			defCubemap->create(settings);
 		}
 		return *defCubemap;
 	}
@@ -175,5 +159,23 @@ namespace a_game_engine
 			}
 		}
 		return *defaultImage;
+	}
+	TextureLoader::Settings::Settings(const Sampler2DInfo& sampler, TextureFormat format, MipmapSettings mipmaps)
+		: sampler(sampler), format(format), mipmaps(mipmaps) {}
+
+	bool TextureLoader::Settings::hasMipmaps() const
+	{
+		if (mipmaps == MipmapSettings::Disable)
+			return false;
+		if (mipmaps == MipmapSettings::Enable)
+			return true;
+
+		return sampler.min >= TextureFiltering::Linear_MipLinear && sampler.min <= TextureFiltering::Near_MipNear;
+	}
+	bool TextureLoader::CubeMapSettings::hasMipmaps() const
+	{
+		if (mipmaps == MipmapSettings::Disable)
+			return false;
+		return true;
 	}
 }

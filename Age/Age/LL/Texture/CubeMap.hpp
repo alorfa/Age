@@ -13,13 +13,14 @@ namespace a_game_engine
 		{
 			// right, left, front, back, top, bottom. Actially size means displacement
 			const ImageInfo* images;
-			TextureFormat internal;
 			uint imageArea;
-			bool mipmaps = true;
+			TextureFormat format;
+			SamplerCubeInfo sampler;
+			int mipmaps;
 
-			inline Settings(const ImageInfo* images, uint imageArea,
-				TextureFormat internalFormat = TextureFormat::SRGB, bool mipmaps = true)
-				: images(images), imageArea(imageArea), internal(internalFormat), mipmaps(mipmaps) {}
+			Settings(const ImageInfo* images, uint imageArea,
+				TextureFormat format = TextureFormat::SRGB, const SamplerCubeInfo& sampler = {},
+				int mipmaps = -1);
 		};
 
 		CubeMap();

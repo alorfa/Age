@@ -14,21 +14,26 @@ namespace a_game_engine
 		Undefined = 0, R = 1, RG, RGB, RGBA,
 		RGB_Float16, RGBA_Float16, RGB_Float32, RGBA_Float32,
 		SRGB, SRGB_Alpha, 
-		Depth16, Depth24, Depth32, Depth24_Stencil8
+		Depth16, Depth24, Depth32, Depth24_Stencil8,
+		Auto, AutoSRGB
 	};
 	enum class TextureFiltering
 	{
 		Linear, Near,
-		LinearMipLinear, LinearMipNear,
-		NearMipLinear, NearMipNear
+		Linear_MipLinear, Linear_MipNear,
+		Near_MipLinear, Near_MipNear
 	};
 	enum class TextureWrap { Repeat, MirroredRepeat, ClampToEdge };
+
+	enum class MipmapSettings { Enable, Disable, Auto };
 
 	class TexEnums
 	{
 	public:
 		static int toOglFormat(TextureFormat);
 		static void toOglOuterFormat(TextureFormat f, int& format, int& type);
+		static TextureFormat chooseInternalFormat(TextureFormat imgFormat, TextureFormat texFormat);
+		static TextureFiltering removeMipmaps(TextureFiltering);
 		static int toOglFilter(TextureFiltering);
 		static int toOglWrap(TextureWrap);
 		static int toOglType(TextureDataType);
@@ -41,11 +46,11 @@ namespace a_game_engine
 	struct ImageInfo
 	{
 		uvec2 size;
-		ubyte* data = nullptr;
 		TextureFormat format = TextureFormat::Undefined;
+		ubyte* data = nullptr;
 
 		ImageInfo() = default;
-		inline ImageInfo(const uvec2& size, ubyte* data, TextureFormat format)
+		inline ImageInfo(const uvec2& size, TextureFormat format, ubyte* data = nullptr)
 			: size(size), data(data), format(format) {}
 		inline bool isValid() const {
 			return 
@@ -53,5 +58,29 @@ namespace a_game_engine
 				data != nullptr and 
 				format != TextureFormat::Undefined;
 		}
+	};
+	struct Sampler2DInfo
+	{
+		TextureWrap wrapX, wrapY;
+		TextureFiltering min, mag;
+
+		inline Sampler2DInfo(TextureWrap x, TextureWrap y, TextureFiltering min, TextureFiltering mag)
+			: wrapX(x), wrapY(y), min(min), mag(mag) {}
+
+		inline Sampler2DInfo(TextureWrap wrap = TextureWrap::Repeat,
+			TextureFiltering filtering = TextureFiltering::Linear_MipLinear)
+			: wrapX(wrap), wrapY(wrap), min(filtering), mag(TexEnums::removeMipmaps(filtering)) {}
+	};
+	struct SamplerCubeInfo
+	{
+		TextureWrap wrapX, wrapY, wrapZ;
+		TextureFiltering min, mag;
+
+		inline SamplerCubeInfo(TextureWrap x, TextureWrap y, TextureWrap z, TextureFiltering min, TextureFiltering mag)
+			: wrapX(x), wrapY(y), wrapZ(z), min(min), mag(mag) {}
+
+		inline SamplerCubeInfo(TextureWrap wrap = TextureWrap::Repeat,
+			TextureFiltering filtering = TextureFiltering::Linear_MipLinear)
+			: wrapX(wrap), wrapY(wrap), wrapZ(wrap), min(filtering), mag(TexEnums::removeMipmaps(filtering)) {}
 	};
 }

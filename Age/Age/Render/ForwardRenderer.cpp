@@ -23,12 +23,12 @@ namespace a_game_engine
 	void ForwardRenderer::updateSize(const uvec2& newSize)
 	{
 		size = newSize;
-		ImageInfo info{newSize, nullptr, TextureFormat::RGB_Float16};
-		ImageInfo depthInfo{newSize, nullptr, TextureFormat::Depth24};
+		Sampler2DInfo sampler{ TextureWrap::ClampToEdge, TextureFiltering::Near };
+		ImageInfo info{newSize, TextureFormat::RGB_Float16};
+		ImageInfo depthInfo{newSize, TextureFormat::Depth24};
 		//mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
-		colorBuffer.create({ info, true });
-		colorBuffer.setFiltering(TextureFiltering::Linear);
-		colorBuffer.setWrap(TextureWrap::ClampToEdge);
+		Texture2D::Settings colorSettings{ info, TextureFormat::Auto, sampler, -1 };
+		colorBuffer.create(colorSettings);
 		//depthBuffer.create({ depthInfo, false });
 		mainFb.setTexture(0, colorBuffer);
 		//mainFb.setDepthTexture(depthBuffer);

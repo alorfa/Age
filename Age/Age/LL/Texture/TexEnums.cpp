@@ -101,6 +101,33 @@ namespace a_game_engine
 		}
 	}
 
+	TextureFormat TexEnums::chooseInternalFormat(TextureFormat imgFormat, TextureFormat texFormat)
+	{
+		if (texFormat != TextureFormat::Auto && texFormat != TextureFormat::AutoSRGB)
+			return texFormat;
+
+		if (texFormat == TextureFormat::AutoSRGB)
+		{
+			int comps = TexEnums::getComponentsCount(imgFormat);
+			if (comps == 4)
+				return TextureFormat::SRGB_Alpha;
+			return TextureFormat::SRGB;
+		}
+		return imgFormat;
+	}
+
+	TextureFiltering TexEnums::removeMipmaps(TextureFiltering f)
+	{
+		switch (f)
+		{
+		case TextureFiltering::Linear:
+		case TextureFiltering::Linear_MipLinear:
+		case TextureFiltering::Linear_MipNear:
+			return TextureFiltering::Linear;
+		}
+		return TextureFiltering::Near;
+	}
+
     int TexEnums::toOglFilter(TextureFiltering f)
     {
 		switch (f)
@@ -109,13 +136,13 @@ namespace a_game_engine
 			return GL_LINEAR;
 		case TextureFiltering::Near:
 			return GL_NEAREST;
-		case TextureFiltering::LinearMipLinear:
+		case TextureFiltering::Linear_MipLinear:
 			return GL_LINEAR_MIPMAP_LINEAR;
-		case TextureFiltering::LinearMipNear:
+		case TextureFiltering::Linear_MipNear:
 			return GL_LINEAR_MIPMAP_NEAREST;
-		case TextureFiltering::NearMipLinear:
+		case TextureFiltering::Near_MipLinear:
 			return GL_NEAREST_MIPMAP_LINEAR;
-		case TextureFiltering::NearMipNear:
+		case TextureFiltering::Near_MipNear:
 			return GL_NEAREST_MIPMAP_NEAREST;
 		}
 		return GL_LINEAR;
@@ -149,9 +176,14 @@ namespace a_game_engine
 	TextureFormat TexEnums::toSRGB(TextureFormat f)
 	{
 		int comps = getComponentsCount(f);
-		if (comps == 4)
+		switch (comps)
+		{
+		case 4:
 			return TextureFormat::SRGB_Alpha;
-		return TextureFormat::SRGB;
+		case 3:
+			return TextureFormat::SRGB;
+		}
+		return f;
 	}
 	int TexEnums::getComponentsCount(TextureFormat f)
 	{
