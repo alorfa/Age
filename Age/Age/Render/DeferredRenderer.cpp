@@ -38,11 +38,12 @@ namespace a_game_engine
 			screenRGB{ newSize, TextureFormat::RGB_Float16 },
 			depthStencil{ newSize, TextureFormat::Depth24_Stencil8 };
 
-		/*albedoRoughnessMap.create({ baseColorRGB_RoughnessA, false });
-		normalMetalnessMap.create({ normalRGB_MetalnessA, false });
-		posMap.create({ posRGB, false });
-		screenBuffer.create({ screenRGB, false });
-		depthBuffer.create({ depthStencil, false });*/
+		Sampler2DInfo sampler = { TextureWrap::ClampToEdge, TextureFiltering::Near };
+		albedoRoughnessMap.create(Texture2D::Settings{ baseColorRGB_RoughnessA, TextureFormat::Auto, sampler, 1});
+		normalMetalnessMap.create(Texture2D::Settings{ normalRGB_MetalnessA, TextureFormat::Auto, sampler, 1});
+		posMap.create(Texture2D::Settings{ posRGB, TextureFormat::Auto, sampler, 1});
+		screenBuffer.create(Texture2D::Settings{ screenRGB, TextureFormat::Auto, sampler, 1});
+		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::Auto, sampler, 1});
 
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
