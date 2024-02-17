@@ -38,7 +38,7 @@ namespace a_game_engine
 			screenRGB{ newSize, TextureFormat::RGB_Float16 },
 			depthStencil{ newSize, TextureFormat::Depth24_Stencil8 };
 
-		Sampler2DInfo sampler = { TextureWrap::ClampToEdge, TextureFiltering::Near };
+		Sampler2DInfo sampler = { TextureFiltering::Near };
 		albedoRoughnessMap.create(Texture2D::Settings{ baseColorRGB_RoughnessA, TextureFormat::Auto, sampler, 1});
 		normalMetalnessMap.create(Texture2D::Settings{ normalRGB_MetalnessA, TextureFormat::Auto, sampler, 1});
 		posMap.create(Texture2D::Settings{ posRGB, TextureFormat::Auto, sampler, 1});

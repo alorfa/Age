@@ -61,26 +61,26 @@ namespace a_game_engine
 	};
 	struct Sampler2DInfo
 	{
-		TextureWrap wrapX, wrapY;
 		TextureFiltering min, mag;
+		TextureWrap wrapX, wrapY;
 
 		inline Sampler2DInfo(TextureWrap x, TextureWrap y, TextureFiltering min, TextureFiltering mag)
 			: wrapX(x), wrapY(y), min(min), mag(mag) {}
 
-		inline Sampler2DInfo(TextureWrap wrap = TextureWrap::Repeat,
-			TextureFiltering filtering = TextureFiltering::Linear_MipLinear)
-			: wrapX(wrap), wrapY(wrap), min(filtering), mag(TexEnums::removeMipmaps(filtering)) {}
+		inline Sampler2DInfo(TextureFiltering filtering = TextureFiltering::Linear_MipLinear, 
+			TextureWrap wrap = TextureWrap::ClampToEdge)
+			: min(filtering), mag(TexEnums::removeMipmaps(filtering)), wrapX(wrap), wrapY(wrap) {}
 	};
 	struct SamplerCubeInfo
 	{
-		TextureWrap wrapX, wrapY, wrapZ;
 		TextureFiltering min, mag;
+		TextureWrap wrapX, wrapY, wrapZ;
 
 		inline SamplerCubeInfo(TextureWrap x, TextureWrap y, TextureWrap z, TextureFiltering min, TextureFiltering mag)
 			: wrapX(x), wrapY(y), wrapZ(z), min(min), mag(mag) {}
 
-		inline SamplerCubeInfo(TextureWrap wrap = TextureWrap::Repeat,
-			TextureFiltering filtering = TextureFiltering::Linear_MipLinear)
-			: wrapX(wrap), wrapY(wrap), wrapZ(wrap), min(filtering), mag(TexEnums::removeMipmaps(filtering)) {}
+		inline SamplerCubeInfo(TextureFiltering filtering = TextureFiltering::Linear_MipLinear, 
+			TextureWrap wrap = TextureWrap::ClampToEdge)
+			: min(filtering), mag(TexEnums::removeMipmaps(filtering)), wrapX(wrap), wrapY(wrap), wrapZ(wrap) {}
 	};
 }

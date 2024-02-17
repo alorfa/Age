@@ -12,6 +12,7 @@ namespace a_game_engine
 	std::unique_ptr<Texture2D> TextureLoader::defaultTexture = nullptr;
 	std::unique_ptr<Image> TextureLoader::defaultImage = nullptr;
 	std::unique_ptr<CubeMap> TextureLoader::defCubemap = nullptr;
+	std::unique_ptr<EnvCubeMap> TextureLoader::defEnvCubemap = nullptr;
 	std::filesystem::path TextureLoader::defaultImagePath = "res/img/default.jpg";
 
 	TextureLoader::~TextureLoader()
@@ -42,71 +43,68 @@ namespace a_game_engine
 			},
 			getDefault);
 	}
+	std::unique_ptr<CubeMap> TextureLoader::readCubeMapFromFile(const std::filesystem::path& path, const CubeMapSettings& s)
+	{
+		Image img;
+		img.loadFromFile(path);
+		if (not img.info.isValid())
+			return std::unique_ptr<CubeMap>(nullptr);
+
+		Sampler2DInfo sampler = { TextureFiltering::Linear, TextureWrap::Repeat };
+		Texture2D::Settings settings = { img.info, TextureFormat::Auto, sampler, 1 };
+		Texture2D panorama(settings);
+
+		auto result = std::make_unique<CubeMap>();
+		CubeMap::PanoramaSettings ps{ panorama, s.size, s.format, s.sampler, s.hasMipmaps() ? -1 : 1 };
+		result->createFromPanorama(ps);
+		return result;
+	}
 
 	CubeMap& TextureLoader::loadCubeMap(const std::filesystem::path& path, const CubeMapSettings& s)
 	{
 		return ResourceLoader::defaultLoad<CubeMap, std::filesystem::path>(newCubeMaps, path,
-			[&](const std::filesystem::path& p) -> std::unique_ptr<CubeMap>
+			[&](const std::filesystem::path& p)
 			{
-				Image img;
-				img.loadFromFile(path);
-				if (not img.info.isValid())
-					return std::unique_ptr<CubeMap>(nullptr);
-
-				Sampler2DInfo sampler = { TextureWrap::Repeat, TextureFiltering::Linear };
-				Texture2D::Settings settings = { img.info, TextureFormat::Auto, sampler, 1 };
-				Texture2D sphereMap(settings);
-
-				const vec3 x = { 1.f, 0.f, 0.f };
-				const vec3 y = { 0.f, 1.f, 0.f };
-				const vec3 z = { 0.f, 0.f, 1.f };
-				mat4 proj;
-				proj.setPerspective(Math::rad(90.f), 1.f, 0.1f, 10.f);
-				mat4 view[6];
-				view[0].setViewMatrix({ 0.f }, -z, -y, -x);
-				view[1].setViewMatrix({ 0.f }, z, -y, x);
-				view[2].setViewMatrix({ 0.f }, x, -z, y);
-				view[3].setViewMatrix({ 0.f }, x, z, -y);
-				view[4].setViewMatrix({ 0.f }, x, -y, -z);
-				view[5].setViewMatrix({ 0.f }, -x, -y, z);
-
-				auto& shader = egd.shaders.loadRaw(egd.res / "shader/tex2cubemap.rasl");
-
-				Pipeline::set2DContext();
-
-				const bool mipmaps = s.hasMipmaps();
-				const uint faceSize = s.resolution < 1 ? img.info.size.y / 2 : s.resolution;
-				const TextureFormat format = TexEnums::chooseInternalFormat(img.info.format, s.internalFormat);
-				CubeMap::Settings cubeSettings{ nullptr, faceSize, format, s.sampler, mipmaps ? -1 : 1 };
-				auto result = std::make_unique<CubeMap>();
-				result->create(cubeSettings);
-				
-				FrameBuffer2D fb;
-
-				for (uint i = 0; i < 6; i++)
-				{
-					fb.setCubemapTexture(0, *result, CubeMap::Face(i));
-					fb.use();
-					shader.use();
-					shader.setUniform(shader.getLocation("sphereMap"), sphereMap, 0);
-					shader.setUniform(shader.getLocation("projection"), proj);
-					shader.setUniform(shader.getLocation("view"), view[i]);
-					const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
-					skyboxMesh.meshes[0]->buffer.draw();
-				}
-
-				return result;
+				return readCubeMapFromFile(path, s);
 			}, 
 			getDefaultCubeMap);
+	}
+	EnvCubeMap& TextureLoader::loadEnv(const std::filesystem::path& path, const CubeMapSettings& s)
+	{
+		return ResourceLoader::defaultLoad<EnvCubeMap, std::filesystem::path>(cubeMaps, path,
+			[&](const std::filesystem::path& p) -> std::unique_ptr<EnvCubeMap>
+			{
+				auto cubemap = readCubeMapFromFile(path, s);
+				if (cubemap == nullptr)
+					return nullptr;
+
+				auto result = std::make_unique<EnvCubeMap>();
+				return nullptr;
+			},
+			getDefaultEnvCubeMap);
+	}
+	EnvCubeMap& TextureLoader::getDefaultEnvCubeMap()
+	{
+		if (defEnvCubemap == nullptr)
+		{
+			const auto& img = getDefaultImage();
+			ImageInfo info[6];
+			for (uint i = 0; i < 6; i++)
+			{
+				info[i].data = img.info.data;
+				info[i].format = img.info.format;
+			}
+			CubeMap::Settings settings{ info, img.info.size.y, TextureFormat::AutoSRGB,
+				SamplerCubeInfo{TextureFiltering::Near}, 1 };
+			defEnvCubemap = std::make_unique<EnvCubeMap>();
+			defEnvCubemap->specular.create(settings);
+		}
+		return *defEnvCubemap;
 	}
 	void TextureLoader::removeCubeMap(const std::filesystem::path& path)
 	{
 		newCubeMaps.erase(path);
 	}
-	/*EnvCubeMap& TextureLoader::loadEnv(const std::filesystem::path& path, const CubeMapSettings& s)
-	{
-
-	}*/
 	Texture2D& TextureLoader::getDefault()
 	{
 		if (defaultTexture == nullptr)
@@ -116,7 +114,7 @@ namespace a_game_engine
 			defaultTexture->create({ 
 				img.info, 
 				TextureFormat::Auto, 
-				Sampler2DInfo{TextureWrap::Repeat, TextureFiltering::Linear}, 
+				Sampler2DInfo{ TextureFiltering::Linear, TextureWrap::Repeat },
 				1 });
 		}
 		return *defaultTexture;
@@ -133,7 +131,7 @@ namespace a_game_engine
 				info[i].format = img.info.format;
 			}
 			CubeMap::Settings settings{ info, img.info.size.y, TextureFormat::AutoSRGB,
-				SamplerCubeInfo{TextureWrap::Repeat, TextureFiltering::Near}, 1 };
+				SamplerCubeInfo{TextureFiltering::Near}, 1 };
 			defCubemap = std::make_unique<CubeMap>();
 			defCubemap->create(settings);
 		}

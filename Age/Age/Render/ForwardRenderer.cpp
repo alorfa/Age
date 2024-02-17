@@ -23,7 +23,7 @@ namespace a_game_engine
 	void ForwardRenderer::updateSize(const uvec2& newSize)
 	{
 		size = newSize;
-		Sampler2DInfo sampler{ TextureWrap::ClampToEdge, TextureFiltering::Near };
+		Sampler2DInfo sampler{ TextureFiltering::Near };
 		ImageInfo info{newSize, TextureFormat::RGB_Float16};
 		ImageInfo depthInfo{newSize, TextureFormat::Depth24};
 		//mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);

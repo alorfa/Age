@@ -116,7 +116,8 @@ namespace a_game_engine
 		{
 			std::vector<Texture2D*> result;
 
-			TextureLoader::Settings settings{ {}, srgb ? TextureFormat::AutoSRGB : TextureFormat::Auto };
+			Sampler2DInfo sampler{ TextureFiltering::Linear_MipLinear, TextureWrap::Repeat };
+			TextureLoader::Settings settings{ sampler, srgb ? TextureFormat::AutoSRGB : TextureFormat::Auto };
 
 			for (uint i = 0; i < mat->GetTextureCount(type); i++)
 			{

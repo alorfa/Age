@@ -2,6 +2,11 @@
 #include "Age/LL/opengl.h"
 #include <utility>
 #include "Age/Math/Math.hpp"
+#include "Texture2D.hpp"
+#include "Age/Math/mat4.hpp"
+#include "Age/egd.hpp"
+#include "Age/LL/Pipeline.hpp"
+#include "Age/LL/Buffers/FrameBuffer2D.hpp"
 
 namespace a_game_engine
 {
@@ -15,7 +20,7 @@ namespace a_game_engine
 	CubeMap& CubeMap::operator=(CubeMap&& other)
 	{
 		std::swap(_id, other._id);
-		std::swap(size, other.size);
+		std::swap(_size, other._size);
 		return *this;
 	}
 	CubeMap::~CubeMap()
@@ -35,9 +40,9 @@ namespace a_game_engine
 		destroy();
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_id);
 
-		size = s.imageArea;
+		_size = s.size;
 
-		glTextureStorage2D(_id, s.mipmaps, TexEnums::toOglFormat(s.format), size, size);
+		glTextureStorage2D(_id, s.mipmaps, TexEnums::toOglFormat(s.format), _size, _size);
 		setWrap(s.sampler.wrapX, s.sampler.wrapY, s.sampler.wrapZ);
 		setFiltering(s.sampler.min, s.sampler.mag);
 		if (s.images == nullptr)
@@ -53,12 +58,59 @@ namespace a_game_engine
 				int outerType, outerFormat;
 				TexEnums::toOglOuterFormat(img.format, outerFormat, outerType);
 				if (img.data)
-					glTextureSubImage3D(_id, 0, 0, 0, i, s.imageArea, s.imageArea, 1,
+					glTextureSubImage3D(_id, 0, 0, 0, i, _size, _size, 1,
 						outerFormat, outerType, img.data);
 			}
 		}
 		if (s.mipmaps > 1 && hasData)
 			generateMipmaps();
+	}
+	void CubeMap::createFromPanorama(const PanoramaSettings& s)
+	{
+		const vec3 x = { 1.f, 0.f, 0.f };
+		const vec3 y = { 0.f, 1.f, 0.f };
+		const vec3 z = { 0.f, 0.f, 1.f };
+		mat4 proj;
+		proj.setPerspective(Math::rad(90.f), 1.f, 0.1f, 10.f);
+		mat4 view[6];
+		view[0].setViewMatrix({ 0.f }, -z, -y, -x);
+		view[1].setViewMatrix({ 0.f }, z, -y, x);
+		view[2].setViewMatrix({ 0.f }, x, -z, y);
+		view[3].setViewMatrix({ 0.f }, x, z, -y);
+		view[4].setViewMatrix({ 0.f }, x, -y, -z);
+		view[5].setViewMatrix({ 0.f }, -x, -y, z);
+
+		auto& shader = egd.shaders.loadRaw(egd.res / "shader/tex2cubemap.rasl");
+
+		//Pipeline::set2DContext();
+
+		const uint resolution = s.size == 0 ? s.panorama->getSize().y / 2 : s.size;
+		const TextureFormat format = TexEnums::chooseInternalFormat(s.panorama->getFormat(), s.format);
+		CubeMap::Settings cubeSettings{ nullptr, resolution, format, s.sampler, s.mipmaps };
+		
+		create(cubeSettings);
+
+		FrameBuffer2D fb;
+
+		for (uint i = 0; i < 6; i++)
+		{
+			fb.setCubemapTexture(0, *this, CubeMap::Face(i));
+			fb.use();
+			shader.use();
+			shader.setUniform(shader.getLocation("panorama"), *s.panorama, 0);
+			shader.setUniform(shader.getLocation("projection"), proj);
+			shader.setUniform(shader.getLocation("view"), view[i]);
+			const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
+			skyboxMesh.meshes[0]->buffer.draw();
+		}
+		if (s.mipmaps > 1)
+			generateMipmaps();
+	}
+	void CubeMap::createSpecularMap(const CubeMap& cubemap)
+	{
+	}
+	void CubeMap::createDiffuseMap(const CubeMap& cubemap)
+	{
 	}
 	void CubeMap::activate(int number) const
 	{
@@ -88,11 +140,21 @@ namespace a_game_engine
 		glGenerateTextureMipmap(_id);
 	}
 
-	CubeMap::Settings::Settings(const ImageInfo* images, uint imageArea, TextureFormat format,
+	CubeMap::Settings::Settings(const ImageInfo* images, uint size, TextureFormat format,
 		const SamplerCubeInfo& sampler, int mipmaps)
-		: images(images), imageArea(imageArea), format(format), sampler(sampler)
+		: images(images), size(size), format(format), sampler(sampler)
 	{
-		const int maxMips = TexEnums::computeMipLevels(imageArea);
+		const int maxMips = TexEnums::computeMipLevels(size);
+		if (mipmaps < 1)
+			this->mipmaps = maxMips;
+		else
+			this->mipmaps = Math::min(mipmaps, maxMips);
+	}
+	CubeMap::PanoramaSettings::PanoramaSettings(const Texture2D& panorama, uint size,
+		TextureFormat format, const SamplerCubeInfo& sampler, int mipmaps)
+		: panorama(&panorama), size(size), sampler(sampler)
+	{
+		const int maxMips = TexEnums::computeMipLevels(size);
 		if (mipmaps < 1)
 			this->mipmaps = maxMips;
 		else
