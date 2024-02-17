@@ -73,12 +73,12 @@ namespace a_game_engine
 		mat4 proj;
 		proj.setPerspective(Math::rad(90.f), 1.f, 0.1f, 10.f);
 		mat4 view[6];
-		view[0].setViewMatrix({ 0.f }, -z, -y, -x);
-		view[1].setViewMatrix({ 0.f }, z, -y, x);
-		view[2].setViewMatrix({ 0.f }, x, -z, y);
-		view[3].setViewMatrix({ 0.f }, x, z, -y);
-		view[4].setViewMatrix({ 0.f }, x, -y, -z);
-		view[5].setViewMatrix({ 0.f }, -x, -y, z);
+		view[0].setViewMatrix({ 0.f }, -x, -y, -z);
+		view[1].setViewMatrix({ 0.f }, x, -y, z);
+		view[2].setViewMatrix({ 0.f }, y, -z, x);
+		view[3].setViewMatrix({ 0.f }, -y, z, x);
+		view[4].setViewMatrix({ 0.f }, -z, -y, x);
+		view[5].setViewMatrix({ 0.f }, z, -y, -x);
 
 		auto& shader = egd.shaders.loadRaw(egd.res / "shader/tex2cubemap.rasl");
 

@@ -107,7 +107,7 @@ namespace a_game
 			TextureFormat::SRGB, 0, MipmapSettings::Disable };
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
-		skyBox.cubemap = &egd.textures.loadCubeMap(egd.res / "img/skybox2.jpg", cs);
+		skyBox.cubemap = &egd.textures.loadCubeMap(egd.res / "img/skybox.jpg", cs);
 
 		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)
