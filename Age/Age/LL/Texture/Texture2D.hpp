@@ -16,11 +16,11 @@ namespace a_game_engine
 		struct Settings
 		{
 			ImageInfo img;
-			TextureFormat internal;
+			TextureFormat format;
 			Sampler2DInfo sampler;
 			int mipmaps;
 
-			Settings(const ImageInfo& img, TextureFormat internal = TextureFormat::AutoSRGB,
+			Settings(const ImageInfo& img, TextureFormat format = TextureFormat::AutoSRGB,
 				const Sampler2DInfo& sampler = Sampler2DInfo{}, int mipmaps = -1);
 		};
 

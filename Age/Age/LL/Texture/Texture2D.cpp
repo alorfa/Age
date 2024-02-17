@@ -35,7 +35,7 @@ namespace a_game_engine
 		glCreateTextures(GL_TEXTURE_2D, 1, &_id);
 
 		_size = s.img.size;
-		_format = TexEnums::chooseInternalFormat(s.img.format, s.internal);
+		_format = s.format;
 
 		int outerType, outerFormat;
 		const int innerFormat = TexEnums::toOglFormat(_format);
@@ -98,13 +98,15 @@ namespace a_game_engine
 		glBindTextureUnit(number, _id);
 	}
 
-	Texture2D::Settings::Settings(const ImageInfo& img, TextureFormat internal, const Sampler2DInfo& sampler, int mipmaps)
-		: img(img), internal(internal), sampler(sampler)
+	Texture2D::Settings::Settings(const ImageInfo& img, TextureFormat format, const Sampler2DInfo& sampler, int mipmaps)
+		: img(img), sampler(sampler)
 	{
 		const int maxMips = TexEnums::computeMipLevels(img.size);
 		if (mipmaps < 1)
 			this->mipmaps = maxMips;
 		else
 			this->mipmaps = Math::min(mipmaps, maxMips);
+
+		this->format = TexEnums::chooseInternalFormat(img.format, format);
 	}
 }

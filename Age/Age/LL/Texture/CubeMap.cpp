@@ -84,9 +84,7 @@ namespace a_game_engine
 
 		//Pipeline::set2DContext();
 
-		const uint resolution = s.size == 0 ? s.panorama->getSize().y / 2 : s.size;
-		const TextureFormat format = TexEnums::chooseInternalFormat(s.panorama->getFormat(), s.format);
-		CubeMap::Settings cubeSettings{ nullptr, resolution, format, s.sampler, s.mipmaps };
+		CubeMap::Settings cubeSettings{ nullptr, s.size, s.format, s.sampler, s.mipmaps };
 		
 		create(cubeSettings);
 
@@ -149,15 +147,24 @@ namespace a_game_engine
 			this->mipmaps = maxMips;
 		else
 			this->mipmaps = Math::min(mipmaps, maxMips);
+
+		if (images)
+		{
+			this->format = TexEnums::chooseInternalFormat(images->format, format);
+		}
 	}
 	CubeMap::PanoramaSettings::PanoramaSettings(const Texture2D& panorama, uint size,
 		TextureFormat format, const SamplerCubeInfo& sampler, int mipmaps)
-		: panorama(&panorama), size(size), sampler(sampler)
+		: panorama(&panorama), sampler(sampler), format(format)
 	{
-		const int maxMips = TexEnums::computeMipLevels(size);
+		this->size = size == 0 ? panorama.getSize().y / 2 : size;
+
+		const int maxMips = TexEnums::computeMipLevels(this->size);
 		if (mipmaps < 1)
 			this->mipmaps = maxMips;
 		else
 			this->mipmaps = Math::min(mipmaps, maxMips);
+
+		this->format = TexEnums::chooseInternalFormat(panorama.getFormat(), format);
 	}
 }
