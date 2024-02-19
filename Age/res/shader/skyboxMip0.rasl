@@ -1,0 +1,29 @@
+#ifdef AGE_VERTEX
+
+layout (location = 0) in vec3 inPosition;
+
+uniform mat4 view, projection;
+
+out vec3 fragUv;
+
+vec4 vertexProcess()
+{
+	fragUv = inPosition;
+	vec4 pos = projection * view * vec4(inPosition, 1.f);
+	return pos.xyww;
+}
+
+#endif
+#ifdef AGE_FRAGMENT
+
+out vec4 age_FragColor;
+
+in vec3 fragUv;
+uniform samplerCube skybox;
+
+void paintOver()
+{
+    age_FragColor = textureLod(skybox, fragUv, 0.);
+}
+
+#endif

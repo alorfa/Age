@@ -37,7 +37,7 @@ namespace a_game_engine
 	const EnvCubeMap& CubeMapLoader::load(const std::filesystem::path& path, const Settings& s)
 	{
 		return ResourceLoader::defaultLoad<EnvCubeMap, std::filesystem::path>(cubeMaps, path,
-			[&](const std::filesystem::path& p)
+			[&](const std::filesystem::path& p) -> std::unique_ptr<EnvCubeMap>
 			{
 				RawSettings settings = { {TextureFiltering::Linear}, s.tempFormat, s.specularSize, MipmapSettings::Auto };
 				auto cubemap = readFromFile(path, settings);
@@ -45,9 +45,9 @@ namespace a_game_engine
 					return nullptr;
 
 				auto result = std::make_unique<EnvCubeMap>();
-				result->specular.createSpecularMap(*cubemap);
+				result->specular.createSpecularMap(*cubemap, s.specularFormat, s.srgb);
 				result->diffuse.createDiffuseMap(*cubemap);
-				return nullptr;
+				return result;
 			},
 			getDefaultEnvCubeMap);
 	}

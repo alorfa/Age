@@ -105,9 +105,11 @@ namespace a_game
 
 		CubeMapLoader::RawSettings cs = { {TextureFiltering::Linear},
 			TextureFormat::SRGB, 0, MipmapSettings::Disable };
+		CubeMapLoader::Settings envs = { TextureFormat::RGB_Float16, TextureFormat::RGB_Float16, TextureFormat::SRGB, false };
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
-		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
-		skyBox.cubemap = &egd.cubemaps.loadRaw(egd.res / "img/skybox.jpg", cs);
+		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
+		skyBox.cubemap = &egd.cubemaps.load(egd.res / "img/skybox.jpg", envs).specular;
+		//skyBox.cubemap = &egd.cubemaps.loadRaw(egd.res / "img/skybox.jpg", cs);
 
 		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)

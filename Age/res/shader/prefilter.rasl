@@ -64,7 +64,7 @@ void paintOver()
 
     if (srgb)
     	prefilteredColor = screenToLinearPrecise(prefilteredColor);
-    
+
     age_FragColor = vec4(prefilteredColor, 1.);
 }
 

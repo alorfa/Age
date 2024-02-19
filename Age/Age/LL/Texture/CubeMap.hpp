@@ -45,7 +45,7 @@ namespace a_game_engine
 		void destroy();
 		void create(const Settings& s);
 		void createFromPanorama(const PanoramaSettings& s);
-		void createSpecularMap(const CubeMap& cubemap);
+		void createSpecularMap(const CubeMap& cubemap, TextureFormat format = TextureFormat::RGB_Float16, bool srgb = true);
 		void createDiffuseMap(const CubeMap& cubemap);
 		void activate(int number = 0) const;
 

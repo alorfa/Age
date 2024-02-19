@@ -79,6 +79,7 @@ namespace a_game_engine
 			_window.close();
 			return false;
 		}
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		return true;
 	}
 }
