@@ -274,5 +274,29 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
     return normalize(sampleVec);
 }
 
+vec3 linearToScreenPrecise(vec3 linearRGB)
+{
+    vec3 a = 12.92 * linearRGB;
+    vec3 b = 1.055 * pow(linearRGB, vec3(1.0 / 2.4)) - 0.055;
+    vec3 c = step(vec3(0.0031308), linearRGB);
+    return mix(a, b, c);
+}
+vec3 screenToLinearPrecise(vec3 screenRGB)
+{
+    vec3 a = screenRGB / 12.92;
+    vec3 b = pow((screenRGB + 0.055) / 1.055, vec3(2.4));
+    vec3 c = step(vec3(0.04045), screenRGB);
+    return mix(a, b, c);
+}
+
+vec3 linearToScreen(vec3 linearRGB)
+{
+    return pow(linearRGB, vec3(1. / 2.2));
+}
+vec3 screenToLinear(vec3 screenRGB)
+{
+    return pow(screenRGB, vec3(2.2));
+}
+
 #define LIGHT_SETUP(fragmentPos) age_V = normalize(cameraPos - fragmentPos); \
 age_R = reflect(-age_V, age_normal)

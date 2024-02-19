@@ -4,11 +4,9 @@ in vec2 uv;
 uniform sampler2D tex;
 uniform float exposure = 1.0;
 
-const float gamma = 2.2f;
-
 void main()
 {
     vec3 inColor = texture(tex, uv).rgb;
     vec3 mappedColor = vec3(1.0) - exp(-inColor * exposure);
-    FragColor = vec4(pow(mappedColor, vec3(1.f / gamma)), 1.0f);
+    FragColor = vec4(linearToScreen(mappedColor), 1.0f);
 }

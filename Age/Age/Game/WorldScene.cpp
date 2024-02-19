@@ -103,11 +103,11 @@ namespace a_game
 		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
 		objs[4]->changeTransform().changeScale() *= 0.1f;
 
-		TextureLoader::CubeMapSettings cs = { {TextureFiltering::Linear},
+		CubeMapLoader::RawSettings cs = { {TextureFiltering::Linear},
 			TextureFormat::SRGB, 0, MipmapSettings::Disable };
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
-		skyBox.cubemap = &egd.textures.loadCubeMap(egd.res / "img/skybox.jpg", cs);
+		skyBox.cubemap = &egd.cubemaps.loadRaw(egd.res / "img/skybox.jpg", cs);
 
 		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)
