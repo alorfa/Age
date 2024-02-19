@@ -1,0 +1,67 @@
+#ifdef AGE_VERTEX
+
+layout (location = 0) in vec3 inPosition;
+
+uniform mat4 view, projection;
+
+out vec3 fragUv;
+
+vec4 vertexProcess()
+{
+	fragUv = inPosition;
+	vec4 pos = projection * view * vec4(inPosition, 1.f);
+	return pos.xyww;
+}
+
+#endif
+#ifdef AGE_FRAGMENT
+
+out vec4 age_FragColor;
+
+in vec3 fragUv;
+uniform samplerCube cubemap;
+uniform float roughness = 0.1;
+uniform float sourceResolution = 512.;
+uniform int SAMPLE_COUNT = 1024;
+
+void paintOver()
+{
+    vec3 N = normalize(fragUv);
+    vec3 R = N;
+    vec3 V = R;
+
+    vec3 prefilteredColor = vec3(0.);
+    float totalWeight = 0.0;
+    
+    for(int i = 0; i < SAMPLE_COUNT; ++i)
+    {
+        // generates a sample vector that's biased towards the preferred alignment direction (importance sampling).
+        vec2 Xi = Hammersley(i, SAMPLE_COUNT);
+        vec3 H = ImportanceSampleGGX(Xi, N, roughness);
+        vec3 L  = normalize(2.0 * dot(V, H) * H - V);
+
+        float NL = max(dot(N, L), 0.);
+        if(NL > 0.)
+        {
+            // sample from the environment's mip level based on roughness/pdf
+            float NH = max(dot(N, H), 0.);
+            float HV = max(dot(H, V), 0.);
+            float D   = D_GGX(pow2(NH), pow4(roughness));
+            float pdf = D * NH / (4. * HV) + 0.0001; 
+
+            float saTexel  = 4. * PI / (6. * sourceResolution * sourceResolution);
+            float saSample = 1. / (float(SAMPLE_COUNT) * pdf + 0.0001);
+
+            float mipLevel = roughness == 0. ? 0. : 0.5 * log2(saSample / saTexel); 
+            
+            prefilteredColor += textureLod(cubemap, L, mipLevel).rgb * NL;
+            totalWeight      += NL;
+        }
+    }
+
+    prefilteredColor = prefilteredColor / totalWeight;
+
+    age_FragColor = vec4(prefilteredColor, 1.);
+}
+
+#endif

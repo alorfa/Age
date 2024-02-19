@@ -8,15 +8,16 @@ namespace a_game_engine
 {
 	class FrameBuffer2D
 	{
-		uint _fbuf = 0, _rbuf = 0;
-		uvec2 _rbufSize;
-
 		struct TexInfo
 		{
 			const Texture2D* tex2d = nullptr;
 			const CubeMap* cubemap = nullptr;
 			int face = 0;
 		};
+
+		uint _fbuf = 0, _rbuf = 0;
+		uvec2 _rbufSize;
+		int _mipLevel = 0;
 		std::vector<TexInfo> _textures;
 		const Texture2D* _depthStencil = nullptr;
 

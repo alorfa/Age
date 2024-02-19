@@ -7,6 +7,7 @@
 #include "Age/egd.hpp"
 #include "Age/LL/Pipeline.hpp"
 #include "Age/LL/Buffers/FrameBuffer2D.hpp"
+#include <functional>
 
 namespace a_game_engine
 {
@@ -106,6 +107,54 @@ namespace a_game_engine
 	}
 	void CubeMap::createSpecularMap(const CubeMap& cubemap)
 	{
+		create({ nullptr, cubemap.getSize(), TextureFormat::RGB_Float16 });
+		const uint maxMipLevel = TexEnums::computeMipLevels(cubemap.getSize()) - 1;
+
+		const vec3 x = { 1.f, 0.f, 0.f };
+		const vec3 y = { 0.f, 1.f, 0.f };
+		const vec3 z = { 0.f, 0.f, 1.f };
+		mat4 proj;
+		proj.setPerspective(Math::rad(90.f), 1.f, 0.1f, 10.f);
+		mat4 view[6];
+		view[0].setViewMatrix({ 0.f }, x, -y, -z);
+		view[1].setViewMatrix({ 0.f }, -x, -y, z);
+		view[2].setViewMatrix({ 0.f }, y, z, x);
+		view[3].setViewMatrix({ 0.f }, -y, -z, x);
+		view[4].setViewMatrix({ 0.f }, z, -y, x);
+		view[5].setViewMatrix({ 0.f }, -z, -y, -x);
+
+		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
+		const auto& roughnessShader = egd.shaders.loadRaw(egd.res / "shader/prefilter.rasl");
+		const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
+		FrameBuffer2D fb;
+
+		for (uint i = 0; i < 6; i++)
+		{
+			fb.setCubemapTexture(0, *this, CubeMap::Face(i), 0);
+			fb.use();
+			copyShader.use();
+			copyShader.setUniform(copyShader.getLocation("projection"), proj);
+			copyShader.setUniform(copyShader.getLocation("view"), view[i]);
+			copyShader.setUniform(copyShader.getLocation("skybox"), cubemap, 0);
+			skyboxMesh.meshes[0]->buffer.draw();
+		}
+		for (uint mipLevel = 1; mipLevel <= maxMipLevel; mipLevel++)
+		{
+			const float roughness = (float)mipLevel / (float)maxMipLevel;
+			for (uint i = 0; i < 6; i++)
+			{
+				fb.setCubemapTexture(0, *this, CubeMap::Face(i), mipLevel);
+				fb.use();
+				roughnessShader.use();
+				roughnessShader.setUniform(roughnessShader.getLocation("projection"), proj);
+				roughnessShader.setUniform(roughnessShader.getLocation("view"), view[i]);
+				roughnessShader.setUniform(roughnessShader.getLocation("cubemap"), cubemap, 0);
+				roughnessShader.setUniform(roughnessShader.getLocation("roughness"), roughness);
+				roughnessShader.setUniform(roughnessShader.getLocation("sourceResolution"), (float)cubemap.getSize());
+				roughnessShader.setUniform(roughnessShader.getLocation("SAMPLE_COUNT"), 1024);
+				skyboxMesh.meshes[0]->buffer.draw();
+			}
+		}
 	}
 	void CubeMap::createDiffuseMap(const CubeMap& cubemap)
 	{

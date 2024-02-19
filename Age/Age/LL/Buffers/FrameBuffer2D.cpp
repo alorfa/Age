@@ -62,6 +62,7 @@ namespace a_game_engine
 		TexInfo info;
 		info.tex2d = &t;
 		_textures[index] = info;
+		_mipLevel = mipLevel;
 
 		glNamedFramebufferTexture(_fbuf, GL_COLOR_ATTACHMENT0 + index, t.getId(), mipLevel);
 	}
@@ -72,6 +73,7 @@ namespace a_game_engine
 		TexInfo info;
 		info.cubemap = &t;
 		_textures[index] = info;
+		_mipLevel = mipLevel;
 
 		glNamedFramebufferTexture2DEXT(
 			_fbuf, GL_COLOR_ATTACHMENT0 + index, 
@@ -88,6 +90,7 @@ namespace a_game_engine
 				_fbuf, GL_COLOR_ATTACHMENT0 + index,
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + _textures[index].face, 0, mipLevel);
 		_textures[index] = TexInfo{};
+		_mipLevel = mipLevel;
 	}
 	void FrameBuffer2D::setDepthTexture(const Texture& t)
 	{
@@ -132,6 +135,11 @@ namespace a_game_engine
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
 		glDrawBuffers((int)_textures.size(), attachments);
 		uvec2 size = getSize();
+
+		for (int i = 0; i < _mipLevel; i++)
+		{
+			size /= 2u;
+		}
 		glViewport(0, 0, size.x, size.y);
 	}
 	void FrameBuffer2D::copyFrom(const FrameBuffer2D& fb, int type, TextureFiltering filter)
@@ -168,12 +176,8 @@ namespace a_game_engine
 		return glCheckNamedFramebufferStatus(_fbuf, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 	}
 	FrameBuffer2D::FrameBuffer2D(FrameBuffer2D&& other)
-		: _textures(std::move(other._textures))
 	{
-		std::swap(_fbuf, other._fbuf);
-		std::swap(_rbuf, other._rbuf);
-		std::swap(_depthStencil, other._depthStencil);
-		std::swap(_rbufSize, other._rbufSize);
+		operator=(std::move(other));
 	}
 	FrameBuffer2D& FrameBuffer2D::operator=(FrameBuffer2D&& other)
 	{
@@ -182,6 +186,7 @@ namespace a_game_engine
 		std::swap(_fbuf, other._fbuf);
 		std::swap(_rbuf, other._rbuf);
 		std::swap(_rbufSize, other._rbufSize);
+		std::swap(_mipLevel, other._mipLevel);
 		return *this;
 	}
 }
