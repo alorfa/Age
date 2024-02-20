@@ -81,9 +81,7 @@ namespace a_game_engine
 		view[4].setViewMatrix({ 0.f }, -z, -y, x);
 		view[5].setViewMatrix({ 0.f }, z, -y, -x);
 
-		auto& shader = egd.shaders.loadRaw(egd.res / "shader/tex2cubemap.rasl");
-
-		//Pipeline::set2DContext();
+		auto& shader = egd.shaders.loadRaw(egd.res / "shader/CubeMapFromPanorama.rasl");
 
 		CubeMap::Settings cubeSettings{ nullptr, s.size, s.format, s.sampler, s.mipmaps };
 		
@@ -97,6 +95,7 @@ namespace a_game_engine
 			fb.use();
 			shader.use();
 			shader.setUniform(shader.getLocation("panorama"), *s.panorama, 0);
+			shader.setUniform(shader.getLocation("srgb"), s.srgb);
 			shader.setUniform(shader.getLocation("projection"), proj);
 			shader.setUniform(shader.getLocation("view"), view[i]);
 			const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
@@ -105,7 +104,7 @@ namespace a_game_engine
 		if (s.mipmaps > 1)
 			generateMipmaps();
 	}
-	void CubeMap::createSpecularMap(const CubeMap& cubemap, TextureFormat format, bool srgb)
+	void CubeMap::createSpecularMap(const CubeMap& cubemap, TextureFormat format)
 	{
 		create({ nullptr, cubemap.getSize(), format });
 		const uint maxMipLevel = TexEnums::computeMipLevels(cubemap.getSize()) - 1;
@@ -123,8 +122,8 @@ namespace a_game_engine
 		view[4].setViewMatrix({ 0.f }, -y, x, -z);
 		view[5].setViewMatrix({ 0.f }, -y, -x, z);
 
-		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/copyCubeMap.rasl");
-		const auto& roughnessShader = egd.shaders.loadRaw(egd.res / "shader/prefilter.rasl");
+		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/CubeMapCopy.rasl");
+		const auto& roughnessShader = egd.shaders.loadRaw(egd.res / "shader/CubeMapSpecular.rasl");
 		const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
 		FrameBuffer2D fb;
 
@@ -136,7 +135,6 @@ namespace a_game_engine
 			copyShader.setUniform(copyShader.getLocation("projection"), proj);
 			copyShader.setUniform(copyShader.getLocation("view"), view[i]);
 			copyShader.setUniform(copyShader.getLocation("skybox"), cubemap, 0);
-			copyShader.setUniform(copyShader.getLocation("srgb"), srgb);
 			skyboxMesh.meshes[0]->buffer.draw();
 		}
 		for (uint mipLevel = 1; mipLevel <= maxMipLevel; mipLevel++)
@@ -153,12 +151,11 @@ namespace a_game_engine
 				roughnessShader.setUniform(roughnessShader.getLocation("roughness"), roughness);
 				roughnessShader.setUniform(roughnessShader.getLocation("sourceResolution"), (float)cubemap.getSize());
 				roughnessShader.setUniform(roughnessShader.getLocation("SAMPLE_COUNT"), 1024);
-				roughnessShader.setUniform(roughnessShader.getLocation("srgb"), srgb);
 				skyboxMesh.meshes[0]->buffer.draw();
 			}
 		}
 	}
-	void CubeMap::createDiffuseMap(const CubeMap& cubemap, uint size, TextureFormat format, bool srgb)
+	void CubeMap::createDiffuseMap(const CubeMap& cubemap, uint size, TextureFormat format)
 	{
 		SamplerCubeInfo sampler = { TextureFiltering::Linear };
 		Settings s = { nullptr, size, format, sampler, 1 };
@@ -177,7 +174,7 @@ namespace a_game_engine
 		view[4].setViewMatrix({ 0.f }, -y, x, -z);
 		view[5].setViewMatrix({ 0.f }, -y, -x, z);
 
-		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/irradianceCubeMap.rasl");
+		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/CubeMapDiffuse.rasl");
 		const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
 		FrameBuffer2D fb;
 
@@ -189,7 +186,6 @@ namespace a_game_engine
 			copyShader.setUniform(copyShader.getLocation("projection"), proj);
 			copyShader.setUniform(copyShader.getLocation("view"), view[i]);
 			copyShader.setUniform(copyShader.getLocation("skybox"), cubemap, 0);
-			copyShader.setUniform(copyShader.getLocation("srgb"), srgb);
 			skyboxMesh.meshes[0]->buffer.draw();
 		}
 	}
@@ -237,8 +233,8 @@ namespace a_game_engine
 		}
 	}
 	CubeMap::PanoramaSettings::PanoramaSettings(const Texture2D& panorama, uint size,
-		TextureFormat format, const SamplerCubeInfo& sampler, int mipmaps)
-		: panorama(&panorama), sampler(sampler), format(format)
+		TextureFormat format, const SamplerCubeInfo& sampler, int mipmaps, bool srgb)
+		: panorama(&panorama), sampler(sampler), format(format), srgb(srgb)
 	{
 		this->size = size == 0 ? panorama.getSize().y / 2 : size;
 

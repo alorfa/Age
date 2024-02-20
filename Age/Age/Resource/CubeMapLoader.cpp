@@ -19,7 +19,7 @@ namespace a_game_engine
 		Texture2D panorama(settings);
 
 		auto result = std::make_unique<CubeMap>();
-		CubeMap::PanoramaSettings ps{ panorama, s.size, s.format, s.sampler, s.hasMipmaps() ? -1 : 1 };
+		CubeMap::PanoramaSettings ps{ panorama, s.size, s.format, s.sampler, s.hasMipmaps() ? -1 : 1, s.srgb };
 		result->createFromPanorama(ps);
 		return result;
 	}
@@ -39,15 +39,16 @@ namespace a_game_engine
 		return ResourceLoader::defaultLoad<EnvCubeMap, std::filesystem::path>(cubeMaps, path,
 			[&](const std::filesystem::path& p) -> std::unique_ptr<EnvCubeMap>
 			{
-				RawSettings settings = { {TextureFiltering::Linear}, s.tempFormat, s.specularSize, MipmapSettings::Auto };
+				RawSettings settings = { {TextureFiltering::Linear}, s.tempFormat, s.specularSize, 
+					MipmapSettings::Auto, s.srgb };
 				auto cubemap = readFromFile(path, settings);
 				if (cubemap == nullptr)
 					return nullptr;
 
 				auto result = std::make_unique<EnvCubeMap>();
-				result->specular.createSpecularMap(*cubemap, s.specularFormat, s.srgb);
+				result->specular.createSpecularMap(*cubemap, s.specularFormat);
 				if (s.diffuseSize > 0)
-					result->diffuse.createDiffuseMap(*cubemap, s.diffuseSize, s.diffuseFormat, s.srgb);
+					result->diffuse.createDiffuseMap(*cubemap, s.diffuseSize, s.diffuseFormat);
 				return result;
 			},
 			getDefaultEnvCubeMap);

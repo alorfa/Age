@@ -20,11 +20,12 @@ namespace a_game_engine
 			TextureFormat format;
 			uint size;
 			MipmapSettings mipmaps;
+			bool srgb;
 
 			inline RawSettings(const SamplerCubeInfo& sampler = SamplerCubeInfo{},
 				TextureFormat format = TextureFormat::SRGB, uint size = 0,
-				MipmapSettings mipmaps = MipmapSettings::Auto)
-				: sampler(sampler), format(format), size(size), mipmaps(mipmaps) {}
+				MipmapSettings mipmaps = MipmapSettings::Auto, bool srgb = true)
+				: sampler(sampler), format(format), size(size), mipmaps(mipmaps), srgb(srgb) {}
 
 			bool hasMipmaps() const;
 		};

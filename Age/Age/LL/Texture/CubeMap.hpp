@@ -31,9 +31,10 @@ namespace a_game_engine
 			TextureFormat format;
 			SamplerCubeInfo sampler;
 			int mipmaps;
+			bool srgb;
 
 			PanoramaSettings(const Texture2D& panorama, uint size = 0, TextureFormat format = TextureFormat::Auto,
-				const SamplerCubeInfo& sampler = {}, int mipmaps = -1);
+				const SamplerCubeInfo& sampler = {}, int mipmaps = -1, bool srgb = true);
 		};
 
 		CubeMap();
@@ -45,9 +46,8 @@ namespace a_game_engine
 		void destroy();
 		void create(const Settings& s);
 		void createFromPanorama(const PanoramaSettings& s);
-		void createSpecularMap(const CubeMap& cubemap, TextureFormat format = TextureFormat::RGB_Float16, bool srgb = true);
-		void createDiffuseMap(const CubeMap& cubemap, uint size = 32, 
-			TextureFormat format = TextureFormat::RGB_Float16, bool srgb = true);
+		void createSpecularMap(const CubeMap& cubemap, TextureFormat format = TextureFormat::RGB_Float16);
+		void createDiffuseMap(const CubeMap& cubemap, uint size = 32, TextureFormat format = TextureFormat::RGB_Float16);
 		void activate(int number = 0) const;
 
 		void setWrap(TextureWrap x, TextureWrap y, TextureWrap z);

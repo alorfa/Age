@@ -23,7 +23,6 @@ uniform samplerCube cubemap;
 uniform float roughness = 0.1;
 uniform float sourceResolution = 512.;
 uniform int SAMPLE_COUNT = 1024;
-uniform bool srgb = false;
 
 void paintOver()
 {
@@ -62,9 +61,7 @@ void paintOver()
 
     prefilteredColor = prefilteredColor / totalWeight;
 
-    vec3 result = srgb ? screenToLinearPrecise(prefilteredColor) : prefilteredColor;
-
-    age_FragColor = vec4(result, 1.);
+    age_FragColor = vec4(prefilteredColor, 1.);
 }
 
 #endif

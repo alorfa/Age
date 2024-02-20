@@ -21,7 +21,6 @@ out vec4 age_FragColor;
 in vec3 fragUv;
 uniform samplerCube cubemap;
 uniform float sampleDelta = 0.025;
-uniform bool srgb = false;
 
 void paintOver()
 {
@@ -50,8 +49,6 @@ void paintOver()
         }
     }
     vec3 result = PI * irradiance * (1. / nrSamples);
-
-    result = srgb ? screenToLinearPrecise(result) : result;
 
     age_FragColor = vec4(result, 1.);
 }

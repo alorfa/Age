@@ -20,11 +20,14 @@ out vec4 age_FragColor;
 
 in vec3 fragPos;
 uniform sampler2D panorama;
+uniform bool srgb = false;
 
 void paintOver()
 {
 	vec2 uv = sampleSphericalMap(normalize(fragPos));
-	age_FragColor = texture(panorama, uv);
+	vec3 result = texture(panorama, uv).rgb;
+	result = srgb ? screenToLinearPrecise(result) : result;
+	age_FragColor = vec4(result, 1.);
 }
 
 #endif
