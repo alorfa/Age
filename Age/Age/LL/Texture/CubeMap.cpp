@@ -123,7 +123,7 @@ namespace a_game_engine
 		view[4].setViewMatrix({ 0.f }, -y, x, -z);
 		view[5].setViewMatrix({ 0.f }, -y, -x, z);
 
-		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/skybox.rasl");
+		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/copyCubeMap.rasl");
 		const auto& roughnessShader = egd.shaders.loadRaw(egd.res / "shader/prefilter.rasl");
 		const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
 		FrameBuffer2D fb;
@@ -136,6 +136,7 @@ namespace a_game_engine
 			copyShader.setUniform(copyShader.getLocation("projection"), proj);
 			copyShader.setUniform(copyShader.getLocation("view"), view[i]);
 			copyShader.setUniform(copyShader.getLocation("skybox"), cubemap, 0);
+			copyShader.setUniform(copyShader.getLocation("srgb"), srgb);
 			skyboxMesh.meshes[0]->buffer.draw();
 		}
 		for (uint mipLevel = 1; mipLevel <= maxMipLevel; mipLevel++)
@@ -152,12 +153,45 @@ namespace a_game_engine
 				roughnessShader.setUniform(roughnessShader.getLocation("roughness"), roughness);
 				roughnessShader.setUniform(roughnessShader.getLocation("sourceResolution"), (float)cubemap.getSize());
 				roughnessShader.setUniform(roughnessShader.getLocation("SAMPLE_COUNT"), 1024);
+				roughnessShader.setUniform(roughnessShader.getLocation("srgb"), srgb);
 				skyboxMesh.meshes[0]->buffer.draw();
 			}
 		}
 	}
-	void CubeMap::createDiffuseMap(const CubeMap& cubemap)
+	void CubeMap::createDiffuseMap(const CubeMap& cubemap, uint size, TextureFormat format, bool srgb)
 	{
+		SamplerCubeInfo sampler = { TextureFiltering::Linear };
+		Settings s = { nullptr, size, format, sampler, 1 };
+		create(s);
+
+		const vec3 x = { 1.f, 0.f, 0.f };
+		const vec3 y = { 0.f, 1.f, 0.f };
+		const vec3 z = { 0.f, 0.f, 1.f };
+		mat4 proj;
+		proj.setPerspective(Math::rad(90.f), 1.f, 0.1f, 10.f);
+		mat4 view[6];
+		view[0].setViewMatrix({ 0.f }, -y, -z, -x);
+		view[1].setViewMatrix({ 0.f }, -y, z, x);
+		view[2].setViewMatrix({ 0.f }, -z, x, y);
+		view[3].setViewMatrix({ 0.f }, z, x, -y);
+		view[4].setViewMatrix({ 0.f }, -y, x, -z);
+		view[5].setViewMatrix({ 0.f }, -y, -x, z);
+
+		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/irradianceCubeMap.rasl");
+		const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
+		FrameBuffer2D fb;
+
+		for (uint i = 0; i < 6; i++)
+		{
+			fb.setCubemapTexture(0, *this, CubeMap::Face(i), 0);
+			fb.use();
+			copyShader.use();
+			copyShader.setUniform(copyShader.getLocation("projection"), proj);
+			copyShader.setUniform(copyShader.getLocation("view"), view[i]);
+			copyShader.setUniform(copyShader.getLocation("skybox"), cubemap, 0);
+			copyShader.setUniform(copyShader.getLocation("srgb"), srgb);
+			skyboxMesh.meshes[0]->buffer.draw();
+		}
 	}
 	void CubeMap::activate(int number) const
 	{

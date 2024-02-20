@@ -12,7 +12,7 @@ namespace a_game_engine
 		Image img;
 		img.loadFromFile(path);
 		if (not img.info.isValid())
-			return std::unique_ptr<CubeMap>(nullptr);
+			return nullptr;
 
 		Sampler2DInfo sampler = { TextureFiltering::Linear, TextureWrap::Repeat };
 		Texture2D::Settings settings = { img.info, TextureFormat::Auto, sampler, 1 };
@@ -46,7 +46,8 @@ namespace a_game_engine
 
 				auto result = std::make_unique<EnvCubeMap>();
 				result->specular.createSpecularMap(*cubemap, s.specularFormat, s.srgb);
-				result->diffuse.createDiffuseMap(*cubemap);
+				if (s.diffuseSize > 0)
+					result->diffuse.createDiffuseMap(*cubemap, s.diffuseSize, s.diffuseFormat, s.srgb);
 				return result;
 			},
 			getDefaultEnvCubeMap);

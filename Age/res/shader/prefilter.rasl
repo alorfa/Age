@@ -62,10 +62,9 @@ void paintOver()
 
     prefilteredColor = prefilteredColor / totalWeight;
 
-    if (srgb)
-    	prefilteredColor = screenToLinearPrecise(prefilteredColor);
+    vec3 result = srgb ? screenToLinearPrecise(prefilteredColor) : prefilteredColor;
 
-    age_FragColor = vec4(prefilteredColor, 1.);
+    age_FragColor = vec4(result, 1.);
 }
 
 #endif

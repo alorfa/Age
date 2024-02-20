@@ -20,10 +20,13 @@ out vec4 age_FragColor;
 
 in vec3 fragUv;
 uniform samplerCube skybox;
+uniform bool srgb = false;
 
 void paintOver()
 {
-    age_FragColor = sampleCubemap(skybox, fragUv);
+    vec3 result = texture(skybox, fragUv).rgb;
+    result = srgb ? screenToLinearPrecise(result) : result;
+    age_FragColor = vec4(result, 1.);
 }
 
 #endif

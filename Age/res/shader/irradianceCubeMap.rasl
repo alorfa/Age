@@ -1,0 +1,59 @@
+#ifdef AGE_VERTEX
+
+layout (location = 0) in vec3 inPosition;
+
+uniform mat4 view, projection;
+
+out vec3 fragUv;
+
+vec4 vertexProcess()
+{
+    fragUv = inPosition;
+    vec4 pos = projection * view * vec4(inPosition, 1.f);
+    return pos.xyww;
+}
+
+#endif
+#ifdef AGE_FRAGMENT
+
+out vec4 age_FragColor;
+
+in vec3 fragUv;
+uniform samplerCube cubemap;
+uniform float sampleDelta = 0.025;
+uniform bool srgb = false;
+
+void paintOver()
+{
+    //snatched from learnopengl
+    vec3 N = normalize(fragUv);
+
+    vec3 irradiance = vec3(0.0);   
+    
+    // tangent space calculation from origin point
+    vec3 up    = vec3(0.0, 1.0, 0.0);
+    vec3 right = normalize(cross(up, N));
+    up         = normalize(cross(N, right));
+
+    float nrSamples = 0.;
+    for(float phi = 0.0; phi < TAU; phi += sampleDelta)
+    {
+        for(float theta = 0.0; theta < HALF_PI; theta += sampleDelta)
+        {
+            // spherical to cartesian (in tangent space)
+            vec3 tangentSample = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+            // tangent space to world
+            vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N; 
+
+            irradiance += texture(cubemap, sampleVec).rgb * cos(theta) * sin(theta);
+            nrSamples++;
+        }
+    }
+    vec3 result = PI * irradiance * (1. / nrSamples);
+
+    result = srgb ? screenToLinearPrecise(result) : result;
+
+    age_FragColor = vec4(result, 1.);
+}
+
+#endif

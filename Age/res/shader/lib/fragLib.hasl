@@ -1,5 +1,10 @@
 const float PI = 3.1415926535;
+const float TAU = PI * 2.;
+const float HALF_PI = PI * 0.5;
+
 const float INV_PI = 1. / PI;
+const float INV_TAU = 1. / TAU;
+const float INV_HALF_PI = 1. / HALF_PI;
 
 struct DirLight
 {
