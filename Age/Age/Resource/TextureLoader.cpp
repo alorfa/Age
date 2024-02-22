@@ -10,6 +10,7 @@
 namespace a_game_engine
 {
 	std::unique_ptr<Texture2D> TextureLoader::defaultTexture = nullptr;
+	std::unique_ptr<Texture2D> TextureLoader::brdfLut = nullptr;
 	std::unique_ptr<Image> TextureLoader::defaultImage = nullptr;
 	std::filesystem::path TextureLoader::defaultImagePath = "res/img/default.jpg";
 
@@ -55,6 +56,27 @@ namespace a_game_engine
 				1 });
 		}
 		return *defaultTexture;
+	}
+	Texture2D& TextureLoader::getBrdfLut()
+	{
+		if (brdfLut == nullptr)
+		{
+			brdfLut = std::make_unique<Texture2D>();
+			ImageInfo img;
+			img.size = uvec2(64u);
+			Sampler2DInfo sampler{ TextureFiltering::Linear };
+			Texture2D::Settings s{ img, TextureFormat::RGB_Float16, sampler, 1 };
+			brdfLut->create(s);
+
+			auto& shader = egd.shaders.loadPostproc(egd.res / "shader/GenBrdfLut.pasl");
+			const auto& buf = VertexBuffer::getDefFramebuf();
+			FrameBuffer2D fb;
+			fb.setTexture(0, *brdfLut);
+			fb.use();
+			shader.use();
+			buf.draw();
+		}
+		return *brdfLut;
 	}
 	Image& TextureLoader::getDefaultImage()
 	{

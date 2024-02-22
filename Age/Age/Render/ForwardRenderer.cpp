@@ -36,6 +36,8 @@ namespace a_game_engine
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
+		const auto& brdfLut = TextureLoader::getBrdfLut();
+
 		ShaderSettings::Forward settings;
 		SceneInfo info;
 		info.camera = &camera;

@@ -15,11 +15,11 @@ vec4 vertexProcess()
 #endif
 #ifdef AGE_FRAGMENT
 
-uniform sampler2D base_color_map;
+uniform sampler2D baseColorMap;
 
 void fragmentControl()
 {
-    age_base_color = texture(base_color_map, fragUv).rgb;
+    age_base_color = texture(baseColorMap, fragUv).rgb;
     age_normal = normalize(fragTBN[2]);
     age_roughness = 0.1;
     age_metalness = 0.6;

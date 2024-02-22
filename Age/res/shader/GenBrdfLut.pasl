@@ -1,0 +1,34 @@
+out vec4 age_FragColor;
+
+in vec2 uv;
+uniform int SAMPLE_COUNT = 1024;
+
+void main()
+{
+    //snatched from https://github.com/SaschaWillems/Vulkan-glTF-PBR/blob/master/data/shaders/genbrdflut.frag
+    float NoV = uv.x;
+    float roughness = uv.y;
+
+    const vec3 N = vec3(0.0, 0.0, 1.0);
+    vec3 V = vec3(sqrt(1.0 - NoV*NoV), 0.0, NoV);
+
+    vec2 LUT = vec2(0.0);
+    for(uint i = 0u; i < SAMPLE_COUNT; i++) {
+        vec2 Xi = Hammersley(i, SAMPLE_COUNT);
+        vec3 H = ImportanceSampleGGX(Xi, N, roughness);
+        vec3 L = 2. * dot(V, H) * H - V;
+
+        float NL = max(dot(N, L), 0.0);
+        float NV = max(dot(N, V), 0.0);
+        float VH = max(dot(V, H), 0.0); 
+        float NH = max(dot(H, N), 0.0);
+
+        if (NL > 0.0) {
+            float G = G_SchlicksmithGGX(NL, NV, roughness);
+            float G_Vis = (G * VH) / (NH * NV);
+            float Fc = pow(1.0 - VH, 5.0);
+            LUT += vec2((1.0 - Fc) * G_Vis, Fc * G_Vis);
+        }
+    }
+    age_FragColor = vec4(LUT / float(SAMPLE_COUNT), 0., 1.);
+}

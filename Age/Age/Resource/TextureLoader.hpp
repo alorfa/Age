@@ -10,7 +10,7 @@ namespace a_game_engine
 	class TextureLoader
 	{
 		static std::unique_ptr<Image> defaultImage;
-
+		static std::unique_ptr<Texture2D> brdfLut;
 		static std::unique_ptr<Texture2D> defaultTexture;
 		std::map<std::filesystem::path, std::unique_ptr<Texture2D>> textures;
 	public:
@@ -38,5 +38,6 @@ namespace a_game_engine
 
 		static Texture2D& getDefault();
 		static Image& getDefaultImage();
+		static Texture2D& getBrdfLut();
 	};
 }
