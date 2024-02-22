@@ -20,7 +20,7 @@ uniform float metalic, roughness;
 
 void fragmentControl()
 {
-    age_base_color = vec3(1.);
+    age_base_color = vec3(1., 0.3, 0.2);
     age_normal = normalize(fragTBN[2]);
     age_roughness = metalic;
     age_metalness = roughness;

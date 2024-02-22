@@ -36,12 +36,13 @@ namespace a_game_engine
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
-		const auto& brdfLut = TextureLoader::getBrdfLut();
-
 		ShaderSettings::Forward settings;
 		SceneInfo info;
 		info.camera = &camera;
-		info.props.push_back({ "skybox", SkyBox::getSlot() });
+		info.props.push_back({ "diffuseMap", 10 });
+		info.props.push_back({ "specularMap", 11 });
+		info.props.push_back({ "brdfLut", 12 });
+		info.props.push_back({ "maxSpecMipLevel", (float)TexEnums::computeMipLevels(env->specular.getSize())});
 		info.addLights(*sc.rootNode);
 		settings.dirLights = info.lights.dir;
 		settings.pointLights = info.lights.point;
@@ -65,8 +66,10 @@ namespace a_game_engine
 		Pipeline::setBlendMode(BlendMode::Lerp);
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f }, true, false);
 
-		
-		sc.skyBox.cubemap->activate(SkyBox::getSlot());
+		env->diffuse.activate(10);
+		env->specular.activate(11);
+		TextureLoader::getBrdfLut().activate(12);
+
 		sc.rootNode->forEachConst([&](const Node& n) {
 			n.draw(info);
 		});

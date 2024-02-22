@@ -63,9 +63,9 @@ namespace a_game_engine
 		{
 			brdfLut = std::make_unique<Texture2D>();
 			ImageInfo img;
-			img.size = uvec2(64u);
+			img.size = uvec2(512u);
 			Sampler2DInfo sampler{ TextureFiltering::Linear };
-			Texture2D::Settings s{ img, TextureFormat::RGB_Float16, sampler, 1 };
+			Texture2D::Settings s{ img, TextureFormat::RGB_Float16, sampler, 1 }; //TODO: add RG16
 			brdfLut->create(s);
 
 			auto& shader = egd.shaders.loadPostproc(egd.res / "shader/GenBrdfLut.pasl");

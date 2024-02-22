@@ -45,7 +45,8 @@ namespace a_game
 		MeshComponent::setShader(*objs[4], lightShader);
 		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
-		const bool light_test = false;
+		const bool one_light_test = false;
+		const bool indirect_light_test = false;
 
 		vec2 floorPositions[3][3] = {
 			{vec2{-10.f, -10.f}, vec2{-10.f, 0.f}, vec2{-10.f, 10.f}},
@@ -64,36 +65,41 @@ namespace a_game
 
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
-		objs[4]->addComponent<PointLightComponent>()
-			.setSize(0.2f)
-			.setOffset(2.f)
-			.setColor({ 3.0f, 0.3f, 0.3f }, 0.03f)
-			.addModel(*objs[4]);
 		/*objs[4]->addComponent<RotateComp>()
 			.init(vec3(-2.f, 1.5f, -3.5f), vec3(-3.f, 3.f, 0.f), 0.5f);*/
 
-		if (light_test)
+		if (!indirect_light_test)
 		{
-			objs[3]->forEach([](Node& n) {
-				auto meshes = n.findAllComponents<MeshComponent>();
-				for (auto m : meshes)
-					m->mesh.material.setValue("emission", ShaderProperty(vec3{ 0.f }));
-				});
-		}
-		else
-		{
-			objs[2]->addComponent<SpotLightComponent>()
-				.setColor({ 3.f, 3.f, 8.f }, 0.03f)
-				.setOffset(2.f)
-				.setSize(0.1f);
-			objs[3]->addComponent<PointLightComponent>()
-				.setColor({ 6.f, 4.f, 1.5f }, 0.03f)
-				.setOffset(2.f)
-				.addModel(*objs[3])
-				.setSize(0.2f);
-			objs[5]->addComponent<DirLightComponent>()
-				.setSize(0.1f)
-				.setDirection({0.f, -0.5f, 1.f});
+			objs[4]->addComponent<PointLightComponent>()
+				.setSize(0.2f)
+				//.setOffset(2.f)
+				.setColor({ 3.0f, 0.3f, 0.3f }, 0.03f)
+				.addModel(*objs[4]);
+
+			if (one_light_test)
+			{
+				objs[3]->forEach([](Node& n) {
+					auto meshes = n.findAllComponents<MeshComponent>();
+					for (auto m : meshes)
+						m->mesh.material.setValue("emission", ShaderProperty(vec3{ 0.f }));
+					});
+			}
+			else
+			{
+				objs[2]->addComponent<SpotLightComponent>()
+					.setColor({ 3.f, 3.f, 8.f }, 0.03f)
+					//.setOffset(2.f)
+					.setSize(0.1f);
+				objs[3]->addComponent<PointLightComponent>()
+					.setColor({ 6.f, 4.f, 1.5f }, 0.03f)
+					//.setOffset(2.f)
+					.addModel(*objs[3])
+					.setSize(0.2f);
+				objs[5]->addComponent<DirLightComponent>()
+					.setSize(0.1f)
+					.setDirection({ 0.f, -0.5f, 1.f });
+				
+			}
 		}
 
 		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
@@ -106,7 +112,8 @@ namespace a_game
 		CubeMapLoader::Settings envs = { TextureFormat::RGB_Float16, TextureFormat::RGB_Float16, TextureFormat::RGB_Float16, true };
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
-		skyBox.cubemap = &egd.cubemaps.load(egd.res / "img/skybox.jpg", envs).specular;
+		env = &egd.cubemaps.load(egd.res / "img/skybox.jpg", envs);
+		skyBox.cubemap = &env->specular;
 
 		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)
@@ -150,6 +157,8 @@ namespace a_game
 
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
+
+		forwardRenderer.env = env;
 	}
 	void WorldScene::draw(const Camera* c, float delta) const
 	{

@@ -2,7 +2,10 @@ in vec2 fragUv;
 in vec3 fragPos;
 in mat3 fragTBN;
 
-uniform samplerCube skybox;
+uniform sampler2D brdfLut;
+uniform samplerCube specularMap;
+uniform samplerCube diffuseMap;
+uniform float maxSpecMipLevel = 1.;
 
 uniform float near = 0.1f;
 uniform float far = 100.f;
@@ -73,5 +76,6 @@ void pbr_paintOver()
         light += pbr_computeRay(toPointLight(spotLightSources[i], fragPos), fragPos);
     }
 #endif
+    light += pbr_computeRay(diffuseMap, specularMap, brdfLut, maxSpecMipLevel);
     age_FragColor = vec4(light, age_alpha);
 }

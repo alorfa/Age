@@ -17,6 +17,7 @@ namespace a_game
 		DeferredRenderer deferredRenderer;
 		Renderer* activeRenderer = nullptr;
 		Camera* activeCamera = nullptr;
+		const EnvCubeMap* env = nullptr;
 
 		void load() override;
 		void draw(const Camera* c, float delta) const override;
