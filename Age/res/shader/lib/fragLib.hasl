@@ -247,6 +247,7 @@ vec3 pbr_computeLight(PointLight light, vec3 fragmentPos)
     vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
     vec3 finalSpecular = vec3(0.);
     vec3 finalDiffuse = vec3(0.);
+    vec3 finalAmbient = vec3(0.);
 #ifndef AGE_DISABLE_SPECULAR
     float clampedRoughness = max(material.roughness, 0.03);
     float r4 = pow4(clampedRoughness);
@@ -261,13 +262,10 @@ vec3 pbr_computeLight(PointLight light, vec3 fragmentPos)
 #ifndef AGE_DISABLE_DIFFUSE
     finalDiffuse = diffColor * material.base_color * INV_PI;
 #endif
-    vec3 directLight = (finalDiffuse + finalSpecular) * light.color * c.NL;
-
-#ifdef AGE_DISABLE_AMBIENT
-    return directLight * c.falloff;
-#else
-    return (light.ambient * material.base_color + directLight) * c.falloff;
+#ifndef AGE_DISABLE_AMBIENT
+    finalAmbient = light.ambient * material.base_color;
 #endif
+    return ((finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient) * c.falloff;
 }
 
 vec3 pbr_computeLight(samplerCube difMap, samplerCube specMap, sampler2D brdfLut, float maxLod)
@@ -280,8 +278,13 @@ vec3 pbr_computeLight(samplerCube difMap, samplerCube specMap, sampler2D brdfLut
     vec3 specIndirect = textureLod(specMap, vc.R, material.roughness * maxLod).rgb;
     vec2 brdfValue = texture(brdfLut, vec2(vc.NV, material.roughness)).xy;
 
-    vec3 specResult = specIndirect * (F * brdfValue.x + brdfValue.y);
-    vec3 difResult = difIndirect * diffColor * material.base_color;
+    vec3 specResult, difResult;
+#ifndef AGE_DISABLE_SPECULAR
+    specResult = specIndirect * (F * brdfValue.x + brdfValue.y);
+#endif
+#ifndef AGE_DISABLE_DIFFUSE
+    difResult = difIndirect * diffColor * material.base_color;
+#endif
     return difResult + specResult;
 }
 

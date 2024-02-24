@@ -65,14 +65,13 @@ namespace a_game
 
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
-		/*objs[4]->addComponent<RotateComp>()
-			.init(vec3(-2.f, 1.5f, -3.5f), vec3(-3.f, 3.f, 0.f), 0.5f);*/
+		objs[4]->addComponent<RotateComp>()
+			.init(vec3(-2.f, 1.5f, -3.5f), vec3(-3.f, 3.f, 0.f), 0.5f);
 
 		if (!indirect_light_test)
 		{
 			objs[4]->addComponent<PointLightComponent>()
 				.setSize(0.2f)
-				//.setOffset(2.f)
 				.setColor({ 5.0f, 0.5f, 0.5f }, 0.03f)
 				.addModel(*objs[4]);
 
