@@ -18,13 +18,12 @@ vec4 vertexProcess()
 
 uniform float metalic, roughness;
 
-void fragmentControl()
+void setup()
 {
-    age_base_color = vec3(1., 0.3, 0.2);
-    age_normal = normalize(fragTBN[2]);
-    age_roughness = metalic;
-    age_metalness = roughness;
+    material.base_color = vec3(1., 0.3, 0.2);
+    material.normal = normalize(fragTBN[2]);
+    material.roughness = metalic;
+    material.metallic = roughness;
 }
-#define AGE_LIGHT_MODE_PBR
 
 #endif

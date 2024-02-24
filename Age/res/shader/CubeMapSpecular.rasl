@@ -36,8 +36,8 @@ void paintOver()
     for(int i = 0; i < SAMPLE_COUNT; ++i)
     {
         // generates a sample vector that's biased towards the preferred alignment direction (importance sampling).
-        vec2 Xi = Hammersley(i, SAMPLE_COUNT);
-        vec3 H = ImportanceSampleGGX(Xi, N, roughness);
+        vec2 Xi = hammersley(i, SAMPLE_COUNT);
+        vec3 H = importanceSample_GGX(Xi, N, roughness);
         vec3 L  = normalize(2.0 * dot(V, H) * H - V);
 
         float NL = max(dot(N, L), 0.);

@@ -73,7 +73,7 @@ namespace a_game
 			objs[4]->addComponent<PointLightComponent>()
 				.setSize(0.2f)
 				//.setOffset(2.f)
-				.setColor({ 3.0f, 0.3f, 0.3f }, 0.03f)
+				.setColor({ 5.0f, 0.5f, 0.5f }, 0.03f)
 				.addModel(*objs[4]);
 
 			if (one_light_test)
@@ -87,12 +87,10 @@ namespace a_game
 			else
 			{
 				objs[2]->addComponent<SpotLightComponent>()
-					.setColor({ 3.f, 3.f, 8.f }, 0.03f)
-					//.setOffset(2.f)
+					.setColor({ 4.f, 4.f, 10.f }, 0.03f)
 					.setSize(0.1f);
 				objs[3]->addComponent<PointLightComponent>()
-					.setColor({ 6.f, 4.f, 1.5f }, 0.03f)
-					//.setOffset(2.f)
+					.setColor({ 8.f, 6.f, 2.f }, 0.03f)
 					.addModel(*objs[3])
 					.setSize(0.2f);
 				objs[5]->addComponent<DirLightComponent>()

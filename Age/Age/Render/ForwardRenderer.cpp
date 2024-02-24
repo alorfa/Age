@@ -42,7 +42,7 @@ namespace a_game_engine
 		info.props.push_back({ "diffuseMap", 10 });
 		info.props.push_back({ "specularMap", 11 });
 		info.props.push_back({ "brdfLut", 12 });
-		info.props.push_back({ "maxSpecMipLevel", (float)TexEnums::computeMipLevels(env->specular.getSize())});
+		info.props.push_back({ "maxSpecMipLevel", float(TexEnums::computeMipLevels(env->specular.getSize()) - 1)});
 		info.addLights(*sc.rootNode);
 		settings.dirLights = info.lights.dir;
 		settings.pointLights = info.lights.point;
@@ -87,8 +87,8 @@ namespace a_game_engine
 		colorBuffer.generateMipmaps();
 		const vec3 midColor = colorBuffer.getMidColor();
 		const float brightness = vec3::dot(midColor, Math::LUMA);
-		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
-		const float curExp = 0.35f / clampedBr;
+		const float clampedBr = Math::lerp(brightness, 0.6f, 0.3f);
+		const float curExp = 0.25f / clampedBr;
 		exposure = Math::smooth(exposure, curExp, delta * 3.f);
 
 		mainFb.useDefault(size);

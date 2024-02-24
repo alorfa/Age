@@ -4,19 +4,20 @@ in vec2 uv;
 
 uniform sampler2D baseColor_roughness_map, normal_metalness_map, pos_map;
 uniform DirLight light;
+uniform vec3 cameraPos;
 
 void main()
 {
     vec4 diffuse_roughness = texture(baseColor_roughness_map, uv);
     vec4 normal_metalness = texture(normal_metalness_map, uv);
     vec3 fragPos = texture(pos_map, uv).rgb;
-	age_base_color = diffuse_roughness.rgb;
-	age_roughness = diffuse_roughness.a;
-	age_normal = normal_metalness.xyz * 2.0 - 1.0;
-	age_metalness = normal_metalness.a;
-	LIGHT_SETUP(fragPos);
+	material.base_color = diffuse_roughness.rgb;
+	material.roughness = diffuse_roughness.a;
+	material.normal = normal_metalness.xyz * 2.0 - 1.0;
+	material.metallic = normal_metalness.a;
 
-    vec3 outColor = pbr_computeRay(light);
+	initViewContext(fragPos, cameraPos);
+    vec3 outColor = pbr_computeLight(light);
 
     FragColor = vec4(outColor, 1.0);
 }

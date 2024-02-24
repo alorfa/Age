@@ -14,8 +14,8 @@ void main()
 
     vec2 LUT = vec2(0.0);
     for(uint i = 0u; i < SAMPLE_COUNT; i++) {
-        vec2 Xi = Hammersley(i, SAMPLE_COUNT);
-        vec3 H = ImportanceSampleGGX(Xi, N, roughness);
+        vec2 Xi = hammersley(i, SAMPLE_COUNT);
+        vec3 H = importanceSample_GGX(Xi, N, roughness);
         vec3 L = 2. * dot(V, H) * H - V;
 
         float NL = max(dot(N, L), 0.0);
@@ -24,7 +24,7 @@ void main()
         float NH = max(dot(H, N), 0.0);
 
         if (NL > 0.0) {
-            float G = G_SchlicksmithGGX(NL, NV, roughness);
+            float G = G_SchlickSmithGGX_Indirect(NL, NV, roughness);
             float G_Vis = (G * VH) / (NH * NV);
             float Fc = pow(1.0 - VH, 5.0);
             LUT += vec2((1.0 - Fc) * G_Vis, Fc * G_Vis);

@@ -18,17 +18,14 @@ vec4 vertexProcess()
 
 uniform sampler2D baseColorMap, normalMap, roughnessMap, metalnessMap;
 
-void fragmentControl()
+void setup()
 {
-    age_base_color = texture(baseColorMap, fragUv).rgb;
-    age_specular = vec3(0.07f);
-    age_normal = computeNormal(texture(normalMap, fragUv).rgb);
-    //age_normal = normalize(fragTBN[2]);
-    vec4 material = texture(roughnessMap, fragUv);
-    age_roughness = material.g;
-    age_shininess = 4.f;
-    age_metalness = material.b;
+    material.base_color = texture(baseColorMap, fragUv).rgb;
+    material.normal = computeNormal(texture(normalMap, fragUv).rgb);
+    //material.normal = normalize(fragTBN[2]);
+    vec4 m = texture(roughnessMap, fragUv);
+    material.roughness = m.g;
+    material.metallic = m.b;
 }
-#define AGE_LIGHT_MODE_PBR
 
 #endif

@@ -7,6 +7,8 @@ uniform samplerCube specularMap;
 uniform samplerCube diffuseMap;
 uniform float maxSpecMipLevel = 1.;
 
+uniform vec3 cameraPos;
+
 uniform float near = 0.1f;
 uniform float far = 100.f;
 
@@ -26,56 +28,29 @@ uniform DirLight dirLightSources[AGE_MAX_DIR_LIGHTS];
 uniform SpotLight spotLightSources[AGE_MAX_SPOT_LIGHTS];
 #endif
 
-/*void phong_paintOver()
+void paintOver()
 {
+    initViewContext(fragPos, cameraPos);
     vec3 light = vec3(0.f);
-    LIGHT_SETUP(fragPos);
 #if defined(AGE_MAX_DIR_LIGHTS) && AGE_MAX_DIR_LIGHTS > 0 
     for (int i = 0; i < AGE_MAX_DIR_LIGHTS; i++)
-    { 
-        DIR_LIGHT_SETUP(dirLightSources[i], fragPos);
-        light += blinnPhong_computeRay();
+    {
+        light += LIGHTING_MODEL(dirLightSources[i]);
     } 
 #endif 
 #if defined(AGE_MAX_POINT_LIGHTS) && AGE_MAX_POINT_LIGHTS > 0
     for (int i = 0; i < AGE_MAX_POINT_LIGHTS; i++)
     {
-        POINT_LIGHT_SETUP(pointLightSources[i], fragPos); 
-        light += blinnPhong_computeRay() * attenuation;
+        light += LIGHTING_MODEL(pointLightSources[i], fragPos);
     } 
 #endif
 #if defined(AGE_MAX_SPOT_LIGHTS) && AGE_MAX_SPOT_LIGHTS > 0
     for (int i = 0; i < AGE_MAX_SPOT_LIGHTS; i++) 
     {
-        SPOT_LIGHT_SETUP(spotLightSources[i], fragPos);
-        light += blinnPhong_computeRay() * attenuation;
+        light += LIGHTING_MODEL(toPointLight(spotLightSources[i], fragPos), fragPos);
     }
 #endif
-    age_FragColor = vec4(light, age_alpha);
-}*/
-
-void pbr_paintOver()
-{
-    vec3 light = vec3(0.f);
-    LIGHT_SETUP(fragPos);
-#if defined(AGE_MAX_DIR_LIGHTS) && AGE_MAX_DIR_LIGHTS > 0 
-    for (int i = 0; i < AGE_MAX_DIR_LIGHTS; i++)
-    {
-        light += pbr_computeRay(dirLightSources[i]);
-    } 
-#endif 
-#if defined(AGE_MAX_POINT_LIGHTS) && AGE_MAX_POINT_LIGHTS > 0
-    for (int i = 0; i < AGE_MAX_POINT_LIGHTS; i++)
-    {
-        light += pbr_computeRay(pointLightSources[i], fragPos);
-    } 
-#endif
-#if defined(AGE_MAX_SPOT_LIGHTS) && AGE_MAX_SPOT_LIGHTS > 0
-    for (int i = 0; i < AGE_MAX_SPOT_LIGHTS; i++) 
-    {
-        light += pbr_computeRay(toPointLight(spotLightSources[i], fragPos), fragPos);
-    }
-#endif
-    light += pbr_computeRay(diffuseMap, specularMap, brdfLut, maxSpecMipLevel);
-    age_FragColor = vec4(light, age_alpha);
+    light += LIGHTING_MODEL(diffuseMap, specularMap, brdfLut, maxSpecMipLevel);
+    light += material.emission;
+    age_FragColor = vec4(light, material.alpha);
 }

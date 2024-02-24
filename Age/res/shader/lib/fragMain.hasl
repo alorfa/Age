@@ -1,20 +1,11 @@
-void age_paintOver()
-{
-    #if defined(AGE_LIGHT_MODE_FORCE)
-    force_paintOver();
-    #elif defined(AGE_LIGHT_MODE_CUSTOM)
-    paintOver();
-    #elif defined(AGE_RENDERING_MODE_FORWARD) && defined(AGE_LIGHT_MODE_PBR)
-    pbr_paintOver();
-    #elif defined(AGE_RENDERING_MODE_FORWARD) && defined(AGE_LIGHT_MODE_PHONG)
-    phong_paintOver();
-    #else
-    age_FragColor = vec4(1.f);
-    #endif
-}
-
 void main()
 {
-    fragmentControl();
-    age_paintOver();
+    material.alpha = 1.;
+    setup();
+
+    #if defined(AGE_LIGHT_MODE_FORCE)
+    force_paintOver();
+    #else
+    paintOver();
+    #endif
 }

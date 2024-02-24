@@ -15,14 +15,12 @@ vec4 vertexProcess()
 
 uniform vec3 emission;
 
-void fragmentControl()
+void setup()
 {
-    age_base_color = emission;
-}
-#define AGE_LIGHT_MODE_CUSTOM
-void paintOver()
-{
-	age_FragColor = vec4(age_base_color, 1.f);
+    material.normal = normalize(fragTBN[2]);
+    material.roughness = 0.1;
+    material.metallic = 0.;
+    material.emission = emission;
 }
 
 #endif

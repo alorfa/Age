@@ -23,17 +23,23 @@ struct SpotLight
     float sourceRadius, attOffset, maxDist;
 };
 
+struct ViewContext
+{
+    vec3 V, R;
+    float NV;
+};
 struct LightContext
 {
     float NL, NH, HV, falloff; 
 };
 
-uniform vec3 cameraPos;
-
-vec3 age_emission, age_base_color, age_specular, age_normal;
-float age_metalness, age_roughness, age_shininess, age_alpha = 1.;
-
-vec3 age_V, age_R;
+struct Material
+{
+    vec3 base_color, diffuse, specular, normal, emission;
+    float metallic, roughness, alpha;
+};
+Material material;
+ViewContext vc;
 
 float pow2(float v) {
     return v * v;
@@ -55,18 +61,13 @@ PointLight toPointLight(SpotLight light, vec3 fragmentPos)
     float epsilon = light.cutOff - light.outerCutOff; 
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0., 1.); 
     result.color = light.color * intensity;
+    //result.ambient = light.ambient * intensity;
     return result;
 }
 
-vec4 sampleCubemap(samplerCube cubemap, in vec3 texCoord)
-{
-    //vec3 coord = vec3(texCoord.x, -texCoord.z, texCoord.y);
-    //return texture(cubemap, coord);
-    return texture(cubemap, texCoord);
-}
-const vec2 invAtan = vec2(0.1591, 0.3183);
 vec2 sampleSphericalMap(vec3 vec)
 {
+    const vec2 invAtan = vec2(0.1591, 0.3183);
     vec2 uv = vec2(atan(vec.z, vec.x), asin(vec.y));
     return uv * invAtan + 0.5;
 }
@@ -108,12 +109,6 @@ LightContext computeLightData_Point(vec3 Lwl, vec3 L, vec3 V, vec3 N)
     return result;
 }
 
-/*float D_default(float NH, float scatter)
-{
-    float raw = D_GGX(clamp(NH + scatter, 0., 1.));
-    float maxValue = max(D_GGX(1.) * INV_PI, 1.);
-    return raw / maxValue;
-}*/
 /*float D_experiment(vec3 V, vec3 R, vec3 Lwl, vec3 N, float sourceRadius)
 {
     float maxValue = max(D_GGX(1.) * INV_PI, 1.);
@@ -127,24 +122,17 @@ LightContext computeLightData_Point(vec3 Lwl, vec3 L, vec3 V, vec3 N)
     return result;
     return distance(newLwl, Lwl) < sourceRadius ? min(D_GGX(1.), PI) : result;
 }*/
-float geometrySchlickGGX(float cosTheta)
+float G_Smith(float dotNL, float dotNV, float roughness)
 {
-    float r1 = age_roughness + 1.;
-    float k = (r1 * r1) * 0.125;
-
-    float denominator = cosTheta * (1. - k) + k;
-    return cosTheta / denominator;
+    float r1 = roughness + 1.;
+    float k = r1 * r1 * 0.125;
+    float GL = dotNL / (dotNL * (1.0 - k) + k);
+    float GV = dotNV / (dotNV * (1.0 - k) + k);
+    return GL * GV;
 }
-float G_Smith(float NV, float NL)
+float G_SchlickSmithGGX_Indirect(float dotNL, float dotNV, float roughness)
 {
-    float ggx1 = geometrySchlickGGX(NV);
-    float ggx2 = geometrySchlickGGX(NL);
-    
-    return ggx1 * ggx2;
-}
-float G_SchlicksmithGGX(float dotNL, float dotNV, float roughness) //TODO: choose the naming and remove a copy of the method
-{
-    float k = (roughness * roughness) / 2.0;
+    float k = roughness * roughness * 0.5;
     float GL = dotNL / (dotNL * (1.0 - k) + k);
     float GV = dotNV / (dotNV * (1.0 - k) + k);
     return GL * GV;
@@ -159,22 +147,22 @@ vec3 F_Schlick_Indirect(vec3 F0, float NV, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - NV, 0.0, 1.0), 5.0);
 }
 
-float RadicalInverse_VdC(uint bits) 
+float radicalInverse_VdC(uint bits) 
 {
-     bits = (bits << 16u) | (bits >> 16u);
-     bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
-     bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
-     bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
-     bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
-     return float(bits) * 2.3283064365386963e-10; // / 0x100000000
+    bits = (bits << 16u) | (bits >> 16u);
+    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+    return float(bits) * 2.3283064365386963e-10; // / 0x100000000
 }
 
-vec2 Hammersley(uint i, uint N)
+vec2 hammersley(uint i, uint N)
 {
-    return vec2(float(i)/float(N), RadicalInverse_VdC(i));
+    return vec2(float(i)/float(N), radicalInverse_VdC(i));
 }
 
-vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
+vec3 importanceSample_GGX(vec2 Xi, vec3 N, float roughness)
 {
     float a = roughness*roughness;
     
@@ -221,118 +209,87 @@ vec3 screenToLinear(vec3 screenRGB)
     return pow(screenRGB, vec3(2.2));
 }
 
-/*vec3 blinnPhong_computeRay()
-{
-    vec3 diffuse = vec3(0.);
-    vec3 specular = vec3(0.);
-    vec3 ambientCol = vec3(0.);
-
-    vec3 halfv = normalize(age_V + age_ray.dir);
-    float NL = max(dot(age_ray.dir, age_normal), 0.);
-    float NH = pow(max(dot(age_normal, halfv), 0.), age_shininess);
-#ifndef AGE_DISABLE_AMBIENT
-    ambientCol = age_base_color * age_ray.ambient;
-#endif
-#ifndef AGE_DISABLE_DIFFUSE
-    diffuse = age_base_color * NL;
-#endif 
-#ifndef AGE_DISABLE_SPECULAR
-    specular = age_specular * NH;
-#endif
-
-    return (diffuse + specular) * age_ray.color + ambientCol;
-}*/
-vec3 pbr_computeRay(DirLight light)
-{
-    float NV = max(dot(age_normal, age_V), 0.);
-    
-    vec3 R = reflect(-age_V, age_normal);
-    //LightContext c = computeLightData_Point(normalize(Lwl), age_V, age_normal);
-    LightContext c = computeLightData_Sphere(light.dir, age_V, R, age_normal, light.sourceRadius, 1., 1.);
-    //computeLightData_Sphere(L, age_V, age_R, age_normal, light.radius, HV, NH, NL, distSqr);
-    vec3 materialSpec = mix(vec3(0.04), age_base_color, age_metalness);
+vec3 pbr_computeLight(DirLight light)
+{    
+    vec3 R = reflect(-vc.V, material.normal);
+    LightContext c = computeLightData_Sphere(light.dir, vc.V, R, material.normal, light.sourceRadius, 1., 1.);
+    vec3 materialSpec = mix(vec3(0.04), material.base_color, material.metallic);
     vec3 F = F_Schlick(c.HV, materialSpec);
-    vec3 diffColor = (vec3(1.) - F) * (1. - age_metalness);
+    vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
     vec3 finalSpecular = vec3(0.);
     vec3 finalDiffuse = vec3(0.);
+    vec3 finalAmbient = vec3(0.);
 #ifndef AGE_DISABLE_SPECULAR
-    float clampedRoughness = max(age_roughness, 0.03);
+    float clampedRoughness = max(material.roughness, 0.03);
     float DMaxValue = max(D_GGX(1., pow4(clampedRoughness)) * INV_PI, 1.);
     float D = D_GGX(pow2(c.NH), pow4(clampedRoughness)) / DMaxValue;
-    float G = G_Smith(NV, c.NL);
+    float G = G_Smith(vc.NV, c.NL, material.roughness);
 
     vec3 numerator = D * G * F;
-    float denominator = 4. * NV * c.NL + 0.0001;
+    float denominator = 4. * vc.NV * c.NL + 0.0001;
     finalSpecular = numerator / denominator;
 #endif
 #ifndef AGE_DISABLE_DIFFUSE
-    finalDiffuse = diffColor * age_base_color * INV_PI;
+    finalDiffuse = diffColor * material.base_color * INV_PI;
 #endif
-    vec3 directLight = (finalDiffuse + finalSpecular) * light.color * c.NL;
-
-#ifdef AGE_DISABLE_AMBIENT
-    return directLight;
-#else
-    return light.ambient * age_base_color + directLight;
+#ifndef AGE_DISABLE_AMBIENT
+    finalAmbient = light.ambient * material.base_color;
 #endif
+    return (finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient;
 }
 
-vec3 pbr_computeRay(PointLight light, vec3 fragmentPos)
-{
-    float NV = max(dot(age_normal, age_V), 0.);
-    
+vec3 pbr_computeLight(PointLight light, vec3 fragmentPos)
+{    
     vec3 Lwl = light.pos - fragmentPos;
-    vec3 R = reflect(-age_V, age_normal);
-    //LightContext c = computeLightData_Point(normalize(Lwl), age_V, age_normal);
-    LightContext c = computeLightData_Sphere(Lwl, age_V, R, age_normal, light.sourceRadius, light.maxDist, light.attOffset);
-    //computeLightData_Sphere(L, age_V, age_R, age_normal, light.radius, HV, NH, NL, distSqr);
-    vec3 materialSpec = mix(vec3(0.04), age_base_color, age_metalness);
+    LightContext c = computeLightData_Sphere(Lwl, vc.V, vc.R, material.normal, light.sourceRadius, light.maxDist, light.attOffset);
+    vec3 materialSpec = mix(vec3(0.04), material.base_color, material.metallic);
     vec3 F = F_Schlick(c.HV, materialSpec);
-    vec3 diffColor = (vec3(1.) - F) * (1. - age_metalness);
+    vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
     vec3 finalSpecular = vec3(0.);
     vec3 finalDiffuse = vec3(0.);
 #ifndef AGE_DISABLE_SPECULAR
-    float clampedRoughness = max(age_roughness, 0.03);
+    float clampedRoughness = max(material.roughness, 0.03);
     float r4 = pow4(clampedRoughness);
     float DMaxValue = max(D_GGX(1., r4) * INV_PI, 1.);
     float D = D_GGX(pow2(c.NH), r4) / DMaxValue;
-    float G = G_Smith(NV, c.NL);
+    float G = G_Smith(vc.NV, c.NL, material.roughness);
 
     vec3 numerator = D * G * F;
-    float denominator = 4. * NV * c.NL + 0.0001;
+    float denominator = 4. * vc.NV * c.NL + 0.0001;
     finalSpecular = numerator / denominator;
 #endif
 #ifndef AGE_DISABLE_DIFFUSE
-    finalDiffuse = diffColor * age_base_color * INV_PI;
+    finalDiffuse = diffColor * material.base_color * INV_PI;
 #endif
     vec3 directLight = (finalDiffuse + finalSpecular) * light.color * c.NL;
 
 #ifdef AGE_DISABLE_AMBIENT
     return directLight * c.falloff;
 #else
-    return (light.ambient * age_base_color + directLight) * c.falloff;
+    return (light.ambient * material.base_color + directLight) * c.falloff;
 #endif
 }
 
-
-vec3 pbr_computeRay(samplerCube difMap, samplerCube specMap, sampler2D brdfLut, float maxLod)
+vec3 pbr_computeLight(samplerCube difMap, samplerCube specMap, sampler2D brdfLut, float maxLod)
 {
-    vec3 R = reflect(-age_V, age_normal);
+    vec3 F0 = mix(vec3(0.04), material.base_color, material.metallic);
+    vec3 F = F_Schlick_Indirect(F0, vc.NV, material.roughness);
+    vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
 
-    float NV = max(0., dot(age_V, age_normal));
-
-    vec3 F0 = mix(vec3(0.04), age_base_color, age_metalness);
-    vec3 F = F_Schlick_Indirect(F0, NV, age_roughness);
-    vec3 diffColor = (vec3(1.) - F) * (1. - age_metalness);
-
-    vec3 difIndirect = texture(difMap, age_normal).rgb;
-    vec3 specIndirect = textureLod(specMap, R, age_roughness * maxLod).rgb;
-    vec2 brdfValue = texture(brdfLut, vec2(NV, age_roughness)).xy;
+    vec3 difIndirect = texture(difMap, material.normal).rgb;
+    vec3 specIndirect = textureLod(specMap, vc.R, material.roughness * maxLod).rgb;
+    vec2 brdfValue = texture(brdfLut, vec2(vc.NV, material.roughness)).xy;
 
     vec3 specResult = specIndirect * (F * brdfValue.x + brdfValue.y);
-    vec3 difResult = difIndirect * diffColor * age_base_color;
+    vec3 difResult = difIndirect * diffColor * material.base_color;
     return difResult + specResult;
 }
 
-#define LIGHT_SETUP(fragmentPos) age_V = normalize(cameraPos - fragmentPos); \
-age_R = reflect(-age_V, age_normal)
+void initViewContext(vec3 fragmentPos, vec3 cameraPos)
+{
+    vc.V = normalize(cameraPos - fragmentPos);
+    vc.R = reflect(-vc.V, material.normal);
+    vc.NV = max(0., dot(vc.V, material.normal));
+}
+#define LIGHTING_MODEL pbr_computeLight
+#line 1
