@@ -24,7 +24,7 @@ namespace a_game_engine
 	{
 		size = newSize;
 		Sampler2DInfo sampler{ TextureFiltering::Near };
-		ImageInfo info{newSize, TextureFormat::RGB_Float16};
+		ImageInfo info{newSize, TextureFormat::RGB_F16};
 		ImageInfo depthInfo{newSize, TextureFormat::Depth24};
 		//mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
 		Texture2D::Settings colorSettings{ info, TextureFormat::Auto, sampler, -1 };

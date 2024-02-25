@@ -10,6 +10,7 @@ namespace a_game_engine
 	{
 		uint _id = 0;
 		uint _size = 0;
+		TextureFormat _format = TextureFormat::Undefined;
 	public:
 		struct Settings
 		{
@@ -21,7 +22,7 @@ namespace a_game_engine
 			int mipmaps;
 
 			Settings(const ImageInfo* images, uint size,
-				TextureFormat format = TextureFormat::SRGB, const SamplerCubeInfo& sampler = {},
+				TextureFormat format = TextureFormat::S_RGB, const SamplerCubeInfo& sampler = {},
 				int mipmaps = -1);
 		};
 		struct PanoramaSettings
@@ -46,8 +47,8 @@ namespace a_game_engine
 		void destroy();
 		void create(const Settings& s);
 		void createFromPanorama(const PanoramaSettings& s);
-		void createSpecularMap(const CubeMap& cubemap, TextureFormat format = TextureFormat::RGB_Float16);
-		void createDiffuseMap(const CubeMap& cubemap, uint size = 32, TextureFormat format = TextureFormat::RGB_Float16);
+		void createSpecularMap(const CubeMap& cubemap, TextureFormat format = TextureFormat::RGB_F16);
+		void createDiffuseMap(const CubeMap& cubemap, uint size = 32, TextureFormat format = TextureFormat::RGB_F16);
 		void activate(int number = 0) const;
 
 		void setWrap(TextureWrap x, TextureWrap y, TextureWrap z);
@@ -60,6 +61,7 @@ namespace a_game_engine
 
 		inline uint getId() const { return _id; }
 		inline uint getSize() const { return _size; }
+		inline TextureFormat getFormat() const { return _format; }
 	};
 
 	struct EnvCubeMap

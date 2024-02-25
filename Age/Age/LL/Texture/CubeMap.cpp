@@ -41,9 +41,12 @@ namespace a_game_engine
 		destroy();
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &_id);
 
+		const auto internalFormat = s.images ? TexEnums::chooseInternalFormat(s.images[0].format, s.format) : s.format;
+		_format = internalFormat;
 		_size = s.size;
+		
+		glTextureStorage2D(_id, s.mipmaps, TexEnums::toOglFormat(internalFormat), _size, _size);
 
-		glTextureStorage2D(_id, s.mipmaps, TexEnums::toOglFormat(s.format), _size, _size);
 		setWrap(s.sampler.wrapX, s.sampler.wrapY, s.sampler.wrapZ);
 		setFiltering(s.sampler.min, s.sampler.mag);
 		if (s.images == nullptr)
@@ -83,7 +86,8 @@ namespace a_game_engine
 
 		auto& shader = egd.shaders.loadRaw(egd.res / "shader/CubeMapFromPanorama.rasl");
 
-		CubeMap::Settings cubeSettings{ nullptr, s.size, s.format, s.sampler, s.mipmaps };
+		const auto internalFormat = TexEnums::chooseInternalFormat(s.panorama->getFormat(), s.format);
+		CubeMap::Settings cubeSettings{ nullptr, s.size, internalFormat, s.sampler, s.mipmaps };
 		
 		create(cubeSettings);
 
@@ -106,7 +110,8 @@ namespace a_game_engine
 	}
 	void CubeMap::createSpecularMap(const CubeMap& cubemap, TextureFormat format)
 	{
-		create({ nullptr, cubemap.getSize(), format });
+		const auto internalFormat = TexEnums::chooseInternalFormat(cubemap.getFormat(), format);
+		create({ nullptr, cubemap.getSize(), internalFormat });
 		const uint maxMipLevel = TexEnums::computeMipLevels(cubemap.getSize()) - 1;
 
 		const vec3 x = { 1.f, 0.f, 0.f };
@@ -157,8 +162,9 @@ namespace a_game_engine
 	}
 	void CubeMap::createDiffuseMap(const CubeMap& cubemap, uint size, TextureFormat format)
 	{
+		const auto internalFormat = TexEnums::chooseInternalFormat(cubemap.getFormat(), format);
 		SamplerCubeInfo sampler = { TextureFiltering::Linear };
-		Settings s = { nullptr, size, format, sampler, 1 };
+		Settings s = { nullptr, size, internalFormat, sampler, 1 };
 		create(s);
 
 		const vec3 x = { 1.f, 0.f, 0.f };

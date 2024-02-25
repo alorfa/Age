@@ -65,7 +65,7 @@ namespace a_game_engine
 				info[i].data = img.info.data;
 				info[i].format = img.info.format;
 			}
-			CubeMap::Settings settings{ info, img.info.size.y, TextureFormat::SRGB,
+			CubeMap::Settings settings{ info, img.info.size.y, TextureFormat::S_RGB,
 				SamplerCubeInfo{TextureFiltering::Near}, 1 };
 			defCubemap = std::make_unique<CubeMap>();
 			defCubemap->create(settings);
@@ -84,7 +84,7 @@ namespace a_game_engine
 				info[i].data = img.info.data;
 				info[i].format = img.info.format;
 			}
-			CubeMap::Settings settings{ info, img.info.size.y, TextureFormat::SRGB,
+			CubeMap::Settings settings{ info, img.info.size.y, TextureFormat::S_RGB,
 				SamplerCubeInfo{TextureFiltering::Near}, 1 };
 			defEnvCubemap = std::make_unique<EnvCubeMap>();
 			defEnvCubemap->specular.create(settings);
@@ -97,6 +97,10 @@ namespace a_game_engine
 		: specularFormat(specularFormat), diffuseFormat(diffuseFormat), tempFormat(tempFormat),
 		srgb(srgb), specularSize(specularSize), diffuseSize(diffuseSize)
 	{}
+	CubeMapLoader::Settings::Settings(TextureFormat format, bool srgb, uint specularSize, uint diffuseSize)
+		: specularFormat(format), diffuseFormat(format), tempFormat(format), srgb(srgb),
+		specularSize(specularSize), diffuseSize(diffuseSize)
+	{}
 	bool CubeMapLoader::RawSettings::hasMipmaps() const
 	{
 		if (mipmaps == MipmapSettings::Disable)
@@ -107,9 +111,4 @@ namespace a_game_engine
 
 		return sampler.min >= TextureFiltering::Linear_MipLinear && sampler.min <= TextureFiltering::Near_MipNear;
 	}
-	/*CubeMapLoader::EnvCubeMapSettings::EnvCubeMapSettings(TextureFormat format, bool srgb,
-		uint specularSize, uint diffuseSize)
-	{
-
-	}*/
 }

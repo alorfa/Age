@@ -23,7 +23,7 @@ namespace a_game_engine
 			bool srgb;
 
 			inline RawSettings(const SamplerCubeInfo& sampler = SamplerCubeInfo{},
-				TextureFormat format = TextureFormat::SRGB, uint size = 0,
+				TextureFormat format = TextureFormat::S_RGB, uint size = 0,
 				MipmapSettings mipmaps = MipmapSettings::Auto, bool srgb = true)
 				: sampler(sampler), format(format), size(size), mipmaps(mipmaps), srgb(srgb) {}
 
@@ -38,13 +38,12 @@ namespace a_game_engine
 
 			Settings(TextureFormat specularFormat, TextureFormat diffuseFormat, TextureFormat tempFormat,
 				bool srgb = true, uint specularSize = 0, uint diffuseSize = 32);
-			//Settings(TextureFormat format, bool srgb = true, 
-			//	uint specularSize = 0, uint diffuseSize = 32);
+			Settings(TextureFormat format = TextureFormat::Auto, bool srgb = true, uint specularSize = 0, uint diffuseSize = 32);
 		};
 
 		static std::unique_ptr<CubeMap> readFromFile(const std::filesystem::path& path, const RawSettings& s = {});
 		const CubeMap& loadRaw(const std::filesystem::path& path, const RawSettings& s = {});
-		const EnvCubeMap& load(const std::filesystem::path& path, const Settings& s);
+		const EnvCubeMap& load(const std::filesystem::path& path, const Settings& s = {});
 
 		static CubeMap& getDefaultCubeMap();
 		static EnvCubeMap& getDefaultEnvCubeMap();

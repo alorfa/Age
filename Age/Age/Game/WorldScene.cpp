@@ -66,7 +66,7 @@ namespace a_game
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		objs[4]->addComponent<RotateComp>()
-			.init(vec3(-2.f, 1.5f, -3.5f), vec3(-3.f, 3.f, 0.f), 0.5f);
+			.init(vec3(-2.f, 1.5f, -1.5f), vec3(-3.f, 3.f, 0.f), 0.5f);
 
 		if (!indirect_light_test)
 		{
@@ -106,10 +106,9 @@ namespace a_game
 		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
 		objs[4]->changeTransform().changeScale() *= 0.1f;
 
-		CubeMapLoader::Settings envs = { TextureFormat::RGB_Float16, TextureFormat::RGB_Float16, TextureFormat::RGB_Float16, true };
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
-		env = &egd.cubemaps.load(egd.res / "img/skybox.jpg", envs);
+		env = &egd.cubemaps.load(egd.res / "img/skybox.jpg");
 		skyBox.cubemap = &env->specular;
 
 		for (uint i = 0; i < 11; i++)

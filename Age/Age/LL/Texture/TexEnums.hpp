@@ -11,11 +11,15 @@ namespace a_game_engine
 	};
 	enum class TextureFormat
 	{
-		Undefined = 0, R = 1, RG, RGB, RGBA,
-		RGB_Float16, RGBA_Float16, RGB_Float32, RGBA_Float32,
-		SRGB, SRGB_Alpha, 
+		Undefined = 0, 
+		R_8 = 1, RG_8, RGB_8, RGBA_8,
+		R_F16, RG_F16, RGB_F16, RGBA_F16, 
+		R_F32, RG_F32, RGB_F32, RGBA_F32,
+		S_R, S_RG, S_RGB, S_RGBA,
+		RGB_11_11_10,
 		Depth16, Depth24, Depth32, Depth24_Stencil8,
-		Auto, AutoSRGB
+		Auto, AutoSRGB, AutoQuality, AutoSize,
+		R = R_8, RG = RG_8, RGB = RGB_8, RGBA = RGBA_8
 	};
 	enum class TextureFiltering
 	{
@@ -30,15 +34,15 @@ namespace a_game_engine
 	class TexEnums
 	{
 	public:
-		static int toOglFormat(TextureFormat);
-		static void toOglOuterFormat(TextureFormat f, int& format, int& type);
 		static TextureFormat chooseInternalFormat(TextureFormat imgFormat, TextureFormat texFormat);
 		static TextureFiltering removeMipmaps(TextureFiltering);
+		static int toOglFormat(TextureFormat);
+		static void toOglOuterFormat(TextureFormat f, int& format, int& type);
 		static int toOglFilter(TextureFiltering);
 		static int toOglWrap(TextureWrap);
 		static int toOglType(TextureDataType);
-		static TextureFormat toSRGB(TextureFormat);
 		static int getComponentsCount(TextureFormat);
+		static int getSizeInBits(TextureFormat);
 		static int computeMipLevels(uint maxSize);
 		static int computeMipLevels(uvec2 size);
 	};

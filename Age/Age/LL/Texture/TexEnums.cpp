@@ -4,30 +4,116 @@
 
 namespace a_game_engine
 {
+	TextureFiltering TexEnums::removeMipmaps(TextureFiltering f)
+	{
+		switch (f)
+		{
+		case TextureFiltering::Linear:
+		case TextureFiltering::Linear_MipLinear:
+		case TextureFiltering::Linear_MipNear:
+			return TextureFiltering::Linear;
+		}
+		return TextureFiltering::Near;
+	}
+	TextureFormat TexEnums::chooseInternalFormat(TextureFormat imgFormat, TextureFormat texFormat)
+	{
+		if (texFormat != TextureFormat::Auto &&
+			texFormat != TextureFormat::AutoSRGB &&
+			texFormat != TextureFormat::AutoQuality &&
+			texFormat != TextureFormat::AutoSize)
+			return texFormat;
+
+		if (texFormat == TextureFormat::AutoSRGB)
+		{
+			int comps = TexEnums::getComponentsCount(imgFormat);
+			if (comps == 4)
+				return TextureFormat::S_RGBA;
+			return TextureFormat::S_RGB;
+		}
+		if (texFormat == TextureFormat::AutoQuality)
+		{
+			return imgFormat;
+		}
+		if (texFormat == TextureFormat::Auto)
+		{
+			if (TexEnums::getSizeInBits(imgFormat) <= 16)
+				return imgFormat;
+			
+			switch (TexEnums::getComponentsCount(imgFormat))
+			{
+			case 1:
+				return TextureFormat::R_F16;
+			case 2:
+				return TextureFormat::RG_F16;
+			case 3:
+				return TextureFormat::RGB_F16;
+			case 4:
+				return TextureFormat::RGBA_F16;
+			}
+		}
+		if (texFormat == TextureFormat::AutoSize)
+		{
+			if (TexEnums::getSizeInBits(imgFormat) <= 12)
+				return imgFormat;
+			
+			switch (TexEnums::getComponentsCount(imgFormat))
+			{
+			case 1:
+				return TextureFormat::R_F16;
+			case 2:
+				return TextureFormat::RG_F16;
+			case 3:
+				return TextureFormat::RGB_11_11_10;
+			case 4:
+				return TextureFormat::RGBA_F16;
+			}
+		}
+		return imgFormat;
+	}
+
     int TexEnums::toOglFormat(TextureFormat f)
     {
 		switch (f)
 		{
-		case TextureFormat::R:
+		case TextureFormat::R_8:
 			return GL_R8;
-		case TextureFormat::RG:
+		case TextureFormat::RG_8:
 			return GL_RG8;
-		case TextureFormat::RGB:
+		case TextureFormat::RGB_8:
 			return GL_RGB8;
-		case TextureFormat::RGBA:
+		case TextureFormat::RGBA_8:
 			return GL_RGBA8;
-		case TextureFormat::RGB_Float16:
+
+		case TextureFormat::R_F16:
+			return GL_R16F;
+		case TextureFormat::RG_F16:
+			return GL_RG16F;
+		case TextureFormat::RGB_F16:
 			return GL_RGB16F;
-		case TextureFormat::RGBA_Float16:
+		case TextureFormat::RGBA_F16:
 			return GL_RGBA16F;
-		case TextureFormat::RGB_Float32:
+
+		case TextureFormat::R_F32:
+			return GL_R32F;
+		case TextureFormat::RG_F32:
+			return GL_RG32F;
+		case TextureFormat::RGB_F32:
 			return GL_RGB32F;
-		case TextureFormat::RGBA_Float32:
+		case TextureFormat::RGBA_F32:
 			return GL_RGBA32F;
-		case TextureFormat::SRGB:
+
+		case TextureFormat::S_R:
+			return GL_SR8_EXT;
+		case TextureFormat::S_RG:
+			return GL_SRG8_EXT;
+		case TextureFormat::S_RGB:
 			return GL_SRGB8;
-		case TextureFormat::SRGB_Alpha:
+		case TextureFormat::S_RGBA:
 			return GL_SRGB8_ALPHA8;
+
+		case TextureFormat::RGB_11_11_10:
+			return GL_R11F_G11F_B10F;
+
 		case TextureFormat::Depth16:
 			return GL_DEPTH_COMPONENT16;
 		case TextureFormat::Depth24:
@@ -50,15 +136,19 @@ namespace a_game_engine
 		case TextureFormat::RGBA:
 			type = GL_UNSIGNED_BYTE; 
 			break;
-		case TextureFormat::RGB_Float16:
-		case TextureFormat::RGBA_Float16:
+		case TextureFormat::R_F16:
+		case TextureFormat::RG_F16:
+		case TextureFormat::RGB_F16:
+		case TextureFormat::RGBA_F16:
 			type = GL_HALF_FLOAT; 
 			break;
-		case TextureFormat::RGB_Float32:
-		case TextureFormat::RGBA_Float32:
+		case TextureFormat::R_F32:
+		case TextureFormat::RG_F32:
+		case TextureFormat::RGB_F32:
+		case TextureFormat::RGBA_F32:
 			type = GL_FLOAT; 
 			break;
-		case TextureFormat::Depth24_Stencil8:
+		case TextureFormat::Depth24_Stencil8: //TODO: is it really need for depth formats?
 			type = GL_UNSIGNED_INT_24_8;
 			break;
 		case TextureFormat::Depth16:
@@ -70,19 +160,31 @@ namespace a_game_engine
 
 		switch (f)
 		{
+		case TextureFormat::R:
+		case TextureFormat::R_F16:
+		case TextureFormat::R_F32:
+		case TextureFormat::S_R:
+			format = GL_RED;
+			break;
+		case TextureFormat::RG:
+		case TextureFormat::RG_F16:
+		case TextureFormat::RG_F32:
+		case TextureFormat::S_RG:
+			format = GL_RG;
+			break;
 		case TextureFormat::RGB:
-		case TextureFormat::SRGB:
-		case TextureFormat::RGB_Float16:
-		case TextureFormat::RGB_Float32:
+		case TextureFormat::RGB_F16:
+		case TextureFormat::RGB_F32:
+		case TextureFormat::S_RGB:
 			format = GL_RGB;
 			break;
 		case TextureFormat::RGBA:
-		case TextureFormat::SRGB_Alpha:
-		case TextureFormat::RGBA_Float16:
-		case TextureFormat::RGBA_Float32:
+		case TextureFormat::RGBA_F16:
+		case TextureFormat::RGBA_F32:
+		case TextureFormat::S_RGBA:
 			format = GL_RGBA;
 			break;
-		case TextureFormat::Depth24_Stencil8:
+		case TextureFormat::Depth24_Stencil8: //TODO: is it necessary?
 			format = GL_DEPTH_STENCIL;
 			break;
 		case TextureFormat::Depth16:
@@ -90,42 +192,9 @@ namespace a_game_engine
 		case TextureFormat::Depth32:
 			format = GL_DEPTH_COMPONENT;
 			break;
-		case TextureFormat::R:
-			format = GL_RED;
-			break;
-		case TextureFormat::RG:
-			format = GL_RG;
-			break;
 		default:
 			format = GL_RGB;
 		}
-	}
-
-	TextureFormat TexEnums::chooseInternalFormat(TextureFormat imgFormat, TextureFormat texFormat)
-	{
-		if (texFormat != TextureFormat::Auto && texFormat != TextureFormat::AutoSRGB)
-			return texFormat;
-
-		if (texFormat == TextureFormat::AutoSRGB)
-		{
-			int comps = TexEnums::getComponentsCount(imgFormat);
-			if (comps == 4)
-				return TextureFormat::SRGB_Alpha;
-			return TextureFormat::SRGB;
-		}
-		return imgFormat;
-	}
-
-	TextureFiltering TexEnums::removeMipmaps(TextureFiltering f)
-	{
-		switch (f)
-		{
-		case TextureFiltering::Linear:
-		case TextureFiltering::Linear_MipLinear:
-		case TextureFiltering::Linear_MipNear:
-			return TextureFiltering::Linear;
-		}
-		return TextureFiltering::Near;
 	}
 
     int TexEnums::toOglFilter(TextureFiltering f)
@@ -173,39 +242,66 @@ namespace a_game_engine
 		}
 		return GL_UNSIGNED_BYTE;
     }
-	TextureFormat TexEnums::toSRGB(TextureFormat f)
-	{
-		int comps = getComponentsCount(f);
-		switch (comps)
-		{
-		case 4:
-			return TextureFormat::SRGB_Alpha;
-		case 3:
-			return TextureFormat::SRGB;
-		}
-		return f;
-	}
+
 	int TexEnums::getComponentsCount(TextureFormat f)
 	{
 		switch (f)
 		{
 		case TextureFormat::R:
+		case TextureFormat::R_F16:
+		case TextureFormat::R_F32:
+		case TextureFormat::S_R:
+		case TextureFormat::Depth16:
+		case TextureFormat::Depth24:
+		case TextureFormat::Depth32:
 			return 1;
 		case TextureFormat::RG:
+		case TextureFormat::RG_F16:
+		case TextureFormat::RG_F32:
+		case TextureFormat::S_RG:
 		case TextureFormat::Depth24_Stencil8:
 			return 2;
-		case TextureFormat::SRGB:
 		case TextureFormat::RGB:
-		case TextureFormat::RGB_Float16:
-		case TextureFormat::RGB_Float32:
+		case TextureFormat::RGB_F16:
+		case TextureFormat::RGB_F32:
+		case TextureFormat::S_RGB:
+		case TextureFormat::RGB_11_11_10:
 			return 3;
-		case TextureFormat::SRGB_Alpha:
 		case TextureFormat::RGBA:
-		case TextureFormat::RGBA_Float16:
-		case TextureFormat::RGBA_Float32:
+		case TextureFormat::RGBA_F16:
+		case TextureFormat::RGBA_F32:
+		case TextureFormat::S_RGBA:
 			return 4;
 		}
 		return 0;
+	}
+	int TexEnums::getSizeInBits(TextureFormat f)
+	{
+		switch (f)
+		{
+		case TextureFormat::R:
+		case TextureFormat::RG:
+		case TextureFormat::RGB:
+		case TextureFormat::RGBA:
+			return 8;
+		case TextureFormat::R_F16:
+		case TextureFormat::RG_F16:
+		case TextureFormat::RGB_F16:
+		case TextureFormat::RGBA_F16:
+		case TextureFormat::Depth16:
+			return 16;
+		case TextureFormat::R_F32:
+		case TextureFormat::RG_F32:
+		case TextureFormat::RGB_F32:
+		case TextureFormat::RGBA_F32:
+		case TextureFormat::Depth32:
+			return 32;
+		case TextureFormat::RGB_11_11_10:
+			return 11;
+		case TextureFormat::Depth24:
+			return 24;
+		}
+		return 8;
 	}
 	int TexEnums::computeMipLevels(uint maxSize)
 	{

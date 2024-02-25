@@ -32,10 +32,10 @@ namespace a_game_engine
 	void DeferredRenderer::updateSize(const uvec2& newSize)
 	{
 		size = newSize;
-		ImageInfo baseColorRGB_RoughnessA{ newSize, TextureFormat::RGBA_Float16 },
-			normalRGB_MetalnessA{ newSize, TextureFormat::RGBA_Float16 },
-			posRGB{ newSize, TextureFormat::RGB_Float32 },
-			screenRGB{ newSize, TextureFormat::RGB_Float16 },
+		ImageInfo baseColorRGB_RoughnessA{ newSize, TextureFormat::RGBA_F16 },
+			normalRGB_MetalnessA{ newSize, TextureFormat::RGBA_F16 },
+			posRGB{ newSize, TextureFormat::RGB_F32 },
+			screenRGB{ newSize, TextureFormat::RGB_F16 },
 			depthStencil{ newSize, TextureFormat::Depth24_Stencil8 };
 
 		Sampler2DInfo sampler = { TextureFiltering::Near };
