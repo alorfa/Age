@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm;D:\libs\assimp2\assimp\include;D:\libs\assimp2\assimp\myBuild\include;D:\libs\tinyexr-release;D:\libs\tinyexr-release\deps\miniz</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Age;$(SolutionDir)Age\external\header</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,14 +161,14 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm;D:\libs\assimp2\assimp\include;D:\libs\assimp2\assimp\myBuild\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Age;$(SolutionDir)Age\external\header</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)externallib64\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)external\lib64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32s.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-window-s.lib;sfml-system-s.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
