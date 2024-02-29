@@ -20,7 +20,8 @@ uniform float metalic, roughness;
 
 void setup()
 {
-    material.base_color = vec3(1., 0.3, 0.2);
+    //material.base_color = vec3(1., 0.3, 0.2);
+    material.base_color = vec3(0.1, 0.4, 0.9);
     material.normal = normalize(fragTBN[2]);
     material.roughness = metalic;
     material.metallic = roughness;

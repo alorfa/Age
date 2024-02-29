@@ -17,6 +17,7 @@ uniform vec3 emission;
 
 void setup()
 {
+	material.base_color = vec3(0.4);
     material.normal = normalize(fragTBN[2]);
     material.roughness = 0.1;
     material.metallic = 0.;

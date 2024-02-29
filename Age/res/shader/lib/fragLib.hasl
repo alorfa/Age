@@ -53,7 +53,7 @@ PointLight toPointLight(SpotLight light, vec3 fragmentPos)
 {
     PointLight result;
     result.pos = light.pos;
-    result.ambient = light.ambient;
+    //result.ambient = light.ambient;
     result.sourceRadius = light.sourceRadius;
     result.attOffset = light.attOffset;
     result.maxDist = light.maxDist;
@@ -61,7 +61,7 @@ PointLight toPointLight(SpotLight light, vec3 fragmentPos)
     float epsilon = light.cutOff - light.outerCutOff; 
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0., 1.); 
     result.color = light.color * intensity;
-    //result.ambient = light.ambient * intensity;
+    result.ambient = light.ambient * intensity;
     return result;
 }
 
@@ -294,5 +294,15 @@ void initViewContext(vec3 fragmentPos, vec3 cameraPos)
     vc.R = reflect(-vc.V, material.normal);
     vc.NV = max(0., dot(vc.V, material.normal));
 }
+
+vec3 learnopenglTonemap(vec3 x)
+{
+    return vec3(1.) - exp(-x);
+}
+vec3 reinhardTonemap(vec3 x)
+{
+    return x / (x + vec3(1.));
+}
+
 #define LIGHTING_MODEL pbr_computeLight
 #line 1

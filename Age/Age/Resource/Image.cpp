@@ -1,23 +1,92 @@
 #include "Image.hpp"
+#define TINYEXR_IMPLEMENTATION
+#include "tinyexr.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 #include "Age/Resource/File.hpp"
 
 namespace a_game_engine
 {
+	bool Image::loadExr(const ubyte* data, int size)
+	{
+		const char* err = nullptr;
+		EXRHeader header;
+		InitEXRHeader(&header); 
+		EXRVersion version;
+		int versionresult = ParseEXRVersionFromMemory(&version, data, size);
+		if (versionresult)
+			return false;
+
+		EXRImage img;
+		InitEXRImage(&img);
+		int headerResult = ParseEXRHeaderFromMemory(&header, &version, data, size, &err);
+		const int channels = header.num_channels;
+		FreeEXRHeader(&header);
+		if (headerResult)
+		{
+			if (err)
+				FreeEXRErrorMessage(err);
+			return false;
+		}
+		if (channels == 0 or channels > 4)
+			return false;
+
+		float* imageData = nullptr;
+		uint* x = &info.size.x;
+		uint* y = &info.size.y;
+		int loadResult = LoadEXRFromMemory(&imageData, (int*)x, (int*)y, data, size, &err);
+		info.data = (ubyte*)imageData;
+		if (loadResult)
+		{
+			if (err)
+				FreeEXRErrorMessage(err);
+			return false;
+		}
+		switch (channels)
+		{
+		case 1:
+			info.format = TextureFormat::R_F32; break;
+		case 2:
+			info.format = TextureFormat::RG_F32; break;
+		case 3:
+			info.format = TextureFormat::RGB_F32; break;
+		case 4:
+			info.format = TextureFormat::RGBA_F32; break;
+		}
+		return true;
+	}
+	bool Image::loadHdr(const ubyte* data, int size)
+	{
+		return false;
+	}
+	bool Image::loadTiff(const ubyte* data, int size)
+	{
+		return false;
+	}
+	bool Image::loadOthers(const ubyte* data, int size)
+	{
+		stbi_set_flip_vertically_on_load(true);
+		clear();
+		int components, x, y;
+		info.data = stbi_load_from_memory(data, size, &x, &y, &components, 0); //TODO: log if null
+		if (info.data == nullptr)
+			return false;
+
+		info.size.x = (uint)x;
+		info.size.y = (uint)y;
+		info.format = TextureFormat(components);
+		return true;
+	}
+
 	Image::~Image()
 	{
 		clear();
 	}
 	void Image::loadFromMemory(const ubyte* data, int size)
 	{
-		stbi_set_flip_vertically_on_load(true);
-		clear();
-		int components, x, y;
-		info.data = stbi_load_from_memory(data, size, &x, &y, &components, 0); //TODO: log if null
-		info.size.x = (uint)x;
-		info.size.y = (uint)y;
-		info.format = TextureFormat(components);
+		if (loadExr(data, size))
+			return;
+		loadOthers(data, size);
 	}
 	void Image::loadFromFile(const std::filesystem::path& path)
 	{

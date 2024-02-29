@@ -27,6 +27,8 @@ void paintOver()
 	vec2 uv = sampleSphericalMap(normalize(fragPos));
 	vec3 result = texture(panorama, uv).rgb;
 	result = srgb ? screenToLinearPrecise(result) : result;
+	//result = result / (result + vec3(1.)); //for tests
+	result = clamp(result, vec3(0.), vec3(10.));
 	age_FragColor = vec4(result, 1.);
 }
 

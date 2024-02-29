@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm;D:\libs\assimp2\assimp\include;D:\libs\assimp2\assimp\myBuild\include;D:\libs\tinyexr-release</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\libs\freetype\include;D:\libs\_sources\glew-2.1.0\include;D:\libs\stb_libs;$(SolutionDir)Age;D:\libs\SFML-2.5.1\include;D:\libs\glm;D:\libs\assimp2\assimp\include;D:\libs\assimp2\assimp\myBuild\include;D:\libs\tinyexr-release;D:\libs\tinyexr-release\deps\miniz</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -238,6 +238,7 @@
     <ClInclude Include="TestGame.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\libs\tinyexr-release\deps\miniz\miniz.c" />
     <ClCompile Include="Age\Application.cpp" />
     <ClCompile Include="Age\Components\LightComponents.cpp" />
     <ClCompile Include="Age\Components\MeshComponent.cpp" />

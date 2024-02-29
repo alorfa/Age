@@ -22,7 +22,7 @@ void setup()
     material.base_color = texture(baseColorMap, fragUv).rgb;
     material.normal = normalize(fragTBN[2]);
     material.metallic = 0.1;
-    material.roughness = 0.05;
+    material.roughness = 0.2;
 }
 
 #endif

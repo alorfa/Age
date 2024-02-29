@@ -7,6 +7,6 @@ uniform float exposure = 1.0;
 void main()
 {
     vec3 inColor = texture(tex, uv).rgb;
-    vec3 mappedColor = vec3(1.0) - exp(-inColor * exposure);
+    vec3 mappedColor = learnopenglTonemap(inColor * exposure);
     FragColor = vec4(linearToScreen(mappedColor), 1.0f);
 }

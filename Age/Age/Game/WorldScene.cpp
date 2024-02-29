@@ -42,18 +42,18 @@ namespace a_game
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(*objs[3], lightShader);
-		MeshComponent::setShader(*objs[4], lightShader);
-		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
+		MeshComponent::setShader(*objs[4], lightShader); 
+		objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
 		const bool one_light_test = false;
-		const bool indirect_light_test = false;
+		const bool indirect_light_test = true;
 
 		vec2 floorPositions[3][3] = {
 			{vec2{-10.f, -10.f}, vec2{-10.f, 0.f}, vec2{-10.f, 10.f}},
 			{vec2{0.f, -10.f}, vec2{0.f, 0.f}, vec2{0.f, 10.f}},
 			{vec2{10.f, -10.f}, vec2{10.f, 0.f}, vec2{10.f, 10.f}}
 		};
-		for (uint i = 0; i < 3; i++)
+		/*for (uint i = 0; i < 3; i++)
 			for (uint j = 0; j < 3; j++)
 			{
 				auto& floor = rootNode->addChild();
@@ -61,7 +61,7 @@ namespace a_game
 					vec3{1.f}, true, false, false, false }));
 				MeshComponent::setShader(floor, egd.shaders.load(egd.res / "shader/floor.asl"));
 				floor.setPosition({ floorPositions[i][j].x, floorPositions[i][j].y, -4.f});
-			}
+			}*/
 
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
@@ -108,7 +108,7 @@ namespace a_game
 
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
-		env = &egd.cubemaps.load(egd.res / "img/skybox.jpg");
+		env = &egd.cubemaps.load(egd.res / "img/skybox1k.exr", CubeMapLoader::Settings{TextureFormat::RGB_11_11_10, false});
 		skyBox.cubemap = &env->specular;
 
 		for (uint i = 0; i < 11; i++)

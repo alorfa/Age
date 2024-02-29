@@ -192,6 +192,7 @@ namespace a_game_engine
 			copyShader.setUniform(copyShader.getLocation("projection"), proj);
 			copyShader.setUniform(copyShader.getLocation("view"), view[i]);
 			copyShader.setUniform(copyShader.getLocation("skybox"), cubemap, 0);
+			copyShader.setUniform(copyShader.getLocation("sampleDelta"), 0.015f);
 			skyboxMesh.meshes[0]->buffer.draw();
 		}
 	}

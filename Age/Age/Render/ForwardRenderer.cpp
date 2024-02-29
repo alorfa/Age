@@ -88,7 +88,7 @@ namespace a_game_engine
 		const vec3 midColor = colorBuffer.getMidColor();
 		const float brightness = vec3::dot(midColor, Math::LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.6f, 0.3f);
-		const float curExp = 0.25f / clampedBr;
+		const float curExp = 0.35f / clampedBr;
 		exposure = Math::smooth(exposure, curExp, delta * 3.f);
 
 		mainFb.useDefault(size);
