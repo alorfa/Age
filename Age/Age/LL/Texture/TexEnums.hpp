@@ -62,6 +62,29 @@ namespace a_game_engine
 				data != nullptr and 
 				format != TextureFormat::Undefined;
 		}
+
+		template <typename T>
+		T& changePixel(uvec2 pos)
+		{
+			T* startData = (T*)data;
+			if (startData == nullptr)
+				return *startData;
+
+			return startData[size.x * pos.y + pos.x];
+		}
+		template <typename T>
+		void swapRows(uint y1, uint y2)
+		{
+			for (uint i = 0; i < size.x; i++)
+			{
+				T& v1 = changePixel<T>({ i, y1 });
+				T& v2 = changePixel<T>({ i, y2 });
+				T temp = v1;
+				v1 = v2;
+				v2 = temp;
+			}
+		}
+		void flipVertically();
 	};
 	struct Sampler2DInfo
 	{

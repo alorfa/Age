@@ -9,18 +9,6 @@
 
 namespace a_game_engine
 {
-	namespace
-	{
-		template <typename T>
-		void tFlipVertically(ImageInfo& info)
-		{
-			for (uint y = 0; y < info.size.y / 2; y++)
-			{
-				Image::swapRows<T>(info, y, info.size.y - 1 - y);
-			}
-		}
-	}
-
 	bool Image::loadExr(const ubyte* data, int size)
 	{
 		const char* err = nullptr;
@@ -67,7 +55,7 @@ namespace a_game_engine
 		case 4:
 			info.format = TextureFormat::RGBA_F32; break;
 		}
-		flipVertically();
+		info.flipVertically();
 		return true;
 	}
 	bool Image::loadHdr(const ubyte* data, int size)
@@ -118,31 +106,5 @@ namespace a_game_engine
 		}
 		info.size.x = info.size.y = 0;
 		info.format = TextureFormat::Undefined;
-	}
-
-	void Image::flipVertically()
-	{
-		if (not info.isValid())
-			return;
-
-		switch (info.format)
-		{
-		case TextureFormat::R_8:
-			tFlipVertically<u8>(info); break;
-		case TextureFormat::RG_8:
-			tFlipVertically<vector2<u8>>(info); break;
-		case TextureFormat::RGB_8:
-			tFlipVertically<vector3<u8>>(info); break;
-		case TextureFormat::RGBA_8:
-			tFlipVertically<vector4<u8>>(info); break;
-		case TextureFormat::R_F32:
-			tFlipVertically<float>(info); break;
-		case TextureFormat::RG_F32:
-			tFlipVertically<vec2>(info); break;
-		case TextureFormat::RGB_F32:
-			tFlipVertically<vec3>(info); break;
-		case TextureFormat::RGBA_F32:
-			tFlipVertically<vec4>(info); break;
-		}
 	}
 }

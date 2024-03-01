@@ -1,9 +1,23 @@
 #include "TexEnums.hpp"
 #include "Age/LL/opengl.h"
 #include <cmath>
+#include "Age/Math/vec3.hpp"
+#include "Age/Math/vec4.hpp"
 
 namespace a_game_engine
 {
+	namespace
+	{
+		template <typename T>
+		void tFlipVertically(ImageInfo& info)
+		{
+			for (uint y = 0; y < info.size.y / 2; y++)
+			{
+				info.swapRows<T>(y, info.size.y - 1 - y);
+			}
+		}
+	}
+
 	TextureFiltering TexEnums::removeMipmaps(TextureFiltering f)
 	{
 		switch (f)
@@ -310,5 +324,30 @@ namespace a_game_engine
 	int TexEnums::computeMipLevels(uvec2 size)
 	{
 		return computeMipLevels(std::max(size.x, size.y));
+	}
+	void ImageInfo::flipVertically()
+	{
+		if (not isValid())
+			return;
+
+		switch (format)
+		{
+		case TextureFormat::R_8:
+			tFlipVertically<u8>(*this); break;
+		case TextureFormat::RG_8:
+			tFlipVertically<vector2<u8>>(*this); break;
+		case TextureFormat::RGB_8:
+			tFlipVertically<vector3<u8>>(*this); break;
+		case TextureFormat::RGBA_8:
+			tFlipVertically<vector4<u8>>(*this); break;
+		case TextureFormat::R_F32:
+			tFlipVertically<float>(*this); break;
+		case TextureFormat::RG_F32:
+			tFlipVertically<vec2>(*this); break;
+		case TextureFormat::RGB_F32:
+			tFlipVertically<vec3>(*this); break;
+		case TextureFormat::RGBA_F32:
+			tFlipVertically<vec4>(*this); break;
+		}
 	}
 }
