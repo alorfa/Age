@@ -46,7 +46,7 @@ namespace a_game
 		objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
 		const bool one_light_test = false;
-		const bool indirect_light_test = true;
+		const bool indirect_light_test = false;
 
 		vec2 floorPositions[3][3] = {
 			{vec2{-10.f, -10.f}, vec2{-10.f, 0.f}, vec2{-10.f, 10.f}},
@@ -65,8 +65,8 @@ namespace a_game
 
 		objs[2]->addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
-		objs[4]->addComponent<RotateComp>()
-			.init(vec3(-2.f, 1.5f, -1.5f), vec3(-3.f, 3.f, 0.f), 0.5f);
+		/*objs[4]->addComponent<RotateComp>()
+			.init(vec3(-2.f, 1.5f, -1.5f), vec3(-3.f, 3.f, 0.f), 0.5f);*/
 
 		if (!indirect_light_test)
 		{

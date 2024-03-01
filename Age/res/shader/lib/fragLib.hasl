@@ -132,6 +132,12 @@ float G_Smith(float dotNL, float dotNV, float roughness)
     float GV = dotNV / (dotNV * (1.0 - k) + k);
     return GL * GV;
 }
+float G_Smith(float cosTheta, float roughness)
+{
+    float r1 = roughness + 1.;
+    float k = r1 * r1 * 0.125;
+    return cosTheta / (cosTheta * (1.0 - k) + k);
+}
 float G_SchlickSmithGGX_Indirect(float dotNL, float dotNV, float roughness)
 {
     float k = roughness * roughness * 0.5;
@@ -288,6 +294,10 @@ vec3 pbr_computeLight(samplerCube difMap, samplerCube specMap, sampler2D brdfLut
     difResult = difIndirect * diffColor * material.base_color;
 #endif
     return difResult + specResult;
+}
+vec3 pbr_computeLight(vec3 emissiveColor)
+{
+    return emissiveColor * G_Smith(vc.NV, material.roughness);
 }
 
 void initViewContext(vec3 fragmentPos, vec3 cameraPos)
