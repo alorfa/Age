@@ -103,6 +103,6 @@
     <ClCompile Include="Age\Light\Light.cpp" />
     <ClCompile Include="Age\Game\RotateComp.cpp" />
     <ClCompile Include="Age\Resource\CubeMapLoader.cpp" />
-    <ClCompile Include="..\..\..\..\..\libs\tinyexr-release\deps\miniz\miniz.c" />
+    <ClCompile Include="external\header\miniz.c" />
   </ItemGroup>
 </Project>

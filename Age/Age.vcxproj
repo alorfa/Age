@@ -238,7 +238,6 @@
     <ClInclude Include="TestGame.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\libs\tinyexr-release\deps\miniz\miniz.c" />
     <ClCompile Include="Age\Application.cpp" />
     <ClCompile Include="Age\Components\LightComponents.cpp" />
     <ClCompile Include="Age\Components\MeshComponent.cpp" />
@@ -281,6 +280,7 @@
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
     <ClCompile Include="Age\Transform\Camera.cpp" />
     <ClCompile Include="Age\Transform\Transform.cpp" />
+    <ClCompile Include="external\header\miniz.c" />
     <ClCompile Include="TestGame.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
