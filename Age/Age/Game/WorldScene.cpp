@@ -12,6 +12,7 @@
 #include "SceneController.hpp"
 #include "ControlController.hpp"
 #include "RotateComp.hpp"
+#include "Age/Math/Math.hpp"
 
 namespace a_game
 {
@@ -38,12 +39,12 @@ namespace a_game
 		MeshComponent::addModel(*objs[3], egd.models.load(egd.res / "model/sphere.obj"));
 		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/sphere.obj"));
 		MeshComponent::setShader(*objs[0], egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
-		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/default.asl"));
+		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/kirara.asl"));
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(*objs[3], lightShader);
 		MeshComponent::setShader(*objs[4], lightShader); 
-		objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
+		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
 
 		const bool one_light_test = false;
 		const bool indirect_light_test = false;
@@ -60,7 +61,7 @@ namespace a_game
 				MeshComponent::addModel(floor, egd.models.load(egd.res / "model/10m.obj", ModelLoader::Settings{
 					vec3{1.f}, true, false, false, false }));
 				MeshComponent::setShader(floor, egd.shaders.load(egd.res / "shader/floor.asl"));
-				floor.setPosition({ floorPositions[i][j].x, floorPositions[i][j].y, -4.f});
+				floor.setPosition({ floorPositions[i][j].x, floorPositions[i][j].y, 0.f});
 			}
 
 		objs[2]->addComponent<FollowToCamera>()
@@ -87,7 +88,9 @@ namespace a_game
 			{
 				objs[2]->addComponent<SpotLightComponent>()
 					.setColor({ 4.f, 4.f, 10.f }, 0.03f)
-					.setSize(0.1f);
+					.setSize(0.1f)
+					.setCutOff(0.f)
+					.setOuterCutOff(Math::rad(15.f));
 				objs[3]->addComponent<PointLightComponent>()
 					.setColor({ 8.f, 6.f, 2.f }, 0.03f)
 					.addModel(*objs[3])
@@ -95,20 +98,19 @@ namespace a_game
 				objs[5]->addComponent<DirLightComponent>()
 					.setSize(0.1f)
 					.setDirection({ 0.f, -0.5f, 1.f });
-				
 			}
 		}
 
-		objs[0]->changeTransform().changePosition() = { -3, 5, 0 };
-		objs[1]->changeTransform().changePosition() = { 0, 5, -1 };
+		objs[0]->changeTransform().changePosition() = { -3, 5, 1 };
+		objs[1]->changeTransform().changePosition() = { 0, 5, 0 };
 		objs[3]->changeTransform().changePosition() = vec3(-1.f, 5, 2);
 		objs[3]->changeTransform().changeScale() *= 0.1f;
-		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, -2);
+		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, 0.1f);
 		objs[4]->changeTransform().changeScale() *= 0.1f;
 
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
-		env = &egd.cubemaps.load(egd.res / "img/skybox4k.exr", CubeMapLoader::Settings{TextureFormat::RGB_11_11_10, false});
+		env = &egd.cubemaps.load(egd.res / "img/skybox4k.exr");
 		skyBox.cubemap = &env->specular;
 
 		for (uint i = 0; i < 11; i++)
@@ -122,11 +124,11 @@ namespace a_game
 					auto meshes = n.findAllComponents<MeshComponent>();
 					for (auto& mesh : meshes)
 					{
-						mesh->mesh.material.setValue("metalic", ShaderProperty((float)i * 0.1f));
-						mesh->mesh.material.setValue("roughness", ShaderProperty((float)j * 0.1f));
+						mesh->mesh.material.setValue("roughness", ShaderProperty((float)i * 0.1f));
+						mesh->mesh.material.setValue("metallic", ShaderProperty((float)j * 0.1f));
 					}
 				});
-				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f, -3.f });
+				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f - 1.5f, 0.25f });
 				sphere.setScale({ 0.25f });
 			}
 		vec3 colors[3][3] = {
@@ -142,7 +144,7 @@ namespace a_game
 				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/sphere.obj",
 					ModelLoader::Settings{ vec3{1.f}, false }));
 				MeshComponent::setShader(sphere, egd.shaders.load(egd.res / "shader/glass.asl"));
-				sphere.setPosition({ (float)i - 4.f, (float)j + 1.f, -2.3f});
+				sphere.setPosition({ (float)i - 4.f, (float)j - 0.5f, 0.8f});
 				sphere.setScale({ 0.3f });
 				sphere.forEach([&](Node& n) {
 					auto meshes = n.findAllComponents<MeshComponent>();

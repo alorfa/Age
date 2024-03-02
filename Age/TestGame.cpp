@@ -65,6 +65,7 @@ namespace a_game
 		gdata = new Gdata();
 		egd.camera.setFov(Math::rad(45.f));
 		egd.camera.transform.changeRotation().x = Math::rad(90.f);
+		egd.camera.transform.changePosition().z = 1.5f;
 		egd.camera.setNearFar({ 0.1f, 100.f });
 		auto size = _window.getSize();
 		egd.camera.setAspectRatio({ size.x, size.y });
@@ -187,7 +188,7 @@ int main()
 	ShaderSettings::rawInclude.fragLib = ShaderSettings::include.fragLib;
 	
 	auto game = std::make_unique<a_game::TestGame>();
-	game->run({889, 500}, "Alina's game engine (OpenGL 3.3 core)", sf::Style::Default, 0, 24);
+	game->run({889, 500}, "A graphics engine (OpenGL 4.6 core)", sf::Style::Default, 0, 24);
 
 	return 0;
 }

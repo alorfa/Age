@@ -46,6 +46,8 @@ namespace a_game_engine
 		SpotLightComponent& setSize(float size);
 		SpotLightComponent& setRadius(float radius);
 		SpotLightComponent& setOffset(float offset);
+		SpotLightComponent& setCutOff(float rad);
+		SpotLightComponent& setOuterCutOff(float rad);
 		inline const SpotLight& getLight() const { return _light; }
 
 		void update(float delta) override;

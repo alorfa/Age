@@ -89,6 +89,16 @@ namespace a_game_engine
 		_light.attOffset = offset;
 		return *this;
 	}
+	SpotLightComponent& SpotLightComponent::setCutOff(float rad)
+	{
+		_light.cutOff = rad;
+		return *this;
+	}
+	SpotLightComponent& SpotLightComponent::setOuterCutOff(float rad)
+	{
+		_light.outerCutOff = rad;
+		return *this;
+	}
 	DirLightComponent& DirLightComponent::setSize(float size)
 	{
 		light.size = size;
