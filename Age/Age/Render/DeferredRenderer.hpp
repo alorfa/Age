@@ -15,7 +15,7 @@ namespace a_game_engine
 
 		const ShaderProgram 
 			*debugPass,
-			*pointLightPass, *dirLightPass, *spotLightPass,
+			*pointLightPass, *dirLightPass, *spotLightPass, *iblPass,
 			*postprocPass;
 	public:
 		int gbufferTime = 0, lightTime = 0, screenTime = 0;

@@ -16,6 +16,7 @@ namespace a_game_engine
 		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/dirLight.pasl");
 		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/pointLight.pasl");
 		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/spotLight.pasl");
+		iblPass = &egd.shaders.loadPostproc(egd.res / "shader/ibl.pasl");
 		gbuffer.setTexturesCount(3);
 	}
 
@@ -112,7 +113,18 @@ namespace a_game_engine
 					VertexBuffer::getDefFramebuf().draw();
 				}
 			}
-		});		
+		});
+
+		iblPass->use();
+		iblPass->setUniform(iblPass->getLocation("baseColor_roughness_map"), 0);
+		iblPass->setUniform(iblPass->getLocation("normal_metalness_map"), 1);
+		iblPass->setUniform(iblPass->getLocation("pos_map"), 2);
+		iblPass->setUniform(iblPass->getLocation("diffuseMap"), 10);
+		iblPass->setUniform(iblPass->getLocation("specularMap"), 11);
+		iblPass->setUniform(iblPass->getLocation("brdfLut"), 12);
+		iblPass->setUniform(iblPass->getLocation("maxSpecMipLevel"), float(TexEnums::computeMipLevels(env->specular.getSize()) - 1));
+		iblPass->setUniform(iblPass->getLocation("cameraPos"), cameraPos);
+		VertexBuffer::getDefFramebuf().draw();
 	}
 
 	void DeferredRenderer::drawScene(const Scene& scene, const Camera& camera, float delta)
@@ -167,6 +179,11 @@ namespace a_game_engine
 		Pipeline::clear({ 0.f, 0.f, 0.f });
 		screenFb.copyFrom(gbuffer, FrameBuffer::Depth | FrameBuffer::Stencil);
 		Pipeline::setStencilWrite(2);
+
+		env->diffuse.activate(10);
+		env->specular.activate(11);
+		TextureLoader::getBrdfLut().activate(12);
+
 		scene.rootNode->forEachConst([&](const Node& n) {
 			n.draw(forwardInfo);
 		});
