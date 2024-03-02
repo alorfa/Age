@@ -59,6 +59,7 @@
     <ClInclude Include="Age\Game\RotateComp.hpp" />
     <ClInclude Include="Age\Resource\CubeMapLoader.hpp" />
     <ClInclude Include="Age\Math\vec4.hpp" />
+    <ClInclude Include="Age\Render\BloomEffect.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -105,5 +106,6 @@
     <ClCompile Include="Age\Game\RotateComp.cpp" />
     <ClCompile Include="Age\Resource\CubeMapLoader.cpp" />
     <ClCompile Include="external\header\miniz.c" />
+    <ClCompile Include="Age\Render\BloomEffect.cpp" />
   </ItemGroup>
 </Project>

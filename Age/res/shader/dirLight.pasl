@@ -13,7 +13,7 @@ void main()
     vec3 fragPos = texture(pos_map, uv).rgb;
 	material.base_color = diffuse_roughness.rgb;
 	material.roughness = diffuse_roughness.a;
-	material.normal = normal_metalness.xyz * 2.0 - 1.0;
+	material.normal = normal_metalness.xyz;
 	material.metallic = normal_metalness.a;
 
 	initViewContext(fragPos, cameraPos);

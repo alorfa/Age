@@ -21,6 +21,8 @@ namespace a_game_engine
 		int gbufferTime = 0, lightTime = 0, screenTime = 0;
 		bool debug = false;
 
+		const EnvCubeMap* env = nullptr;
+
 		DeferredRenderer();
 
 		void clear() override;

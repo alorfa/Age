@@ -156,7 +156,7 @@ namespace a_game
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
 
-		forwardRenderer.env = env;
+		deferredRenderer.env = forwardRenderer.env = env;
 	}
 	void WorldScene::draw(const Camera* c, float delta) const
 	{

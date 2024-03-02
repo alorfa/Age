@@ -20,7 +20,7 @@ namespace a_game_engine
 		}
 	}
 
-	const std::string ShaderModule::glslVersionString = "#version 330 core\n";
+	const std::string ShaderModule::glslVersionString = "#version 460 core\n";
 
 	void ShaderModule::create(const std::string& data, Type type)
 	{

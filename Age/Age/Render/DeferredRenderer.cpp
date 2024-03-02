@@ -39,11 +39,11 @@ namespace a_game_engine
 			depthStencil{ newSize, TextureFormat::Depth24_Stencil8 };
 
 		Sampler2DInfo sampler = { TextureFiltering::Near };
-		albedoRoughnessMap.create(Texture2D::Settings{ baseColorRGB_RoughnessA, TextureFormat::Auto, sampler, 1});
-		normalMetalnessMap.create(Texture2D::Settings{ normalRGB_MetalnessA, TextureFormat::Auto, sampler, 1});
-		posMap.create(Texture2D::Settings{ posRGB, TextureFormat::Auto, sampler, 1});
-		screenBuffer.create(Texture2D::Settings{ screenRGB, TextureFormat::Auto, sampler, 1});
-		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::Auto, sampler, 1});
+		albedoRoughnessMap.create(Texture2D::Settings{ baseColorRGB_RoughnessA, TextureFormat::AutoQuality, sampler, 1});
+		normalMetalnessMap.create(Texture2D::Settings{ normalRGB_MetalnessA, TextureFormat::AutoQuality, sampler, 1});
+		posMap.create(Texture2D::Settings{ posRGB, TextureFormat::AutoQuality, sampler, 1});
+		screenBuffer.create(Texture2D::Settings{ screenRGB, TextureFormat::AutoQuality, sampler, 1});
+		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
 
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
@@ -131,7 +131,10 @@ namespace a_game_engine
 		deferred.implIndex = 0;
 		deferredInfo.shaderSettings = deferred;
 		forwardInfo.camera = deferredInfo.camera = &camera;
-		forwardInfo.props.push_back({ "skybox", SkyBox::getSlot() });
+		forwardInfo.props.push_back({ "diffuseMap", 10 });
+		forwardInfo.props.push_back({ "specularMap", 11 });
+		forwardInfo.props.push_back({ "brdfLut", 12 });
+		forwardInfo.props.push_back({ "maxSpecMipLevel", float(TexEnums::computeMipLevels(env->specular.getSize()) - 1) });
 		forwardInfo.addLights(*scene.rootNode);
 		ShaderSettings::Forward forwardSettings;
 		forwardSettings.pointLights = forwardInfo.lights.point;
