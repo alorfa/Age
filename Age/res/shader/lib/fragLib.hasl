@@ -56,7 +56,6 @@ PointLight toPointLight(SpotLight light, vec3 fragmentPos)
 {
     PointLight result;
     result.pos = light.pos;
-    //result.ambient = light.ambient;
     result.sourceRadius = light.sourceRadius;
     result.attOffset = light.attOffset;
     result.maxDist = light.maxDist;
@@ -301,17 +300,17 @@ vec3 pbr_computeLight(vec3 emissiveColor)
     return emissiveColor * G_Smith(vc.NV, material.roughness);
 }
 
-void initViewContext(vec3 fragmentPos, vec3 cameraPos)
-{
-    vc.V = normalize(cameraPos - fragmentPos);
-    vc.R = reflect(-vc.V, material.normal);
-    vc.NV = max(0., dot(vc.V, material.normal));
-}
 void initMaterial()
 {
     material.alpha = 1.;
     material.reflectivity = 0.04; 
     material.ao = 1.;
+}
+void initViewContext(vec3 fragmentPos, vec3 cameraPos)
+{
+    vc.V = normalize(cameraPos - fragmentPos);
+    vc.R = reflect(-vc.V, material.normal);
+    vc.NV = max(0., dot(vc.V, material.normal));
 }
 
 vec3 learnopenglTonemap(vec3 x)

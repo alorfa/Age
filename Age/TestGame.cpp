@@ -167,11 +167,6 @@ int main()
 		"age_FragColor1.a = material.metallic;\n"
 		"age_FragColor2.rgb = fragPos;\n"
 		});
-	ShaderSettings::deferredImpls.push_back({
-		{4},
-		"paintOver();\n"
-		// "age_FragColor.rgb = sqrt();\n"
-		});
 	ShaderSettings::additionalDefines.push_back("#define AGE_DISABLE_SPECULAR\n");
 	ShaderSettings::additionalDefines.push_back(
 		"#define AGE_DISABLE_AMBIENT\n"

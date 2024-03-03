@@ -20,8 +20,9 @@ void setup()
     material.base_color = color;
     material.normal = normalize(fragTBN[2]);
     material.roughness = 0.08;
-    material.metallic = 0.99;
-    material.alpha = 0.4;
+    material.metallic = 0.;
+    material.alpha = 0.3;
+    material.reflectivity = 0.2;
 }
 
 #endif

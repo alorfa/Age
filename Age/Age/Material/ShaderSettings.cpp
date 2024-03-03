@@ -95,7 +95,6 @@ namespace a_game_engine
     }
     void ShaderSettings::Detailed::create(const Forward& f)
     {
-        bindings = { 4 };
         defines = std::format(
             "#define AGE_MAX_DIR_LIGHTS {}\n"
             "#define AGE_MAX_POINT_LIGHTS {}\n"
@@ -103,6 +102,15 @@ namespace a_game_engine
             "#define AGE_RENDERING_MODE_FORWARD\n", f.dirLights, f.pointLights, f.spotLights);
         if (f.definesIndex >= 0)
             defines += ShaderSettings::additionalDefines[f.definesIndex];
+        if (f.implIndex >= 0)
+        {
+            bindings = deferredImpls[f.implIndex].bindings;
+            paintingFunc = &deferredImpls[f.implIndex].paintingFunc;
+        }
+        else
+        {
+            bindings = { 4 };
+        }
     }
     void ShaderSettings::Detailed::create(const Deferred& d)
     {

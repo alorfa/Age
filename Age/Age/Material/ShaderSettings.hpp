@@ -21,6 +21,7 @@ namespace a_game_engine
 		{
 			uint dirLights = 0, pointLights = 0, spotLights = 0;
 			int definesIndex = -1;
+			int implIndex = -1;
 
 			bool operator<(const Forward& other) const;
 			bool operator==(const Forward& other) const;
