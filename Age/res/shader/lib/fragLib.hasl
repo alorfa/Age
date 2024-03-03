@@ -38,10 +38,11 @@ struct LightContext
 struct Material
 {
     vec3 base_color, diffuse, specular, normal, emission;
-    float metallic, roughness, alpha;
+    float metallic, roughness, reflectivity, ao, alpha;
 };
 Material material;
 ViewContext vc;
+float scene_ao = 1.;
 
 float pow2(float v) {
     return v * v;
@@ -221,7 +222,7 @@ vec3 pbr_computeLight(DirLight light)
 {    
     vec3 R = reflect(-vc.V, material.normal);
     LightContext c = computeLightData_Sphere(light.dir, vc.V, R, material.normal, light.sourceRadius, 1., 1.);
-    vec3 materialSpec = mix(vec3(0.04), material.base_color, material.metallic);
+    vec3 materialSpec = mix(vec3(material.reflectivity), material.base_color, material.metallic);
     vec3 F = F_Schlick(c.HV, materialSpec);
     vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
     vec3 finalSpecular = vec3(0.);
@@ -241,7 +242,7 @@ vec3 pbr_computeLight(DirLight light)
     finalDiffuse = diffColor * material.base_color * INV_PI;
 #endif
 #ifndef AGE_DISABLE_AMBIENT
-    finalAmbient = light.ambient * material.base_color;
+    finalAmbient = scene_ao * material.ao * light.ambient * material.base_color;
 #endif
     return (finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient;
 }
@@ -250,7 +251,7 @@ vec3 pbr_computeLight(PointLight light, vec3 fragmentPos)
 {    
     vec3 Lwl = light.pos - fragmentPos;
     LightContext c = computeLightData_Sphere(Lwl, vc.V, vc.R, material.normal, light.sourceRadius, light.maxDist, light.attOffset);
-    vec3 materialSpec = mix(vec3(0.04), material.base_color, material.metallic);
+    vec3 materialSpec = mix(vec3(material.reflectivity), material.base_color, material.metallic);
     vec3 F = F_Schlick(c.HV, materialSpec);
     vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
     vec3 finalSpecular = vec3(0.);
@@ -271,14 +272,14 @@ vec3 pbr_computeLight(PointLight light, vec3 fragmentPos)
     finalDiffuse = diffColor * material.base_color * INV_PI;
 #endif
 #ifndef AGE_DISABLE_AMBIENT
-    finalAmbient = light.ambient * material.base_color;
+    finalAmbient = scene_ao * material.ao * light.ambient * material.base_color;
 #endif
     return ((finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient) * c.falloff;
 }
 
 vec3 pbr_computeLight(samplerCube difMap, samplerCube specMap, sampler2D brdfLut, float maxLod)
 {
-    vec3 F0 = mix(vec3(0.04), material.base_color, material.metallic);
+    vec3 F0 = mix(vec3(material.reflectivity), material.base_color, material.metallic);
     vec3 F = F_Schlick_Indirect(F0, vc.NV, material.roughness);
     vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
 
@@ -293,7 +294,7 @@ vec3 pbr_computeLight(samplerCube difMap, samplerCube specMap, sampler2D brdfLut
 #ifndef AGE_DISABLE_DIFFUSE
     difResult = difIndirect * diffColor * material.base_color;
 #endif
-    return difResult + specResult;
+    return scene_ao * material.ao * (difResult + specResult);
 }
 vec3 pbr_computeLight(vec3 emissiveColor)
 {
@@ -305,6 +306,12 @@ void initViewContext(vec3 fragmentPos, vec3 cameraPos)
     vc.V = normalize(cameraPos - fragmentPos);
     vc.R = reflect(-vc.V, material.normal);
     vc.NV = max(0., dot(vc.V, material.normal));
+}
+void initMaterial()
+{
+    material.alpha = 1.;
+    material.reflectivity = 0.04; 
+    material.ao = 1.;
 }
 
 vec3 learnopenglTonemap(vec3 x)

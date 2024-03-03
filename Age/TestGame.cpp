@@ -161,11 +161,16 @@ int main()
 	egd.user = "user";
 	ShaderSettings::deferredImpls.push_back({
 		{4, 4, 3},
-		"age_FragColor.rgb = material.base_color.rgb;\n"
+		"age_FragColor.rgb = material.base_color;\n"
 		"age_FragColor.a = material.roughness;\n"
-		"age_FragColor1.rgb = material.normal.rgb;\n"
+		"age_FragColor1.rgb = material.normal;\n"
 		"age_FragColor1.a = material.metallic;\n"
 		"age_FragColor2.rgb = fragPos;\n"
+		});
+	ShaderSettings::deferredImpls.push_back({
+		{4},
+		"paintOver();\n"
+		// "age_FragColor.rgb = sqrt();\n"
 		});
 	ShaderSettings::additionalDefines.push_back("#define AGE_DISABLE_SPECULAR\n");
 	ShaderSettings::additionalDefines.push_back(

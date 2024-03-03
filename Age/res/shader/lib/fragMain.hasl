@@ -1,6 +1,6 @@
 void main()
 {
-    material.alpha = 1.;
+	initMaterial();
     setup();
 
     #if defined(AGE_LIGHT_MODE_FORCE)

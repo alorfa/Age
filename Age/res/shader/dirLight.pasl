@@ -7,7 +7,8 @@ uniform DirLight light;
 uniform vec3 cameraPos;
 
 void main()
-{
+{	
+	initMaterial();
     vec4 diffuse_roughness = texture(baseColor_roughness_map, uv);
     vec4 normal_metalness = texture(normal_metalness_map, uv);
     vec3 fragPos = texture(pos_map, uv).rgb;
