@@ -3,12 +3,14 @@
 #include "Renderer.hpp"
 #include "Age/LL/Buffers/FrameBuffer2D.hpp"
 #include "Age/Scene/SceneInfo.hpp"
+#include "Age/Render/BloomEffect.hpp"
 
 namespace a_game_engine
 {
 	class ForwardRenderer : public Renderer
 	{
 		FrameBuffer2D mainFb;
+		BloomEffect bloom;
 		Texture2D colorBuffer, depthBuffer;
 		float exposure = 1.f;
 

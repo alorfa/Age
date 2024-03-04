@@ -2,11 +2,15 @@ out vec4 FragColor;
 
 in vec2 uv;
 uniform sampler2D tex;
+uniform sampler2D bloomTex;
 uniform float exposure = 1.0;
+uniform float bloomStrength = 0.;
 
 void main()
 {
     vec3 color = texture(tex, uv).rgb;
+    vec3 bloomColor = texture(bloomTex, uv).rgb;
+    color = mix(color, bloomColor, bloomStrength);
     color = uncharted2Tonemap(color * exposure);
     color = linearToScreen(color);
     FragColor = vec4(color, 1.);

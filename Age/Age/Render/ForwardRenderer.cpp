@@ -19,6 +19,8 @@ namespace a_game_engine
 	void ForwardRenderer::clear()
 	{
 		colorBuffer.destroy();
+		depthBuffer.destroy();
+		mainFb.removeRenderBuffer();
 	}
 	void ForwardRenderer::updateSize(const uvec2& newSize)
 	{
@@ -33,6 +35,8 @@ namespace a_game_engine
 		mainFb.setTexture(0, colorBuffer);
 		//mainFb.setDepthTexture(depthBuffer);
 		mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
+		bloom.create(newSize, 5);
+		bloom.radius = 2.5f;
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
@@ -84,11 +88,13 @@ namespace a_game_engine
 			});
 		Pipeline::setBlendMode(BlendMode::Lerp);
 
+		bloom.use(colorBuffer);
+
 		colorBuffer.generateMipmaps();
 		const vec3 midColor = colorBuffer.getMidColor();
 		const float brightness = vec3::dot(midColor, Math::LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.6f, 0.3f);
-		const float curExp = 0.35f / clampedBr;
+		const float curExp = 0.3f / clampedBr;
 		exposure = Math::smooth(exposure, curExp, delta * 3.f);
 
 		mainFb.useDefault(size);
@@ -96,7 +102,9 @@ namespace a_game_engine
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
 		shader->setUniform(shader->getLocation("tex"), colorBuffer, 0);
+		shader->setUniform(shader->getLocation("bloomTex"), bloom.getResultTexture(), 1);
 		shader->setUniform(shader->getLocation("exposure"), exposure);
+		shader->setUniform(shader->getLocation("bloomStrength"), 0.09f);
 		verts->draw();
 	}
 }

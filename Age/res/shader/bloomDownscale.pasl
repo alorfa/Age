@@ -1,0 +1,33 @@
+out vec3 age_FragColor;
+
+in vec2 uv;
+uniform sampler2D tex;
+uniform vec2 texelSize;
+
+void main()
+{
+    float x = texelSize.x;
+    float y = texelSize.y;
+
+    vec3 a = texture(tex, vec2(uv.x - 2*x, uv.y + 2*y)).rgb;
+    vec3 b = texture(tex, vec2(uv.x,       uv.y + 2*y)).rgb;
+    vec3 c = texture(tex, vec2(uv.x + 2*x, uv.y + 2*y)).rgb;
+
+    vec3 d = texture(tex, vec2(uv.x - 2*x, uv.y)).rgb;
+    vec3 e = texture(tex, uv).rgb;
+    vec3 f = texture(tex, vec2(uv.x + 2*x, uv.y)).rgb;
+
+    vec3 g = texture(tex, vec2(uv.x - 2*x, uv.y - 2*y)).rgb;
+    vec3 h = texture(tex, vec2(uv.x,       uv.y - 2*y)).rgb;
+    vec3 i = texture(tex, vec2(uv.x + 2*x, uv.y - 2*y)).rgb;
+
+    vec3 j = texture(tex, vec2(uv.x - x, uv.y + y)).rgb;
+    vec3 k = texture(tex, vec2(uv.x + x, uv.y + y)).rgb;
+    vec3 l = texture(tex, vec2(uv.x - x, uv.y - y)).rgb;
+    vec3 m = texture(tex, vec2(uv.x + x, uv.y - y)).rgb;
+
+    age_FragColor =
+        (a+c+g+i)*0.03125 + 
+        (b+d+f+h)*0.0625 +
+        (j+k+l+m+e)*0.125;
+}
