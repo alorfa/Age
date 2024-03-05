@@ -19,7 +19,7 @@ namespace a_game_engine
 		Texture2D panorama(settings);
 
 		auto result = std::make_unique<CubeMap>();
-		CubeMap::PanoramaSettings ps{ panorama, s.size, s.format, s.sampler, s.hasMipmaps() ? -1 : 1, s.srgb };
+		CubeMap::PanoramaSettings ps{ panorama, s.size, s.format, s.sampler, s.hasMipmaps() ? -1 : 1, s.srgb, s.upperLimit };
 		result->createFromPanorama(ps);
 		return result;
 	}
@@ -40,7 +40,7 @@ namespace a_game_engine
 			[&](const std::filesystem::path& p) -> std::unique_ptr<EnvCubeMap>
 			{
 				RawSettings settings = { {TextureFiltering::Linear}, s.tempFormat, s.specularSize, 
-					MipmapSettings::Auto, s.srgb };
+					MipmapSettings::Auto, s.srgb, 10.f };
 				auto cubemap = readFromFile(path, settings);
 				if (cubemap == nullptr)
 					return nullptr;

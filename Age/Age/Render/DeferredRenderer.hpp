@@ -3,6 +3,7 @@
 #include "Renderer.hpp"
 #include "Age/LL/Buffers/FrameBuffer2D.hpp"
 #include "Age/Scene/SceneInfo.hpp"
+#include "Age/Scene/SkyBox.hpp"
 
 namespace a_game_engine
 {
@@ -22,6 +23,7 @@ namespace a_game_engine
 		bool debug = false;
 
 		const EnvCubeMap* env = nullptr;
+		SkyBox skyBox;
 
 		DeferredRenderer();
 

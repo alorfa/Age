@@ -36,7 +36,7 @@ namespace a_game_engine
 		//mainFb.setDepthTexture(depthBuffer);
 		mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
 		bloom.create(newSize / 2u);
-		bloom.radius = 1.5f;
+		bloom.radius = 3.5f;
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
@@ -77,7 +77,7 @@ namespace a_game_engine
 		sc.rootNode->forEachConst([&](const Node& n) {
 			n.draw(info);
 		});
-		sc.skyBox.draw(camera, nullptr);
+		skyBox.draw(camera, nullptr);
 
 		sc.rootNode->forEachConst([&](const Node& n)
 			{

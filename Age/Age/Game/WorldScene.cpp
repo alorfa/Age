@@ -108,10 +108,15 @@ namespace a_game
 		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, 0.1f);
 		objs[4]->changeTransform().changeScale() *= 0.1f;
 
+		CubeMapLoader::RawSettings s;
+		s.upperLimit = 50000.f;
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
-		skyBox.shader = &egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
-		env = &egd.cubemaps.load(egd.res / "img/skybox4k.exr");
-		skyBox.cubemap = &env->specular;
+		deferredRenderer.skyBox.shader = forwardRenderer.skyBox.shader = 
+			&egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
+		env = &egd.cubemaps.load(egd.res / "img/skybox1k.exr");
+		deferredRenderer.skyBox.cubemap = forwardRenderer.skyBox.cubemap = 
+			&egd.cubemaps.loadRaw(egd.res / "img/skybox4k.exr", s);
+		deferredRenderer.env = forwardRenderer.env = env;
 
 		for (uint i = 0; i < 11; i++)
 			for (uint j = 0; j < 11; j++)
@@ -156,7 +161,6 @@ namespace a_game
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
 
-		deferredRenderer.env = forwardRenderer.env = env;
 	}
 	void WorldScene::draw(const Camera* c, float delta) const
 	{

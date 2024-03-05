@@ -33,9 +33,10 @@ namespace a_game_engine
 			SamplerCubeInfo sampler;
 			int mipmaps;
 			bool srgb;
+			float upperLimit;
 
 			PanoramaSettings(const Texture2D& panorama, uint size = 0, TextureFormat format = TextureFormat::Auto,
-				const SamplerCubeInfo& sampler = {}, int mipmaps = -1, bool srgb = true);
+				const SamplerCubeInfo& sampler = {}, int mipmaps = -1, bool srgb = true, float upperLimit = 10.f);
 		};
 
 		CubeMap();

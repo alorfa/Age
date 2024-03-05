@@ -15,12 +15,7 @@ namespace a_game_engine
 
 		const ShaderProgram* shader = nullptr;
 		const CubeMap* cubemap = nullptr;
-		Scene* const scene = nullptr;
-
-		SkyBox(Scene& scene);
 
 		void draw(const Camera& c, const ShaderProgram* s) const;
-
-		static int getSlot();
 	};
 }

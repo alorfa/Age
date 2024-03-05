@@ -31,7 +31,7 @@ namespace a_game_engine
 	{
 		const Texture2D* currentTexture = &tex;
 		lastMipLevel = lastMipLevel <= 0 ? 
-			textures.size() - 1 : 
+			(int)(textures.size() - 1) :
 			Math::clamp(lastMipLevel, 1, (int)(textures.size() - 1));
 		downscale->use();
 

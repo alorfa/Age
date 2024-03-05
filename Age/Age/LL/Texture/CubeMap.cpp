@@ -102,6 +102,7 @@ namespace a_game_engine
 			shader.setUniform(shader.getLocation("srgb"), s.srgb);
 			shader.setUniform(shader.getLocation("projection"), proj);
 			shader.setUniform(shader.getLocation("view"), view[i]);
+			shader.setUniform(shader.getLocation("upperLimit"), s.upperLimit);
 			const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
 			skyboxMesh.meshes[0]->buffer.draw();
 		}
@@ -240,8 +241,8 @@ namespace a_game_engine
 		}
 	}
 	CubeMap::PanoramaSettings::PanoramaSettings(const Texture2D& panorama, uint size,
-		TextureFormat format, const SamplerCubeInfo& sampler, int mipmaps, bool srgb)
-		: panorama(&panorama), sampler(sampler), format(format), srgb(srgb)
+		TextureFormat format, const SamplerCubeInfo& sampler, int mipmaps, bool srgb, float upperLimit)
+		: panorama(&panorama), sampler(sampler), format(format), srgb(srgb), upperLimit(upperLimit)
 	{
 		this->size = size == 0 ? panorama.getSize().y / 2 : size;
 

@@ -21,7 +21,6 @@ namespace a_game_engine
 		const ShaderProgram* shader = nullptr;
 
 		std::unique_ptr<Node> rootNode;
-		SkyBox skyBox;
 
 		Scene();
 

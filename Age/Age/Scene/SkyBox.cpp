@@ -9,11 +9,6 @@ namespace a_game_engine
 {
 	const VertexBuffer* SkyBox::cube = nullptr;
 
-	SkyBox::SkyBox(Scene& scene)
-		: scene(&scene)
-	{
-	}
-
 	void SkyBox::draw(const Camera& camera, const ShaderProgram* s) const
 	{
 		if (s == nullptr)
@@ -30,14 +25,6 @@ namespace a_game_engine
 			s->setUniform(s->getLocation("skybox"), *cubemap, 0);
 			cube->draw();
 		}
-	}
-	int SkyBox::getSlot() //TODO: is this really necessary
-	{
-		static int maxSlots = 16;
-		if (maxSlots == 0)
-			glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxSlots);
-
-		return maxSlots - 1;
 	}
 }
 

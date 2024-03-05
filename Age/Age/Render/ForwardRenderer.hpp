@@ -4,6 +4,7 @@
 #include "Age/LL/Buffers/FrameBuffer2D.hpp"
 #include "Age/Scene/SceneInfo.hpp"
 #include "Age/Render/BloomEffect.hpp"
+#include "Age/Scene/SkyBox.hpp"
 
 namespace a_game_engine
 {
@@ -19,6 +20,7 @@ namespace a_game_engine
 		ForwardRenderer();
 
 		const EnvCubeMap* env = nullptr;
+		SkyBox skyBox;
 
 		void clear() override;
 		void updateSize(const uvec2& newSize);

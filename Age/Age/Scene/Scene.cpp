@@ -3,7 +3,6 @@
 namespace a_game_engine
 {
 	Scene::Scene()
-		: skyBox(*this)
 	{
 		rootNode = std::make_unique<Node>();
 		rootNode->scene = this;
