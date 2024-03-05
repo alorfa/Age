@@ -11,7 +11,7 @@ namespace a_game_engine
 	void BloomEffect::create(uvec2 mip0size, int mipsCount)
 	{
 		destroy();
-		const int maxMipLevel = TexEnums::computeMipLevels(mip0size) - 1;
+		const int maxMipLevel = TexEnums::getLastMipLevel(mip0size);
 		const int curMipLevel = mipsCount <= 0 ? maxMipLevel : Math::clamp(mipsCount - 1, 0, maxMipLevel);
 		textures.resize(curMipLevel + 1);
 

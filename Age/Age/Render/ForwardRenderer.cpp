@@ -46,7 +46,7 @@ namespace a_game_engine
 		info.props.push_back({ "diffuseMap", 10 });
 		info.props.push_back({ "specularMap", 11 });
 		info.props.push_back({ "brdfLut", 12 });
-		info.props.push_back({ "maxSpecMipLevel", float(TexEnums::computeMipLevels(env->specular.getSize()) - 1)});
+		info.props.push_back({ "maxSpecMipLevel", float(TexEnums::getLastMipLevel(env->specular.getSize()))});
 		info.addLights(*sc.rootNode);
 		settings.dirLights = info.lights.dir;
 		settings.pointLights = info.lights.point;

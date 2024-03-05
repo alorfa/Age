@@ -317,13 +317,13 @@ namespace a_game_engine
 		}
 		return 8;
 	}
-	int TexEnums::computeMipLevels(uint maxSize)
+	int TexEnums::getLastMipLevel(uint maxSize)
 	{
-		return (int)std::floor(std::log2(maxSize)) + 1;
+		return (int)std::floor(std::log2(maxSize));
 	}
-	int TexEnums::computeMipLevels(uvec2 size)
+	int TexEnums::getLastMipLevel(uvec2 size)
 	{
-		return computeMipLevels(std::max(size.x, size.y));
+		return getLastMipLevel(std::max(size.x, size.y));
 	}
 	void ImageInfo::flipVertically()
 	{

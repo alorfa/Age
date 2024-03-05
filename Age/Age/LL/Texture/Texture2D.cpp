@@ -72,7 +72,7 @@ namespace a_game_engine
 	{
 		vec3 result;
 		if (_id)
-			glGetTextureImage(_id, TexEnums::computeMipLevels(_size) - 1, GL_RGB, GL_FLOAT, sizeof(vec3), &result);
+			glGetTextureImage(_id, TexEnums::getLastMipLevel(_size), GL_RGB, GL_FLOAT, sizeof(vec3), &result);
 
 		return result;
 	}
@@ -103,7 +103,7 @@ namespace a_game_engine
 	Texture2D::Settings::Settings(const ImageInfo& img, TextureFormat format, const Sampler2DInfo& sampler, int mipmaps)
 		: img(img), sampler(sampler)
 	{
-		const int maxMips = TexEnums::computeMipLevels(img.size);
+		const int maxMips = TexEnums::getLastMipLevel(img.size) + 1;
 		if (mipmaps < 1)
 			this->mipmaps = maxMips;
 		else

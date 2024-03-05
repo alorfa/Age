@@ -122,7 +122,7 @@ namespace a_game_engine
 		iblPass->setUniform(iblPass->getLocation("diffuseMap"), 10);
 		iblPass->setUniform(iblPass->getLocation("specularMap"), 11);
 		iblPass->setUniform(iblPass->getLocation("brdfLut"), 12);
-		iblPass->setUniform(iblPass->getLocation("maxSpecMipLevel"), float(TexEnums::computeMipLevels(env->specular.getSize()) - 1));
+		iblPass->setUniform(iblPass->getLocation("maxSpecMipLevel"), float(TexEnums::getLastMipLevel(env->specular.getSize())));
 		iblPass->setUniform(iblPass->getLocation("cameraPos"), cameraPos);
 		VertexBuffer::getDefFramebuf().draw();
 	}
@@ -146,7 +146,7 @@ namespace a_game_engine
 		forwardInfo.props.push_back({ "diffuseMap", 10 });
 		forwardInfo.props.push_back({ "specularMap", 11 });
 		forwardInfo.props.push_back({ "brdfLut", 12 });
-		forwardInfo.props.push_back({ "maxSpecMipLevel", float(TexEnums::computeMipLevels(env->specular.getSize()) - 1) });
+		forwardInfo.props.push_back({ "maxSpecMipLevel", float(TexEnums::getLastMipLevel(env->specular.getSize())) });
 		forwardInfo.addLights(*scene.rootNode);
 		ShaderSettings::Forward forwardSettings;
 		forwardSettings.pointLights = forwardInfo.lights.point;

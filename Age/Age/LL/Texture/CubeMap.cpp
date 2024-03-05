@@ -112,7 +112,7 @@ namespace a_game_engine
 	{
 		const auto internalFormat = TexEnums::chooseInternalFormat(cubemap.getFormat(), format);
 		create({ nullptr, cubemap.getSize(), internalFormat });
-		const uint maxMipLevel = TexEnums::computeMipLevels(cubemap.getSize()) - 1;
+		const uint maxMipLevel = TexEnums::getLastMipLevel(cubemap.getSize());
 
 		const vec3 x = { 1.f, 0.f, 0.f };
 		const vec3 y = { 0.f, 1.f, 0.f };
@@ -228,7 +228,7 @@ namespace a_game_engine
 		const SamplerCubeInfo& sampler, int mipmaps)
 		: images(images), size(size), format(format), sampler(sampler)
 	{
-		const int maxMips = TexEnums::computeMipLevels(size);
+		const int maxMips = TexEnums::getLastMipLevel(size) + 1;
 		if (mipmaps < 1)
 			this->mipmaps = maxMips;
 		else
@@ -245,7 +245,7 @@ namespace a_game_engine
 	{
 		this->size = size == 0 ? panorama.getSize().y / 2 : size;
 
-		const int maxMips = TexEnums::computeMipLevels(this->size);
+		const int maxMips = TexEnums::getLastMipLevel(this->size) + 1;
 		if (mipmaps < 1)
 			this->mipmaps = maxMips;
 		else

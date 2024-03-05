@@ -21,6 +21,7 @@ out vec4 age_FragColor;
 in vec3 fragPos;
 uniform sampler2D panorama;
 uniform bool srgb = false;
+uniform float upperLimit = 10.;
 
 void paintOver()
 {
@@ -28,7 +29,7 @@ void paintOver()
 	vec3 result = texture(panorama, uv).rgb;
 	result = srgb ? screenToLinearPrecise(result) : result;
 	//result = result / (result + vec3(1.)); //for tests
-	result = clamp(result, vec3(0.), vec3(10.));
+	result = clamp(result, vec3(0.), vec3(upperLimit));
 	age_FragColor = vec4(result, 1.);
 }
 

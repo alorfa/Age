@@ -43,8 +43,8 @@ namespace a_game_engine
 		static int toOglType(TextureDataType);
 		static int getComponentsCount(TextureFormat);
 		static int getSizeInBits(TextureFormat);
-		static int computeMipLevels(uint maxSize);
-		static int computeMipLevels(uvec2 size);
+		static int getLastMipLevel(uint maxSize);
+		static int getLastMipLevel(uvec2 size);
 	};
 
 	struct ImageInfo
