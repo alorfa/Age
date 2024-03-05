@@ -100,11 +100,15 @@ namespace a_game_engine
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();
 		auto* verts = &VertexBuffer::getDefFramebuf();
+		vec2 bloomRadius = {
+			1.f / colorBuffer.getSize().x, 1.f / colorBuffer.getSize().y
+		};
 		shader->use();
 		shader->setUniform(shader->getLocation("tex"), colorBuffer, 0);
 		shader->setUniform(shader->getLocation("bloomTex"), bloom.getTextures()[0], 1);
 		shader->setUniform(shader->getLocation("exposure"), exposure);
 		shader->setUniform(shader->getLocation("bloomStrength"), 0.05f);
+		shader->setUniform(shader->getLocation("bloomRadius"), bloomRadius * bloom.radius);
 		verts->draw();
 	}
 }

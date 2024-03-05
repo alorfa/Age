@@ -351,5 +351,27 @@ vec3 acesTonemap(vec3 v)
     return (v*(a*v+b))/(v*(c*v+d)+e);
 }
 
+vec3 blur3x3(sampler2D tex, vec2 uv, vec2 offset)
+{
+    //const float o = 0.707106;
+    const float o = 1.;
+
+    vec3 a = texture(tex, vec2(uv.x - offset.x * o, uv.y + offset.y * o)).rgb;
+    vec3 b = texture(tex, vec2(uv.x,            uv.y + offset.y)).rgb;
+    vec3 c = texture(tex, vec2(uv.x, uv.y) + offset * o).rgb;
+
+    vec3 d = texture(tex, vec2(uv.x - offset.x, uv.y)).rgb;
+    vec3 e = texture(tex, uv).rgb;
+    vec3 f = texture(tex, vec2(uv.x + offset.x, uv.y)).rgb;
+
+    vec3 g = texture(tex, vec2(uv.x, uv.y) - offset * o).rgb;
+    vec3 h = texture(tex, vec2(uv.x,            uv.y - offset.y)).rgb;
+    vec3 i = texture(tex, vec2(uv.x + offset.x * o, uv.y - offset.y * o)).rgb;
+
+    return e*0.25+
+        (b+d+f+h)*0.125+
+        (a+c+g+i)*0.0625;
+}
+
 #define LIGHTING_MODEL pbr_computeLight
 #line 1

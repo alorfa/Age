@@ -5,11 +5,12 @@ uniform sampler2D tex;
 uniform sampler2D bloomTex;
 uniform float exposure = 1.0;
 uniform float bloomStrength = 0.;
+uniform vec2 bloomRadius;
 
 void main()
 {
     vec3 color = texture(tex, uv).rgb;
-    vec3 bloomColor = texture(bloomTex, uv).rgb;
+    vec3 bloomColor = blur3x3(bloomTex, uv, bloomRadius).rgb;
     color = mix(color, bloomColor, bloomStrength);
     color = uncharted2Tonemap(color * exposure);
     color = linearToScreen(color);

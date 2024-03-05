@@ -6,23 +6,5 @@ uniform vec2 radius;
 
 void main()
 {
-    float x = radius.x;
-    float y = radius.y;
-
-    vec3 a = texture(tex, vec2(uv.x - x, uv.y + y)).rgb;
-    vec3 b = texture(tex, vec2(uv.x,     uv.y + y)).rgb;
-    vec3 c = texture(tex, vec2(uv.x + x, uv.y + y)).rgb;
-
-    vec3 d = texture(tex, vec2(uv.x - x, uv.y)).rgb;
-    vec3 e = texture(tex, uv).rgb;
-    vec3 f = texture(tex, vec2(uv.x + x, uv.y)).rgb;
-
-    vec3 g = texture(tex, vec2(uv.x - x, uv.y - y)).rgb;
-    vec3 h = texture(tex, vec2(uv.x,     uv.y - y)).rgb;
-    vec3 i = texture(tex, vec2(uv.x + x, uv.y - y)).rgb;
-
-    age_FragColor =
-        e*0.25+
-        (b+d+f+h)*0.125+
-        (a+c+g+i)*0.0625;
+    age_FragColor = blur3x3(tex, uv, radius);
 }

@@ -109,7 +109,7 @@ namespace a_game
 		objs[4]->changeTransform().changeScale() *= 0.1f;
 
 		CubeMapLoader::RawSettings s;
-		s.upperLimit = 50000.f;
+		s.upperLimit = 1000.f;
 		SkyBox::cube = &egd.models.load(egd.res / "model/skybox.obj").meshes[0].get()->buffer;
 		deferredRenderer.skyBox.shader = forwardRenderer.skyBox.shader = 
 			&egd.shaders.loadRaw(egd.res / "shader/skyboxMip0.rasl");
