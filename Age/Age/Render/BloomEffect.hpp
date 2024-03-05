@@ -14,8 +14,9 @@ namespace a_game_engine
 		float radius = 1.f;
 
 		void destroy();
-		void create(uvec2 mip0size, uint mipsCount);
-		void use(const Texture& tex);
-		inline const Texture& getResultTexture() const { return textures[0]; }
+		void create(uvec2 mip0size, int mipsCount = 0);
+		void useDownscale(const Texture& tex, int dstMip = 1, int lastMipLevel = 0);
+		void useUpscale(int mipStart, int mipEnd);
+		inline const std::vector<Texture2D>& getTextures() const { return textures; }
 	};
 }

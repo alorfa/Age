@@ -35,6 +35,8 @@ namespace a_game_engine
 		glCreateTextures(GL_TEXTURE_2D, 1, &_id);
 
 		_size = s.img.size;
+		_size.x = Math::max(_size.x, 1u);
+		_size.y = Math::max(_size.y, 1u);
 		_format = s.format;
 
 		int outerType, outerFormat;

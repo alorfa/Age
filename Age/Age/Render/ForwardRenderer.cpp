@@ -29,14 +29,14 @@ namespace a_game_engine
 		ImageInfo info{newSize, TextureFormat::RGB_F16};
 		ImageInfo depthInfo{newSize, TextureFormat::Depth24};
 		//mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
-		Texture2D::Settings colorSettings{ info, TextureFormat::Auto, sampler, -1 };
+		Texture2D::Settings colorSettings{ info, TextureFormat::Auto, sampler, 1 };
 		colorBuffer.create(colorSettings);
 		//depthBuffer.create({ depthInfo, false });
 		mainFb.setTexture(0, colorBuffer);
 		//mainFb.setDepthTexture(depthBuffer);
 		mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
-		bloom.create(newSize, 5);
-		bloom.radius = 2.5f;
+		bloom.create(newSize / 2u);
+		bloom.radius = 1.5f;
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
@@ -88,10 +88,10 @@ namespace a_game_engine
 			});
 		Pipeline::setBlendMode(BlendMode::Lerp);
 
-		bloom.use(colorBuffer);
+		bloom.useDownscale(colorBuffer, 0);
+		bloom.useUpscale(2, 0);
 
-		colorBuffer.generateMipmaps();
-		const vec3 midColor = colorBuffer.getMidColor();
+		const vec3 midColor = bloom.getTextures().crbegin()->getMidColor();
 		const float brightness = vec3::dot(midColor, Math::LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.6f, 0.3f);
 		const float curExp = 0.3f / clampedBr;
@@ -102,9 +102,9 @@ namespace a_game_engine
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		shader->use();
 		shader->setUniform(shader->getLocation("tex"), colorBuffer, 0);
-		shader->setUniform(shader->getLocation("bloomTex"), bloom.getResultTexture(), 1);
+		shader->setUniform(shader->getLocation("bloomTex"), bloom.getTextures()[0], 1);
 		shader->setUniform(shader->getLocation("exposure"), exposure);
-		shader->setUniform(shader->getLocation("bloomStrength"), 0.09f);
+		shader->setUniform(shader->getLocation("bloomStrength"), 0.05f);
 		verts->draw();
 	}
 }
