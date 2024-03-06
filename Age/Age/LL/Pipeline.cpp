@@ -8,7 +8,7 @@ namespace a_game_engine
 		DepthFunc depthFunc = DepthFunc::Always;
 		CullFace cullFace = CullFace::Disable;
 		bool frontFaceCCW = true;
-		BlendMode blendNode = BlendMode::Disable;
+		BlendMode blendMode = BlendMode::Disable;
 
 		bool stencilIsEnabled = false;
 		DepthFunc stencilFunc = DepthFunc::Always;
@@ -17,12 +17,12 @@ namespace a_game_engine
 
 	void Pipeline::setBlendMode(BlendMode mode)
 	{
-		if (blendNode == mode)
+		if (blendMode == mode)
 			return;
 
 		if (mode == BlendMode::Disable)
 			glDisable(GL_BLEND);
-		else
+		else if (blendMode == BlendMode::Disable)
 			glEnable(GL_BLEND);
 
 		switch (mode)
@@ -34,7 +34,7 @@ namespace a_game_engine
 			glBlendFunc(GL_ONE, GL_ONE);
 			break;
 		}
-		blendNode = mode;
+		blendMode = mode;
 	}
 
 	void Pipeline::setDepthFunc(DepthFunc func)

@@ -1,6 +1,7 @@
 #include "BloomEffect.hpp"
 #include "Age/egd.hpp"
 #include "Age/Math/Math.hpp"
+#include "Age/LL/Pipeline.hpp"
 
 namespace a_game_engine
 {
@@ -29,6 +30,8 @@ namespace a_game_engine
 	}
 	void BloomEffect::useDownscale(const Texture& tex, int dstMip, int lastMipLevel)
 	{
+		Pipeline::setBlendMode(BlendMode::Lerp);
+
 		const Texture2D* currentTexture = &tex;
 		lastMipLevel = lastMipLevel <= 0 ? 
 			(int)(textures.size() - 1) :
@@ -55,8 +58,10 @@ namespace a_game_engine
 			VertexBuffer::getDefFramebuf().draw();
 		}
 	}
-	void BloomEffect::useUpscale(int mipStart, int mipEnd)
+	void BloomEffect::useUpscale(int mipStart, int mipEnd, BlendMode mode)
 	{
+		Pipeline::setBlendMode(mode);
+
 		const Texture2D* currentTexture = nullptr;
 		upscale->use();
 		for (int i = (int)mipStart; i >= mipEnd; i--)

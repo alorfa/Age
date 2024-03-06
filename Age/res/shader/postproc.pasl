@@ -12,7 +12,7 @@ void main()
     vec3 color = texture(tex, uv).rgb;
     vec3 bloomColor = blur3x3(bloomTex, uv, bloomRadius).rgb;
     color = mix(color, bloomColor, bloomStrength);
-    color = uncharted2Tonemap(color * exposure);
+    color = acesTonemap(color * exposure);
     color = linearToScreen(color);
     FragColor = vec4(color, 1.);
 }

@@ -36,7 +36,7 @@ namespace a_game_engine
 		//mainFb.setDepthTexture(depthBuffer);
 		mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
 		bloom.create(newSize / 2u);
-		bloom.radius = 3.5f;
+		bloom.radius = 1.5f;
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
@@ -86,15 +86,16 @@ namespace a_game_engine
 				Pipeline::setBlendMode(BlendMode::Add);
 				n.draw(transparentSpecInfo);
 			});
-		Pipeline::setBlendMode(BlendMode::Lerp);
 
 		bloom.useDownscale(colorBuffer, 0);
-		bloom.useUpscale(2, 0);
+		bloom.useUpscale(5, 0);
+
+		Pipeline::setBlendMode(BlendMode::Lerp);
 
 		const vec3 midColor = bloom.getTextures().crbegin()->getMidColor();
 		const float brightness = vec3::dot(midColor, Math::LUMA);
-		const float clampedBr = Math::lerp(brightness, 0.6f, 0.3f);
-		const float curExp = 0.3f / clampedBr;
+		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
+		const float curExp = 0.25f / clampedBr;
 		exposure = Math::smooth(exposure, curExp, delta * 3.f);
 
 		mainFb.useDefault(size);
