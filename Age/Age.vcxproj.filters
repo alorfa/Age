@@ -107,5 +107,12 @@
     <ClCompile Include="Age\Resource\CubeMapLoader.cpp" />
     <ClCompile Include="external\header\miniz.c" />
     <ClCompile Include="Age\Render\BloomEffect.cpp" />
+    <ClCompile Include="external\header\imgui\imgui.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_draw.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_tables.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="external\header\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="external\header\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_demo.cpp" />
   </ItemGroup>
 </Project>

@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Age;$(SolutionDir)Age\external\header</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Age;$(SolutionDir)Age\external\header;$(SolutionDir)Age\external\header\imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,7 +161,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC;GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Age;$(SolutionDir)Age\external\header</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Age;$(SolutionDir)Age\external\header;$(SolutionDir)Age\external\header\imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -283,6 +283,13 @@
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
     <ClCompile Include="Age\Transform\Camera.cpp" />
     <ClCompile Include="Age\Transform\Transform.cpp" />
+    <ClCompile Include="external\header\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="external\header\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="external\header\imgui\imgui.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_demo.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_draw.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_tables.cpp" />
+    <ClCompile Include="external\header\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\header\miniz.c" />
     <ClCompile Include="TestGame.cpp" />
   </ItemGroup>

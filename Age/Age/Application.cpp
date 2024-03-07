@@ -1,6 +1,9 @@
 #include "Application.hpp"
 #include <Age/LL/opengl.h>
 #include "egd.hpp"
+#include <imgui.h>
+#include <backends/imgui_impl_win32.h>
+#include <backends/imgui_impl_opengl3.h>
 
 namespace a_game_engine
 {
@@ -24,6 +27,9 @@ namespace a_game_engine
 		initEvents();
 		init();
 		loadResources();
+
+		bool showTestWindow = true;
+		float testFloat = 0.5f;
 
 		while (_window.isOpen())
 		{
@@ -49,13 +55,29 @@ namespace a_game_engine
 				handleRawEvents(ev);
 			}
 
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			if (showTestWindow)
+			{
+				ImGui::Begin("Test window", &showTestWindow);
+				ImGui::SliderFloat("float", &testFloat, 0.f, 1.f);
+				ImGui::End();
+			}
+			ImGui::Render();
 			handleEvents(delta);
 			update(delta);
 			draw(delta);
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			_window.display();
 		}
-		onExit();
+		onExit(); 
+		
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
 		_window.close();
 	}
 	bool Application::createWindow(uvec2 size, const sf::String& title, int style, uint antialiasing, uint depthBits)
@@ -79,6 +101,15 @@ namespace a_game_engine
 			_window.close();
 			return false;
 		}
+
+		IMGUI_CHECKVERSION();
+		auto result = ImGui::CreateContext();
+		ImGui::StyleColorsDark();
+		ImGui_ImplWin32_InitForOpenGL(_window.getSystemHandle());
+		ImGui_ImplOpenGL3_Init();
+		ImGuiIO& io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		return true;
 	}
