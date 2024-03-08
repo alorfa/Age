@@ -2,8 +2,9 @@
 #include <Age/LL/opengl.h>
 #include "egd.hpp"
 #include <imgui.h>
-#include <backends/imgui_impl_win32.h>
-#include <backends/imgui_impl_opengl3.h>
+#include <imgui-SFML.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <imgui/backends/imgui_impl_win32.h>
 
 namespace a_game_engine
 {
@@ -35,12 +36,17 @@ namespace a_game_engine
 		{
 			const float delta = clock.restart().asSeconds();
 
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
 			memset(&ev, 0, sizeof(ev));
 			_eventHandler.clearEvents();
 			if (_window.hasFocus())
 				_eventHandler.handleEvent(ev);
 			while (_window.pollEvent(ev))
 			{
+				ImGui::SFML::ProcessEvent(_window, ev);
 				if (_window.hasFocus())
 					_eventHandler.handleEvent(ev);
 				switch (ev.type)
@@ -55,26 +61,19 @@ namespace a_game_engine
 				handleRawEvents(ev);
 			}
 
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplWin32_NewFrame();
-			ImGui::NewFrame();
-
 			if (showTestWindow)
 			{
-				ImGui::Begin("Test window", &showTestWindow);
-				ImGui::SliderFloat("float", &testFloat, 0.f, 1.f);
-				ImGui::End();
+				ImGui::ShowDemoWindow();
 			}
-			ImGui::Render();
+
 			handleEvents(delta);
 			update(delta);
-			draw(delta);
+			draw(delta); 
+			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 			_window.display();
 		}
 		onExit(); 
-		
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
@@ -101,7 +100,6 @@ namespace a_game_engine
 			_window.close();
 			return false;
 		}
-
 		IMGUI_CHECKVERSION();
 		auto result = ImGui::CreateContext();
 		ImGui::StyleColorsDark();
@@ -110,7 +108,9 @@ namespace a_game_engine
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
 		return true;
 	}
 }

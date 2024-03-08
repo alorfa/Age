@@ -114,5 +114,6 @@
     <ClCompile Include="external\header\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="external\header\imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="external\header\imgui\imgui_demo.cpp" />
+    <ClCompile Include="external\header\imgui\imgui-SFML.cpp" />
   </ItemGroup>
 </Project>
