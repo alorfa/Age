@@ -49,5 +49,7 @@ namespace a_game_engine
 
 		static CubeMap& getDefaultCubeMap();
 		static EnvCubeMap& getDefaultEnvCubeMap();
+
+		~CubeMapLoader();
 	};
 }

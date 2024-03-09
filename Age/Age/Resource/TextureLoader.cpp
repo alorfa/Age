@@ -20,24 +20,29 @@ namespace a_game_engine
 			for (const auto& t : textures)
 			{
 				if (t.second)
-					Logger::logInfo("Image " + t.first.string() + " was unloaded");
+					Logger::logInfo("Texture " + t.first.string() + " was unloaded");
 			}
 	}
 
 	Texture2D& TextureLoader::load(const std::filesystem::path& path, const Settings& s)
 	{
 		return ResourceLoader::defaultLoad<Texture2D, std::filesystem::path>(textures, path, 
-			[&](const std::filesystem::path& p) 
+			[&](const std::filesystem::path& p) -> std::unique_ptr<Texture2D>
 			{ 
 				Image img;
 				img.loadFromFile(path);
 				if (not img.info.isValid())
-					return std::unique_ptr<Texture2D>(nullptr);
+				{
+					Logger::logError("Failed to load texture " + path.string());
+					return nullptr;
+				}
 					
 				const bool mipmaps = s.hasMipmaps();
 				auto result = std::make_unique<Texture2D>();
 				Texture2D::Settings settings{ img.info, s.format, s.sampler, mipmaps ? -1 : 1 };
 				result->create(settings);
+				if (logOnLoad)
+					Logger::logInfo("Texture " + path.string() + " was loaded");
 				return result;
 			},
 			getDefault);

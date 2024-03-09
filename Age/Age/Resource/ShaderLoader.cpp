@@ -72,6 +72,7 @@ namespace a_game_engine
 					Logger::logInfo("Raw shader " + p.string() + " was loaded");
 					return result;
 				}
+				Logger::logError("Failed to load raw shader " + p.string());
 				return nullptr;
 			}, getDefaultRaw);
 	}
@@ -96,6 +97,7 @@ namespace a_game_engine
 					Logger::logInfo("Postprocessing " + p.string() + " was loaded");
 					return result;
 				}
+				Logger::logError("Failed to load postprocessing " + p.string());
 				return nullptr;
 			}, getDefaultRaw);
 	}
@@ -132,7 +134,7 @@ namespace a_game_engine
 	{
 		if (not defShader)
 		{
-			defShader = std::make_unique<Shader>(File::readAllText(egd.res / "shader/pbrNormal.asl"));
+			defShader = std::make_unique<Shader>(File::readAllText(egd.res / "shader/default.asl"));
 		}
 		return *defShader;
 	}

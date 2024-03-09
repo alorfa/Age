@@ -23,6 +23,9 @@ namespace a_game
 		void load() override;
 		void draw(const Camera* c, float delta) override;
 
+		bool useBloom = true;
+		bool useAutoExposure = true;
+		int bloomMipCount = 5;
 		float bloomRadius = 1.5f;
 		int rendererIndex = 0;
 	};

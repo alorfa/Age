@@ -1,6 +1,7 @@
 #include "CubeMapLoader.hpp"
 #include "TextureLoader.hpp"
 #include "ResourceLoader.hpp"
+#include "Age/Other/Logger.hpp"
 
 namespace a_game_engine
 {
@@ -29,7 +30,11 @@ namespace a_game_engine
 		return ResourceLoader::defaultLoad<CubeMap, std::filesystem::path>(rawCubeMaps, path,
 			[&](const std::filesystem::path& p)
 			{
-				return readFromFile(path, s);
+				auto result = readFromFile(path, s);
+				if (result)
+					Logger::logInfo("CubeMap " + path.string() + " was loaded");
+				else Logger::logError("Failed to load cubemap " + path.string());
+				return result;
 			},
 			getDefaultCubeMap);
 	}
@@ -43,12 +48,16 @@ namespace a_game_engine
 					MipmapSettings::Auto, s.srgb, 10.f };
 				auto cubemap = readFromFile(path, settings);
 				if (cubemap == nullptr)
+				{
+					Logger::logError("Failed to load environment " + path.string());
 					return nullptr;
+				}
 
 				auto result = std::make_unique<EnvCubeMap>();
 				result->specular.createSpecularMap(*cubemap, s.specularFormat);
 				if (s.diffuseSize > 0)
 					result->diffuse.createDiffuseMap(*cubemap, s.diffuseSize, s.diffuseFormat);
+				Logger::logInfo("Environment " + path.string() + " was loaded");
 				return result;
 			},
 			getDefaultEnvCubeMap);
@@ -90,6 +99,20 @@ namespace a_game_engine
 			defEnvCubemap->specular.create(settings);
 		}
 		return *defEnvCubemap;
+	}
+
+	CubeMapLoader::~CubeMapLoader()
+	{
+		for (const auto& t : cubeMaps)
+		{
+			if (t.second)
+				Logger::logInfo("Environment " + t.first.string() + " was unloaded");
+		}
+		for (const auto& t : rawCubeMaps)
+		{
+			if (t.second)
+				Logger::logInfo("CubeMap " + t.first.string() + " was unloaded");
+		}
 	}
 
 	CubeMapLoader::Settings::Settings(TextureFormat specularFormat,

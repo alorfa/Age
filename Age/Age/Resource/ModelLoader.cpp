@@ -278,7 +278,7 @@ namespace a_game_engine
 			auto ageMesh = handleAiMesh(mesh, materials, s.withNormalMap);
 			if (not ageMesh)
 			{
-				Logger::logError("Cannot load model " + path.string());
+				Logger::logError("Failed to load model " + path.string());
 				return nullptr;
 			}
 			result->meshes.push_back(std::move(ageMesh));
