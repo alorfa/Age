@@ -8,13 +8,13 @@ namespace a_game
 {
 	class WorldScene;
 
-	class ControlController : public Component
+	class PlayerController : public Component
 	{
 		ivec2 stopMouse;
 		float sensitivity = 3.f;
 		bool enableControl = false;
 	public:
-		ControlController(const Node& n);
+		PlayerController(const Node& n);
 
 		void handleRawEvents(const sf::Event& ev) override;
 		void handleEvents(const EventHandler& ev, float delta) override;

@@ -6,6 +6,7 @@
 #include "Age/Scene/Scene.hpp"
 #include "Age/LL/opengl.h"
 #include "Age/Components/LightComponents.hpp"
+#include "Age/UI/UI.hpp"
 
 namespace a_game_engine
 {
@@ -235,6 +236,8 @@ namespace a_game_engine
 			debugPass->setUniform(debugPass->getLocation("tex"), 2);
 			rectangleVerts->draw();
 		}
+
+		UI::draw();
 
 		screenTime = (int)clock.restart().asMicroseconds();
 	}

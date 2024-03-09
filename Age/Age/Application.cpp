@@ -29,9 +29,6 @@ namespace a_game_engine
 		init();
 		loadResources();
 
-		bool showTestWindow = true;
-		float testFloat = 0.5f;
-
 		while (_window.isOpen())
 		{
 			const float delta = clock.restart().asSeconds();
@@ -61,16 +58,9 @@ namespace a_game_engine
 				handleRawEvents(ev);
 			}
 
-			if (showTestWindow)
-			{
-				ImGui::ShowDemoWindow();
-			}
-
 			handleEvents(delta);
 			update(delta);
 			draw(delta); 
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			_window.display();
 		}
 		onExit(); 
@@ -100,14 +90,7 @@ namespace a_game_engine
 			_window.close();
 			return false;
 		}
-		IMGUI_CHECKVERSION();
-		auto result = ImGui::CreateContext();
-		ImGui::StyleColorsDark();
-		ImGui_ImplWin32_InitForOpenGL(_window.getSystemHandle());
-		ImGui_ImplOpenGL3_Init();
-		ImGuiIO& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+		ImGui::SFML::Init(_window, sf::Vector2f((float)size.x, (float)size.y), true);
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 

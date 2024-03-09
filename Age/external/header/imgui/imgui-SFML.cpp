@@ -18,6 +18,8 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include <imgui/backends/imgui_impl_win32.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 #if defined(__APPLE__)
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -203,22 +205,20 @@ namespace ImGui {
 namespace SFML {
 
 bool Init(sf::Window& window, const sf::Vector2f& displaySize, bool loadDefaultFont) {
-    s_windowContexts.emplace_back(new WindowContext(&window));
 
-    s_currWindowCtx = s_windowContexts.back().get();
-    ImGui::SetCurrentContext(s_currWindowCtx->imContext);
-
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplWin32_InitForOpenGL(window.getSystemHandle());
+    ImGui_ImplOpenGL3_Init();
     ImGuiIO& io = ImGui::GetIO();
-
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     // tell ImGui which features we support
     io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
     io.BackendPlatformName = "imgui_impl_sfml";
-
-    s_currWindowCtx->joystickId = getConnectedJoystickId();
-
-    initDefaultJoystickMapping();
 
     // init rendering
     io.DisplaySize = ImVec2(displaySize.x, displaySize.y);
@@ -227,15 +227,15 @@ bool Init(sf::Window& window, const sf::Vector2f& displaySize, bool loadDefaultF
     io.SetClipboardTextFn = setClipboardText;
     io.GetClipboardTextFn = getClipboardText;
 
-    // load mouse cursors
-    loadMouseCursor(ImGuiMouseCursor_Arrow, sf::Cursor::Arrow);
-    loadMouseCursor(ImGuiMouseCursor_TextInput, sf::Cursor::Text);
-    loadMouseCursor(ImGuiMouseCursor_ResizeAll, sf::Cursor::SizeAll);
-    loadMouseCursor(ImGuiMouseCursor_ResizeNS, sf::Cursor::SizeVertical);
-    loadMouseCursor(ImGuiMouseCursor_ResizeEW, sf::Cursor::SizeHorizontal);
-    loadMouseCursor(ImGuiMouseCursor_ResizeNESW, sf::Cursor::SizeBottomLeftTopRight);
-    loadMouseCursor(ImGuiMouseCursor_ResizeNWSE, sf::Cursor::SizeTopLeftBottomRight);
-    loadMouseCursor(ImGuiMouseCursor_Hand, sf::Cursor::Hand);
+    //// load mouse cursors
+    //loadMouseCursor(ImGuiMouseCursor_Arrow, sf::Cursor::Arrow);
+    //loadMouseCursor(ImGuiMouseCursor_TextInput, sf::Cursor::Text);
+    //loadMouseCursor(ImGuiMouseCursor_ResizeAll, sf::Cursor::SizeAll);
+    //loadMouseCursor(ImGuiMouseCursor_ResizeNS, sf::Cursor::SizeVertical);
+    //loadMouseCursor(ImGuiMouseCursor_ResizeEW, sf::Cursor::SizeHorizontal);
+    //loadMouseCursor(ImGuiMouseCursor_ResizeNESW, sf::Cursor::SizeBottomLeftTopRight);
+    //loadMouseCursor(ImGuiMouseCursor_ResizeNWSE, sf::Cursor::SizeTopLeftBottomRight);
+    //loadMouseCursor(ImGuiMouseCursor_Hand, sf::Cursor::Hand);
 
     return true;
 }

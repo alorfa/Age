@@ -8,6 +8,7 @@
 #include "Age/egd.hpp"
 #include "Age/Scene/Scene.hpp"
 #include "Age/Math/Math.hpp"
+#include "Age/UI/UI.hpp"
 
 namespace a_game_engine
 {
@@ -111,5 +112,7 @@ namespace a_game_engine
 		shader->setUniform(shader->getLocation("bloomStrength"), 0.045f);
 		shader->setUniform(shader->getLocation("bloomRadius"), bloomRadius * bloom.radius);
 		verts->draw();
+
+		UI::draw();
 	}
 }

@@ -1,15 +1,16 @@
-#include "ControlController.hpp"
+#include "PlayerController.hpp"
 #include <SFML/Window/Event.hpp>
 #include <Age/egd.hpp>
 #include <Age/Math/Math.hpp>
 #include <Age/EventHandler.hpp>
+#include <imgui.h>
 
 namespace a_game
 {
-	ControlController::ControlController(const Node& n)
+	PlayerController::PlayerController(const Node& n)
 	{
 	}
-	void ControlController::handleRawEvents(const sf::Event& ev)
+	void PlayerController::handleRawEvents(const sf::Event& ev)
 	{
 		if (ev.type == sf::Event::Resized)
 		{
@@ -17,7 +18,7 @@ namespace a_game
 			egd.camera.setAspectRatio(newSize);
 		}
 	}
-	void ControlController::handleEvents(const EventHandler& ev, float delta)
+	void PlayerController::handleEvents(const EventHandler& ev, float delta)
 	{
 		if (ev.getEvent("camera"))
 			setCameraActive(!enableControl);
@@ -55,8 +56,12 @@ namespace a_game
 				rot.x = maxrot;
 			egd.camera.transform.changeRotation() = rot;
 		}
+		else
+		{
+			ImGui::ShowDemoWindow();
+		}
 	}
-	void ControlController::setCameraActive(bool value)
+	void PlayerController::setCameraActive(bool value)
 	{
 		if (value == enableControl)
 			return;
