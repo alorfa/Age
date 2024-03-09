@@ -10,10 +10,13 @@ namespace a_game
 
 	class PlayerController : public Component
 	{
+		WorldScene* _scene = nullptr;
 		ivec2 stopMouse;
 		float sensitivity = 3.f;
 		bool enableControl = false;
 	public:
+		int rendererType = 0;
+
 		PlayerController(const Node& n);
 
 		void handleRawEvents(const sf::Event& ev) override;

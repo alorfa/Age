@@ -163,15 +163,15 @@ namespace a_game_engine
 		if (result == nullptr)
 		{
 			std::vector<float> vertices = {
-				-1.f, -1.f,
-				1.f, -1.f,
-				-1.f, 1.f,
-				-1.f, 1.f,
-				1.f, -1.f,
-				1.f, 1.f,
+				-1.f, -1.f, 0.f, 0.f,
+				1.f, -1.f, 1.f, 0.f,
+				-1.f, 1.f, 0.f, 1.f,
+				-1.f, 1.f, 0.f, 1.f,
+				1.f, -1.f, 1.f, 0.f,
+				1.f, 1.f, 1.f, 1.f,
 			};
 			result = std::make_unique<VertexBuffer>();
-			result->addFloatBuffer(vertices.data(), vertices.size(), 2);
+			result->addFloatBuffer(vertices.data(), vertices.size(), { 2, 2 });
 			result->vertCount = 6;
 		}
 		return *result;

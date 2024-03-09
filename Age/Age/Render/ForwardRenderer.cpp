@@ -16,6 +16,7 @@ namespace a_game_engine
 	{
 		shader = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
 		mainFb.setTexturesCount(1);
+		bloom.radius = 1.5f;
 	}
 	void ForwardRenderer::clear()
 	{
@@ -37,7 +38,6 @@ namespace a_game_engine
 		//mainFb.setDepthTexture(depthBuffer);
 		mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
 		bloom.create(newSize / 2u);
-		bloom.radius = 1.5f;
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{

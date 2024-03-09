@@ -23,10 +23,6 @@ namespace a_game
 	}
 	void WorldScene::load()
 	{
-		auto nativeSize = egd.window->getSize();
-		forwardRenderer.updateSize({ nativeSize.x, nativeSize.y });
-		activeRenderer = &forwardRenderer;
-
 		activeCamera = &egd.camera;
 
 		std::unique_ptr<Node> objs[6];
@@ -160,15 +156,34 @@ namespace a_game
 
 		for (uint i = 0; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
-
 	}
-	void WorldScene::draw(const Camera* c, float delta) const
+	void WorldScene::draw(const Camera* c, float delta)
 	{
+		setActiveRenderer(rendererIndex);
+		forwardRenderer.bloom.radius = bloomRadius;
 		const Camera* camera = c ? c : activeCamera;
+
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);
 		activeRenderer->drawScene(*this, *camera, delta);
 		if (activeRenderer == &deferredRenderer)
 			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",
 				deferredRenderer.gbufferTime, deferredRenderer.lightTime, deferredRenderer.screenTime));
+	}
+	void WorldScene::setActiveRenderer(int index)
+	{
+		Renderer* curRender = nullptr;
+		if (index == 0)
+			curRender = &forwardRenderer;
+		if (index == 1)
+			curRender = &deferredRenderer;
+
+		if (curRender == nullptr or curRender == activeRenderer)
+			return;
+
+		auto size = egd.window->getSize();
+		if (activeRenderer)
+			activeRenderer->clear();
+		activeRenderer = curRender;
+		activeRenderer->updateSize({ size.x, size.y });
 	}
 }

@@ -11,7 +11,6 @@ namespace a_game_engine
 	class ForwardRenderer : public Renderer
 	{
 		FrameBuffer2D mainFb;
-		BloomEffect bloom;
 		Texture2D colorBuffer, depthBuffer;
 		float exposure = 1.f;
 
@@ -21,6 +20,7 @@ namespace a_game_engine
 
 		const EnvCubeMap* env = nullptr;
 		SkyBox skyBox;
+		BloomEffect bloom;
 
 		void clear() override;
 		void updateSize(const uvec2& newSize);

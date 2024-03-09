@@ -20,24 +20,6 @@ namespace a_game
 			_windowSize = { ev.size.width ,ev.size.height };
 			_scene->activeRenderer->updateSize(_windowSize);
 		}
-		if (ev.type == ev.KeyPressed)
-		{
-			if (ev.key.code == sf::Keyboard::Left)
-			{
-				if (_scene->activeRenderer != &_scene->forwardRenderer)
-				{
-					_scene->activeRenderer->clear();
-					_scene->activeRenderer = &_scene->forwardRenderer;
-					_scene->activeRenderer->updateSize(_windowSize);
-				}
-			}
-			if (ev.key.code == sf::Keyboard::Right)
-			{
-				_scene->activeRenderer->clear();
-				_scene->activeRenderer = &_scene->deferredRenderer;
-				_scene->activeRenderer->updateSize(_windowSize);
-			}
-		}
 	}
 	void SceneController::handleEvents(const EventHandler& ev, float delta)
 	{

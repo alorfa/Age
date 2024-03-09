@@ -10,6 +10,7 @@ namespace a_game
 {
 	class WorldScene : public Scene
 	{
+		void setActiveRenderer(int index);
 	public:
 		WorldScene();
 
@@ -20,6 +21,9 @@ namespace a_game
 		const EnvCubeMap* env = nullptr;
 
 		void load() override;
-		void draw(const Camera* c, float delta) const override;
+		void draw(const Camera* c, float delta) override;
+
+		float bloomRadius = 1.5f;
+		int rendererIndex = 0;
 	};
 }

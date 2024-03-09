@@ -4,11 +4,13 @@
 #include <Age/Math/Math.hpp>
 #include <Age/EventHandler.hpp>
 #include <imgui.h>
+#include "Age/Game/WorldScene.hpp"
 
 namespace a_game
 {
 	PlayerController::PlayerController(const Node& n)
 	{
+		_scene = dynamic_cast<WorldScene*>(n.scene);
 	}
 	void PlayerController::handleRawEvents(const sf::Event& ev)
 	{
@@ -58,7 +60,16 @@ namespace a_game
 		}
 		else
 		{
-			ImGui::ShowDemoWindow();
+			ImGui::Begin("A Game", nullptr, 0);
+			if (ImGui::CollapsingHeader("Render"))
+			{
+				ImGui::RadioButton("Forward renderer", &_scene->rendererIndex, 0);
+				ImGui::RadioButton("Deferred renderer", &_scene->rendererIndex, 1);
+				ImGui::SliderFloat("Bloom radius(in pixels)", &_scene->bloomRadius, 0.f, 6.f);
+				ImGui::Checkbox("Show gbuffers", &_scene->deferredRenderer.debug);
+			}
+			ImGui::End();
+			//ImGui::ShowDemoWindow();
 		}
 	}
 	void PlayerController::setCameraActive(bool value)
