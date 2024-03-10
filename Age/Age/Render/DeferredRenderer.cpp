@@ -14,7 +14,7 @@ namespace a_game_engine
 	DeferredRenderer::DeferredRenderer()
 	{
 		debugPass = &egd.shaders.loadRaw(egd.res / "shader/deferredDebugger.rasl");
-		postprocPass = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
+		postprocPass = &egd.shaders.loadPostproc(egd.res / "shader/deferredPostprocessing.pasl");
 		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/dirLight.pasl");
 		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/pointLight.pasl");
 		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/spotLight.pasl");
@@ -239,6 +239,10 @@ namespace a_game_engine
 		postprocPass->setUniform(postprocPass->getLocation("exposure"), exposure);
 		postprocPass->setUniform(postprocPass->getLocation("bloomStrength"), bloom->strength);
 		postprocPass->setUniform(postprocPass->getLocation("bloomRadius"), bloomRadius * bloom->radius);
+		postprocPass->setUniform(postprocPass->getLocation("fogColor"), fogColor);
+		postprocPass->setUniform(postprocPass->getLocation("fogDist"), fogDistance);
+		postprocPass->setUniform(postprocPass->getLocation("posMap"), posMap, 2);
+		postprocPass->setUniform(postprocPass->getLocation("cameraPos"), camera.transform.getPosition());
 		rectangleVerts->draw();
 
 		if (debug)

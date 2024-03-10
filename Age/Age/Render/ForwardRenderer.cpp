@@ -14,7 +14,7 @@ namespace a_game_engine
 {
 	ForwardRenderer::ForwardRenderer()
 	{
-		shader = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
+		shader = &egd.shaders.loadPostproc(egd.res / "shader/forwardPostprocessing.pasl");
 		mainFb.setTexturesCount(1);
 	}
 	void ForwardRenderer::clear()

@@ -27,6 +27,8 @@ namespace a_game_engine
 		const EnvCubeMap* env = nullptr;
 		SkyBox skyBox;
 		BloomEffect* bloom = nullptr;
+		vec3 fogColor;
+		float fogDistance = 0.f;
 
 		DeferredRenderer();
 

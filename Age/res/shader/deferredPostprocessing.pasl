@@ -1,0 +1,35 @@
+out vec4 FragColor;
+
+in vec2 uv;
+uniform sampler2D tex;
+uniform sampler2D bloomTex;
+uniform float exposure = 1.0;
+uniform float bloomStrength = 0.;
+uniform vec2 bloomRadius;
+
+uniform vec3 fogColor;
+uniform float fogDist = 0.;
+uniform sampler2D posMap;
+uniform vec3 cameraPos;
+
+vec3 useFog(vec3 color)
+{
+	vec3 fragPos = texture(posMap, uv).rgb;
+	vec3 tmp = cameraPos - fragPos;
+	float distSqr = dot(tmp, tmp);
+	float t = smoothstep(0., fogDist * fogDist, distSqr);
+	if (fogDist == 0. || fragPos == vec3(0.))
+		t = 0.;
+	return mix(color, fogColor, t);
+}
+
+void main()
+{
+    vec3 color = texture(tex, uv).rgb;
+    vec3 bloomColor = blur3x3(bloomTex, uv, bloomRadius).rgb;
+    color = mix(color, bloomColor, bloomStrength);
+    color = useFog(color);
+    color = acesTonemap(color * exposure);
+    color = linearToScreen(color);
+    FragColor = vec4(color, 1.);
+}

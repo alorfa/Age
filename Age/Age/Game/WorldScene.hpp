@@ -26,11 +26,11 @@ namespace a_game
 		void load() override;
 		void draw(const Camera* c, float delta) override;
 
-		bool useBloom = true;
-		bool useAutoExposure = true;
 		bool bloomFogBlending = false;
 		int bloomMipCount = 5;
 		int rendererIndex = 0;
+		float fogDistance = 0.f;
+		vec3 fogColor = vec3{ 0.5f, 0.6f, 0.8f };
 
 		void updateSize(uvec2 size);
 		inline bool& changeDeferredRendererDebug() { return deferredRenderer.debug; }

@@ -60,6 +60,7 @@ namespace a_game
 		}
 		else
 		{
+			const int flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
 			ImGui::Begin("A Game", nullptr, 0);
 			if (ImGui::CollapsingHeader("Renderer"))
 			{
@@ -74,9 +75,30 @@ namespace a_game
 				ImGui::Checkbox("Bloom as fog", &_scene->bloomFogBlending);
 				ImGui::SliderFloat("Bloom strength", &_scene->bloom.strength, 0.f, 
 					_scene->bloomFogBlending ? 0.7f : 0.2f, "%.2f");
+				ImGui::SliderFloat("Fog distance", &_scene->fogDistance, 0.f, 40.f);
+				ImGui::ColorEdit3("Fog color", (float*)(&_scene->fogColor));
+			}
+			if (ImGui::CollapsingHeader("Presets"))
+			{
+				if (ImGui::Button("Sun day"))
+				{
+					_scene->bloom.strength = 0.05f;
+					_scene->bloomFogBlending = false;
+					_scene->bloomMipCount = 7;
+					_scene->bloom.radius = 1.3f;
+					_scene->fogDistance = 0.f;
+				}
+				if (ImGui::Button("Fog"))
+				{
+					_scene->bloom.strength = 0.45f;
+					_scene->bloomFogBlending = true;
+					_scene->bloomMipCount = 5;
+					_scene->bloom.radius = 1.2f;
+					_scene->fogDistance = 20.f;
+					_scene->rendererIndex = 1;
+				}
 			}
 			ImGui::End();
-			//ImGui::ShowDemoWindow();
 		}
 	}
 	void PlayerController::setCameraActive(bool value)

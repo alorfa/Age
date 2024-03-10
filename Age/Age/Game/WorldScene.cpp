@@ -163,6 +163,8 @@ namespace a_game
 		setActiveRenderer(rendererIndex);
 		bloom.upscaleStartMipLevel = bloomMipCount - 1;
 		bloom.blendMode = bloomFogBlending ? BlendMode::Lerp : BlendMode::Add;
+		deferredRenderer.fogColor = fogColor;
+		deferredRenderer.fogDistance = fogDistance;
 		const Camera* camera = c ? c : activeCamera;
 
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);

@@ -50,8 +50,8 @@ namespace a_game_engine
 				currentTexture = &textures[i - 1];
 			}
 			const vec2 texelSize = { 
-				1.f / Math::max(currentTexture->getSize().x, 1u), 
-				1.f / Math::max(currentTexture->getSize().y, 1u) };
+				1.f / currentTexture->getSize().x, 
+				1.f / currentTexture->getSize().y };
 			downscale->setUniform(downscale->getLocation("tex"), *currentTexture, 0);
 			downscale->setUniform(downscale->getLocation("texelSize"), texelSize);
 			fb.setTexture(0, textures[i]);
