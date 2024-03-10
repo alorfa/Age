@@ -39,6 +39,19 @@ namespace a_game_engine
 			float l = 1.f / length();
 			(*this) *= l;
 		}
+
+		bool operator==(const vector2& v) const
+		{
+			return x == v.x && y == v.y;
+		}
+		bool operator!=(const vector2& v) const
+		{
+			return !operator==(v);
+		}
+		static float dot(const vector2& v1, const vector2& v2)
+		{
+			return v1.x * v2.x + v1.y * v2.y;
+		}
 	};
 
 #define AGE_VECTOR2_OPERATOR_IMPL(oper)										\

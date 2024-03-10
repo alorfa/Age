@@ -16,7 +16,6 @@ namespace a_game_engine
 	{
 		shader = &egd.shaders.loadPostproc(egd.res / "shader/postproc.pasl");
 		mainFb.setTexturesCount(1);
-		bloom.radius = 1.5f;
 	}
 	void ForwardRenderer::clear()
 	{
@@ -37,7 +36,6 @@ namespace a_game_engine
 		mainFb.setTexture(0, colorBuffer);
 		//mainFb.setDepthTexture(depthBuffer);
 		mainFb.createRenderBuffer(newSize, TextureFormat::Depth24);
-		bloom.create(newSize / 2u);
 	}
 	void ForwardRenderer::drawScene(const Scene& sc, const Camera& camera, float delta)
 	{
@@ -88,12 +86,12 @@ namespace a_game_engine
 				n.draw(transparentSpecInfo);
 			});
 
-		bloom.useDownscale(colorBuffer, 0);
-		bloom.useUpscale(5, 0);
+		bloom->useDownscale(colorBuffer);
+		bloom->useUpscale();
 
 		Pipeline::setBlendMode(BlendMode::Lerp);
 
-		const vec3 midColor = bloom.getTextures().crbegin()->getMidColor();
+		const vec3 midColor = bloom->getTextures().crbegin()->getMidColor();
 		const float brightness = vec3::dot(midColor, Math::LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
 		const float curExp = 0.25f / clampedBr;
@@ -107,10 +105,10 @@ namespace a_game_engine
 		};
 		shader->use();
 		shader->setUniform(shader->getLocation("tex"), colorBuffer, 0);
-		shader->setUniform(shader->getLocation("bloomTex"), bloom.getTextures()[0], 1);
+		shader->setUniform(shader->getLocation("bloomTex"), bloom->getTextures()[0], 1);
 		shader->setUniform(shader->getLocation("exposure"), exposure);
-		shader->setUniform(shader->getLocation("bloomStrength"), 0.045f);
-		shader->setUniform(shader->getLocation("bloomRadius"), bloomRadius * bloom.radius);
+		shader->setUniform(shader->getLocation("bloomStrength"), bloom->strength);
+		shader->setUniform(shader->getLocation("bloomRadius"), bloomRadius * bloom->radius);
 		verts->draw();
 
 		UI::draw();

@@ -61,12 +61,19 @@ namespace a_game
 		else
 		{
 			ImGui::Begin("A Game", nullptr, 0);
-			if (ImGui::CollapsingHeader("Render"))
+			if (ImGui::CollapsingHeader("Renderer"))
 			{
 				ImGui::RadioButton("Forward renderer", &_scene->rendererIndex, 0);
 				ImGui::RadioButton("Deferred renderer", &_scene->rendererIndex, 1);
-				ImGui::SliderFloat("Bloom radius(in pixels)", &_scene->bloomRadius, 0.f, 6.f);
-				ImGui::Checkbox("Show gbuffers", &_scene->deferredRenderer.debug);
+				ImGui::Checkbox("Show gbuffers", &_scene->changeDeferredRendererDebug());
+			}
+			if (ImGui::CollapsingHeader("Postprocessing"))
+			{
+				ImGui::SliderFloat("Bloom radius(in pixels)", &_scene->bloom.radius, 1.f, 2.f);
+				ImGui::SliderInt("Bloom mip count", &_scene->bloomMipCount, 1, 7);
+				ImGui::Checkbox("Bloom as fog", &_scene->bloomFogBlending);
+				ImGui::SliderFloat("Bloom strength", &_scene->bloom.strength, 0.f, 
+					_scene->bloomFogBlending ? 0.7f : 0.2f, "%.2f");
 			}
 			ImGui::End();
 			//ImGui::ShowDemoWindow();

@@ -20,6 +20,7 @@ namespace a_game
 	{
 		rootNode->addComponent<PlayerController>();
 		rootNode->addComponent<SceneController>();
+		forwardRenderer.bloom = &bloom;
 	}
 	void WorldScene::load()
 	{
@@ -160,7 +161,8 @@ namespace a_game
 	void WorldScene::draw(const Camera* c, float delta)
 	{
 		setActiveRenderer(rendererIndex);
-		forwardRenderer.bloom.radius = bloomRadius;
+		bloom.upscaleStartMipLevel = bloomMipCount - 1;
+		bloom.blendMode = bloomFogBlending ? BlendMode::Lerp : BlendMode::Add;
 		const Camera* camera = c ? c : activeCamera;
 
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);
@@ -168,6 +170,11 @@ namespace a_game
 		if (activeRenderer == &deferredRenderer)
 			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",
 				deferredRenderer.gbufferTime, deferredRenderer.lightTime, deferredRenderer.screenTime));
+	}
+	void WorldScene::updateSize(uvec2 size)
+	{
+		activeRenderer->updateSize(size);
+		bloom.create(size / 2u, 0);
 	}
 	void WorldScene::setActiveRenderer(int index)
 	{
@@ -180,10 +187,11 @@ namespace a_game
 		if (curRender == nullptr or curRender == activeRenderer)
 			return;
 
-		auto size = egd.window->getSize();
+		uvec2 size = { egd.window->getSize().x, egd.window->getSize().y };
 		if (activeRenderer)
 			activeRenderer->clear();
 		activeRenderer = curRender;
-		activeRenderer->updateSize({ size.x, size.y });
+		activeRenderer->updateSize(size);
+		bloom.create(size / 2u, 0);
 	}
 }

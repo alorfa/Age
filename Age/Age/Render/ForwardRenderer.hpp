@@ -20,7 +20,7 @@ namespace a_game_engine
 
 		const EnvCubeMap* env = nullptr;
 		SkyBox skyBox;
-		BloomEffect bloom;
+		BloomEffect* bloom = nullptr;
 
 		void clear() override;
 		void updateSize(const uvec2& newSize);

@@ -24,23 +24,24 @@ namespace a_game_engine
 		img.size = mip0size;
 		for (int i = 0; i <= curMipLevel; i++)
 		{
-			textures[i].create(Texture2D::Settings{ img, TextureFormat::RGB_11_11_10, sampler, 1 });
+			if (textures[i].getSize() != img.size)
+				textures[i].create(Texture2D::Settings{ img, TextureFormat::RGB_11_11_10, sampler, 1 });
 			img.size /= 2u;
 		}
 	}
-	void BloomEffect::useDownscale(const Texture& tex, int dstMip, int lastMipLevel)
+	void BloomEffect::useDownscale(const Texture& tex)
 	{
 		Pipeline::setBlendMode(BlendMode::Lerp);
 
 		const Texture2D* currentTexture = &tex;
-		lastMipLevel = lastMipLevel <= 0 ? 
+		const int lastMipLevel = downscaleEndMipLevel <= 0 ?
 			(int)(textures.size() - 1) :
-			Math::clamp(lastMipLevel, 1, (int)(textures.size() - 1));
+			Math::clamp(downscaleEndMipLevel, 1, (int)(textures.size() - 1));
 		downscale->use();
 
-		for (int i = dstMip; i <= lastMipLevel; i++) //i is index of destination texture
+		for (int i = downscaleStartMipLevel; i <= lastMipLevel; i++) //i is index of destination texture
 		{
-			if (i == dstMip) //instead of previous texture there should be an HDR buffer
+			if (i == downscaleStartMipLevel) //instead of previous texture there should be an HDR buffer
 			{
 				currentTexture = &tex;
 			}
@@ -58,16 +59,16 @@ namespace a_game_engine
 			VertexBuffer::getDefFramebuf().draw();
 		}
 	}
-	void BloomEffect::useUpscale(int mipStart, int mipEnd, BlendMode mode)
+	void BloomEffect::useUpscale()
 	{
-		Pipeline::setBlendMode(mode);
+		Pipeline::setBlendMode(blendMode);
 
 		const Texture2D* currentTexture = nullptr;
 		upscale->use();
-		for (int i = (int)mipStart; i >= mipEnd; i--)
+		for (int i = (int)upscaleStartMipLevel; i >= upscaleEndMipLevel; i--)
 		{
 			currentTexture = &textures[i + 1];
-			const vec2 filterRadius = vec2{ 1.f / currentTexture->getSize().x, 1.f / currentTexture->getSize().y } *radius;
+			const vec2 filterRadius = vec2{ radius / currentTexture->getSize().x, radius / currentTexture->getSize().y };
 			upscale->setUniform(upscale->getLocation("tex"), *currentTexture, 0);
 			upscale->setUniform(upscale->getLocation("radius"), filterRadius);
 			fb.setTexture(0, textures[i]);

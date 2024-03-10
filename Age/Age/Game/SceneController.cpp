@@ -18,7 +18,7 @@ namespace a_game
 		if (ev.type == ev.Resized)
 		{
 			_windowSize = { ev.size.width ,ev.size.height };
-			_scene->activeRenderer->updateSize(_windowSize);
+			_scene->updateSize(_windowSize);
 		}
 	}
 	void SceneController::handleEvents(const EventHandler& ev, float delta)
