@@ -7,6 +7,7 @@
 #include "Age/LL/opengl.h"
 #include "Age/Components/LightComponents.hpp"
 #include "Age/UI/UI.hpp"
+#include "Age/Math/Math.hpp"
 
 namespace a_game_engine
 {
@@ -201,8 +202,6 @@ namespace a_game_engine
 		posMap.activate(2);
 		drawLightSources(*scene.rootNode, camera.transform.getPosition());
 
-		lightTime = (int)clock.restart().asMicroseconds();
-
 		//transparent objects
 		Pipeline::setBlendMode(BlendMode::Lerp);
 		Pipeline::set3DContext();
@@ -214,12 +213,32 @@ namespace a_game_engine
 			n.draw(forwardInfo);
 			});
 
+		lightTime = (int)clock.restart().asMicroseconds();
+
 		//draw on the screen
-		Pipeline::setBlendMode(BlendMode::Disable);
 		Pipeline::set2DContext();
+		bloom->useDownscale(screenBuffer);
+		bloom->useUpscale();
+
+		Pipeline::setBlendMode(BlendMode::Disable);
+
+		const vec3 midColor = bloom->getTextures().crbegin()->getMidColor();
+		const float brightness = vec3::dot(midColor, LUMA);
+		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
+		const float curExp = 0.25f / clampedBr;
+		exposure = Math::smooth(exposure, curExp, delta * 3.f);
+
 		FrameBuffer::useDefault(size);
+		auto* verts = &VertexBuffer::getDefFramebuf();
+		vec2 bloomRadius = {
+			1.f / screenBuffer.getSize().x, 1.f / screenBuffer.getSize().y
+		};
 		postprocPass->use();
-		postprocPass->setUniform(postprocPass->getLocation("tex"), screenBuffer, 3);
+		postprocPass->setUniform(postprocPass->getLocation("tex"), screenBuffer, 0);
+		postprocPass->setUniform(postprocPass->getLocation("bloomTex"), bloom->getTextures()[0], 1);
+		postprocPass->setUniform(postprocPass->getLocation("exposure"), exposure);
+		postprocPass->setUniform(postprocPass->getLocation("bloomStrength"), bloom->strength);
+		postprocPass->setUniform(postprocPass->getLocation("bloomRadius"), bloomRadius * bloom->radius);
 		rectangleVerts->draw();
 
 		if (debug)
@@ -227,10 +246,10 @@ namespace a_game_engine
 			debugPass->use();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.8f });
 			debugPass->setUniform(debugPass->getLocation("scale"), { 0.2f, 0.2f });
-			debugPass->setUniform(debugPass->getLocation("tex"), 0);
+			debugPass->setUniform(debugPass->getLocation("tex"), albedoRoughnessMap, 0);
 			rectangleVerts->draw();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.4f });
-			debugPass->setUniform(debugPass->getLocation("tex"), 1);
+			debugPass->setUniform(debugPass->getLocation("tex"), normalMetalnessMap, 1);
 			rectangleVerts->draw();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
 			debugPass->setUniform(debugPass->getLocation("tex"), 2);

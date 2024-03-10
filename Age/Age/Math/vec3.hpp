@@ -108,4 +108,6 @@ namespace a_game_engine
 	using uvec3 = uivec3;
 
 	using vec3_size = vector3<size_t>;
+
+	const vec3 LUMA = { 0.2126f, 0.7152f, 0.0722f };
 }

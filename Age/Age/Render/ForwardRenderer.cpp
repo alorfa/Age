@@ -92,7 +92,7 @@ namespace a_game_engine
 		Pipeline::setBlendMode(BlendMode::Lerp);
 
 		const vec3 midColor = bloom->getTextures().crbegin()->getMidColor();
-		const float brightness = vec3::dot(midColor, Math::LUMA);
+		const float brightness = vec3::dot(midColor, LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
 		const float curExp = 0.25f / clampedBr;
 		exposure = Math::smooth(exposure, curExp, delta * 3.f);

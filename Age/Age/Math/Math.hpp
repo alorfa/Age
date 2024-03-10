@@ -56,7 +56,5 @@ namespace a_game_engine
 		{
 			return lerp(first, second, saturate(t));
 		}
-
-		static const vec3 LUMA;
 	};
 }

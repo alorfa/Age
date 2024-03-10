@@ -61,6 +61,9 @@ namespace a_game_engine
 	}
 	void BloomEffect::useUpscale()
 	{
+		if (strength <= 0.001f)
+			return;
+
 		Pipeline::setBlendMode(blendMode);
 
 		const Texture2D* currentTexture = nullptr;

@@ -4,6 +4,7 @@
 #include "Age/LL/Buffers/FrameBuffer2D.hpp"
 #include "Age/Scene/SceneInfo.hpp"
 #include "Age/Scene/SkyBox.hpp"
+#include "Age/Render/BloomEffect.hpp"
 
 namespace a_game_engine
 {
@@ -18,12 +19,14 @@ namespace a_game_engine
 			*debugPass,
 			*pointLightPass, *dirLightPass, *spotLightPass, *iblPass,
 			*postprocPass;
+		float exposure = 1.f;
 	public:
 		int gbufferTime = 0, lightTime = 0, screenTime = 0;
 		bool debug = false;
 
 		const EnvCubeMap* env = nullptr;
 		SkyBox skyBox;
+		BloomEffect* bloom = nullptr;
 
 		DeferredRenderer();
 

@@ -20,7 +20,7 @@ namespace a_game
 	{
 		rootNode->addComponent<PlayerController>();
 		rootNode->addComponent<SceneController>();
-		forwardRenderer.bloom = &bloom;
+		deferredRenderer.bloom = forwardRenderer.bloom = &bloom;
 	}
 	void WorldScene::load()
 	{
