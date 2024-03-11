@@ -61,6 +61,7 @@
     <ClInclude Include="Age\Math\vec4.hpp" />
     <ClInclude Include="Age\Render\BloomEffect.hpp" />
     <ClInclude Include="Age\UI\UI.hpp" />
+    <ClInclude Include="Age\Game\SunComp.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestGame.cpp" />
@@ -117,5 +118,6 @@
     <ClCompile Include="external\header\imgui\imgui_demo.cpp" />
     <ClCompile Include="external\header\imgui\imgui-SFML.cpp" />
     <ClCompile Include="Age\UI\UI.cpp" />
+    <ClCompile Include="Age\Game\SunComp.cpp" />
   </ItemGroup>
 </Project>

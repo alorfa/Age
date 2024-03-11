@@ -1,5 +1,7 @@
 #pragma once
 
+#include "cmath"
+
 namespace a_game_engine
 {
 	template <typename T>
@@ -56,6 +58,15 @@ namespace a_game_engine
 		static float dot(const vector3& v1, const vector3& v2)
 		{
 			return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+		}
+
+		vector3 pow(const vector3& v2)
+		{
+			return vector3{ powf(x, v2.x), powf(y, v2.y), powf(z, v2.z) };
+		}
+		vector3 pow(float v2)
+		{
+			return vector3{ powf(x, v2), powf(y, v2), powf(z, v2) };
 		}
 	};
 

@@ -30,7 +30,8 @@ namespace a_game
 		int bloomMipCount = 5;
 		int rendererIndex = 0;
 		float fogDistance = 0.f;
-		vec3 fogColor = vec3{ 0.5f, 0.6f, 0.8f };
+		vec3 fogColor = vec3{ 0.463f, 0.5f, 0.618f };
+		bool isSunny = false;
 
 		void updateSize(uvec2 size);
 		inline bool& changeDeferredRendererDebug() { return deferredRenderer.debug; }

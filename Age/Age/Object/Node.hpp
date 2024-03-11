@@ -55,7 +55,7 @@ namespace a_game_engine
 		{
 			for (auto& comp : components)
 			{
-				T* castedComp = comp->as<T*>();
+				T* castedComp = comp->as<T>();
 				if (castedComp)
 					return castedComp;
 			}
@@ -66,7 +66,7 @@ namespace a_game_engine
 		{
 			for (auto& comp : components)
 			{
-				const T* castedComp = comp->as<const T*>();
+				const T* castedComp = comp->as<const T>();
 				if (castedComp)
 					return castedComp;
 			}

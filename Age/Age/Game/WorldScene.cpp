@@ -13,6 +13,7 @@
 #include "PlayerController.hpp"
 #include "RotateComp.hpp"
 #include "Age/Math/Math.hpp"
+#include "SunComp.hpp"
 
 namespace a_game
 {
@@ -26,22 +27,25 @@ namespace a_game
 	{
 		activeCamera = &egd.camera;
 
-		std::unique_ptr<Node> objs[6];
-		for (uint i = 0; i < 6; i++)
-			objs[i] = std::make_unique<Node>();
-		MeshComponent::addModel(*objs[0], egd.models.load(egd.res / "model/daedric/scene.gltf",
+		auto& sun = rootNode->addChild();
+
+		auto& daedric = rootNode->addChild();
+		MeshComponent::addModel(daedric, egd.models.load(egd.res / "model/daedric/scene.gltf",
 			ModelLoader::Settings{ vec3{5.f}, false, false, true }));
+		MeshComponent::setShader(daedric, egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
+
+		std::unique_ptr<Node> objs[6];
+		for (uint i = 1; i < 6; i++)
+			objs[i] = std::make_unique<Node>();
 		MeshComponent::addModel(*objs[1], egd.models.load(egd.res / "model/kirara/scene.gltf",
 			ModelLoader::Settings{ vec3{10.f}, false}));
 		MeshComponent::addModel(*objs[3], egd.models.load(egd.res / "model/sphere.obj"));
 		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/sphere.obj"));
-		MeshComponent::setShader(*objs[0], egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
 		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/kirara.asl"));
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(*objs[3], lightShader);
-		MeshComponent::setShader(*objs[4], lightShader); 
-		//objs[0]->addComponent(std::make_unique<Rotate>(*objs[0]));
+		MeshComponent::setShader(*objs[4], lightShader);
 
 		const bool one_light_test = false;
 		const bool indirect_light_test = false;
@@ -93,12 +97,15 @@ namespace a_game
 					.addModel(*objs[3])
 					.setSize(0.2f);
 				objs[5]->addComponent<DirLightComponent>()
-					.setSize(0.1f)
-					.setDirection({ 0.f, -0.5f, 1.f });
+					.setColor(vec3{20.f, 20.f, 15.f} * 0.1f, 0.0f)
+					.setSize(0.06f)
+					.setDirection({ 0.f, 0.5f, 0.51f });
+				//objs[5]->addComponent<SunComp>();
 			}
 		}
 
-		objs[0]->changeTransform().changePosition() = { -3, 5, 1 };
+		daedric.changeTransform().changePosition() = { -3, 5, 1 };
+		daedric.changeTransform().changeRotation().z = Math::rad(90.f);
 		objs[1]->changeTransform().changePosition() = { 0, 5, 0 };
 		objs[3]->changeTransform().changePosition() = vec3(-1.f, 5, 2);
 		objs[3]->changeTransform().changeScale() *= 0.1f;
@@ -155,7 +162,7 @@ namespace a_game
 				});
 			}
 
-		for (uint i = 0; i < 6; i++)
+		for (uint i = 1; i < 6; i++)
 			rootNode->addChild(std::move(objs[i]));
 	}
 	void WorldScene::draw(const Camera* c, float delta)
@@ -163,7 +170,7 @@ namespace a_game
 		setActiveRenderer(rendererIndex);
 		bloom.upscaleStartMipLevel = bloomMipCount - 1;
 		bloom.blendMode = bloomFogBlending ? BlendMode::Lerp : BlendMode::Add;
-		deferredRenderer.fogColor = fogColor;
+		deferredRenderer.fogColor = fogColor.pow(2.2f);
 		deferredRenderer.fogDistance = fogDistance;
 		const Camera* camera = c ? c : activeCamera;
 

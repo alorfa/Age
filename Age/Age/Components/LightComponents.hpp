@@ -63,5 +63,6 @@ namespace a_game_engine
 
 		DirLightComponent& setSize(float size);
 		DirLightComponent& setDirection(vec3 dir);
+		DirLightComponent& setColor(const vec3& color, float ambientRatio);
 	};
 }

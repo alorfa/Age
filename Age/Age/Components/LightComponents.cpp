@@ -109,4 +109,10 @@ namespace a_game_engine
 		light.dir = dir.new_normalized();
 		return *this;
 	}
+	DirLightComponent& DirLightComponent::setColor(const vec3& color, float ambientRatio)
+	{
+		light.ambient = color * ambientRatio;
+		light.color = color - light.ambient;
+		return *this;
+	}
 }
