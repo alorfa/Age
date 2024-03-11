@@ -33,19 +33,24 @@ namespace a_game
 		MeshComponent::addModel(daedric, egd.models.load(egd.res / "model/daedric/scene.gltf",
 			ModelLoader::Settings{ vec3{5.f}, false, false, true }));
 		MeshComponent::setShader(daedric, egd.shaders.load(egd.res / "shader/pbrNormal.asl"));
+		daedric.changeTransform().changePosition() = { -2, 5, 1 };
+		daedric.changeTransform().changeRotation().z = Math::rad(90.f);
 
-		std::unique_ptr<Node> objs[6];
-		for (uint i = 1; i < 6; i++)
-			objs[i] = std::make_unique<Node>();
-		MeshComponent::addModel(*objs[1], egd.models.load(egd.res / "model/kirara/scene.gltf",
+		auto& kirara = rootNode->addChild();
+		MeshComponent::addModel(kirara, egd.models.load(egd.res / "model/kirara/scene.gltf",
 			ModelLoader::Settings{ vec3{10.f}, false}));
-		MeshComponent::addModel(*objs[3], egd.models.load(egd.res / "model/sphere.obj"));
-		MeshComponent::addModel(*objs[4], egd.models.load(egd.res / "model/sphere.obj"));
-		MeshComponent::setShader(*objs[1], egd.shaders.load(egd.res / "shader/kirara.asl"));
+		MeshComponent::setShader(kirara, egd.shaders.load(egd.res / "shader/kirara.asl"));
+		kirara.changeTransform().changePosition() = { 0, 5, 0 };
+
+		auto& light1 = rootNode->addChild();
+		auto& light2 = rootNode->addChild();
+
+		MeshComponent::addModel(light1, egd.models.load(egd.res / "model/sphere.obj"));
+		MeshComponent::addModel(light2, egd.models.load(egd.res / "model/sphere.obj"));
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
-		MeshComponent::setShader(*objs[3], lightShader);
-		MeshComponent::setShader(*objs[4], lightShader);
+		MeshComponent::setShader(light1, lightShader);
+		MeshComponent::setShader(light2, lightShader);
 
 		const bool one_light_test = false;
 		const bool indirect_light_test = false;
@@ -65,21 +70,22 @@ namespace a_game
 				floor.setPosition({ floorPositions[i][j].x, floorPositions[i][j].y, 0.f});
 			}
 
-		objs[2]->addComponent<FollowToCamera>()
+		auto& flashlight = rootNode->addChild();
+		flashlight.addComponent<FollowToCamera>()
 			.setCamera(*activeCamera);
 		/*objs[4]->addComponent<RotateComp>()
 			.init(vec3(-2.f, 1.5f, -1.5f), vec3(-3.f, 3.f, 0.f), 0.5f);*/
 
 		if (!indirect_light_test)
 		{
-			objs[4]->addComponent<PointLightComponent>()
+			light2.addComponent<PointLightComponent>()
 				.setSize(0.2f)
 				.setColor({ 5.0f, 0.5f, 0.5f }, 0.03f)
-				.addModel(*objs[4]);
+				.addModel(light2);
 
 			if (one_light_test)
 			{
-				objs[3]->forEach([](Node& n) {
+				light1.forEach([](Node& n) {
 					auto meshes = n.findAllComponents<MeshComponent>();
 					for (auto m : meshes)
 						m->mesh.material.setValue("emission", ShaderProperty(vec3{ 0.f }));
@@ -87,30 +93,27 @@ namespace a_game
 			}
 			else
 			{
-				objs[2]->addComponent<SpotLightComponent>()
+				flashlight.addComponent<SpotLightComponent>()
 					.setColor({ 4.f, 4.f, 10.f }, 0.03f)
 					.setSize(0.1f)
 					.setCutOff(0.f)
 					.setOuterCutOff(Math::rad(15.f));
-				objs[3]->addComponent<PointLightComponent>()
+				light1.addComponent<PointLightComponent>()
 					.setColor({ 8.f, 6.f, 2.f }, 0.03f)
-					.addModel(*objs[3])
+					.addModel(light1)
 					.setSize(0.2f);
-				objs[5]->addComponent<DirLightComponent>()
+				sun.addComponent<DirLightComponent>()
 					.setColor(vec3{20.f, 20.f, 15.f} * 0.1f, 0.0f)
 					.setSize(0.06f)
 					.setDirection({ 0.f, 0.5f, 0.51f });
-				//objs[5]->addComponent<SunComp>();
+				sun.addComponent<SunComp>();
 			}
 		}
 
-		daedric.changeTransform().changePosition() = { -3, 5, 1 };
-		daedric.changeTransform().changeRotation().z = Math::rad(90.f);
-		objs[1]->changeTransform().changePosition() = { 0, 5, 0 };
-		objs[3]->changeTransform().changePosition() = vec3(-1.f, 5, 2);
-		objs[3]->changeTransform().changeScale() *= 0.1f;
-		objs[4]->changeTransform().changePosition() = vec3(-3.f, 4, 0.1f);
-		objs[4]->changeTransform().changeScale() *= 0.1f;
+		light1.changeTransform().changePosition() = vec3(-1.f, 5, 2);
+		light1.changeTransform().changeScale() *= 0.1f;
+		light2.changeTransform().changePosition() = vec3(-3.f, 4, 0.1f);
+		light2.changeTransform().changeScale() *= 0.1f;
 
 		CubeMapLoader::RawSettings s;
 		s.upperLimit = 20000.f;
@@ -161,9 +164,6 @@ namespace a_game
 						mesh->mesh.material.setValue("color", ShaderProperty(colors[i][j]));
 				});
 			}
-
-		for (uint i = 1; i < 6; i++)
-			rootNode->addChild(std::move(objs[i]));
 	}
 	void WorldScene::draw(const Camera* c, float delta)
 	{

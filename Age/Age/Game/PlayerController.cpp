@@ -88,6 +88,7 @@ namespace a_game
 					_scene->bloomMipCount = 7;
 					_scene->bloom.radius = 1.3f;
 					_scene->fogDistance = 0.f;
+					_scene->isSunny = true;
 				}
 				if (ImGui::Button("Fog"))
 				{
@@ -98,6 +99,7 @@ namespace a_game
 					_scene->fogDistance = 25.f;
 					_scene->rendererIndex = 1;
 					_scene->fogColor = vec3{ 0.463f, 0.5f, 0.618f };
+					_scene->isSunny = false;
 				}
 			}
 			ImGui::End();
