@@ -55,14 +55,18 @@ namespace a_game_engine
 
 	class DirLightComponent : public Component
 	{
-	public:
 		DirLight light;
 
-		inline DirLightComponent(const Node& n) {}
-		DirLightComponent() = default;
+		const Node* node = nullptr;
+	public:
+		inline DirLightComponent(const Node& n) : node(&n) {}
 
 		DirLightComponent& setSize(float size);
 		DirLightComponent& setDirection(vec3 dir);
 		DirLightComponent& setColor(const vec3& color, float ambientRatio);
+		DirLightComponent& enableShadow(bool value = true);
+		DirLightComponent& createShadowMap(uvec2 size = {512u}, TextureFormat format = TextureFormat::Depth16);
+
+		inline const DirLight& getLight() const { return light; }
 	};
 }

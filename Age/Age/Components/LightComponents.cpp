@@ -115,4 +115,16 @@ namespace a_game_engine
 		light.color = color - light.ambient;
 		return *this;
 	}
+	DirLightComponent& DirLightComponent::enableShadow(bool value)
+	{
+		light.useShadow = value;
+		return *this;
+	}
+	DirLightComponent& DirLightComponent::createShadowMap(uvec2 size, TextureFormat format)
+	{
+		ImageInfo img = { size, format };
+		Sampler2DInfo sampler = { TextureFiltering::Near, TextureWrap::ClampToEdge }; //TODO: change to clamp to border
+		light.shadowMap.create(Texture::Settings{ img, format, sampler, 1 });
+		return *this;
+	}
 }

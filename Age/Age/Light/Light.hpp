@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Age/Math/vec3.hpp"
+#include "Age/LL/Texture/Texture2D.hpp"
+#include "Age/Transform/Camera.hpp"
 
 namespace a_game_engine
 {
@@ -8,6 +9,9 @@ namespace a_game_engine
 	{
 		vec3 dir = { 0.f, 0.f, 1.f }, ambient, color = { 1.f, 1.f, 1.f };
 		float size = 0.1f;
+		bool useShadow = false;
+		Texture2D shadowMap;
+		Camera camera;
 	};
 
 	struct PointLight

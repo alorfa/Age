@@ -103,14 +103,15 @@ namespace a_game_engine
 				const auto* const dir = comp->as<DirLightComponent>(); 
 				if (dir)
 				{
+					const auto& l = dir->getLight();
 					dirLightPass->use();
 					dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
 					dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
 					dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), dir->light.dir);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), dir->light.ambient);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.color"), dir->light.color);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.sourceRadius"), dir->light.size * 0.5f);
+					dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), l.dir);
+					dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), l.ambient);
+					dirLightPass->setUniform(dirLightPass->getLocation("light.color"), l.color);
+					dirLightPass->setUniform(dirLightPass->getLocation("light.sourceRadius"), l.size * 0.5f);
 					dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
 					VertexBuffer::getDefFramebuf().draw();
 				}

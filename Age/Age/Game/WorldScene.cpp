@@ -104,7 +104,7 @@ namespace a_game
 					.setSize(0.2f);
 				sun.addComponent<DirLightComponent>()
 					.setColor(vec3{20.f, 20.f, 15.f} * 0.1f, 0.0f)
-					.setSize(0.06f)
+					.setSize(0.08f)
 					.setDirection({ 0.f, 0.5f, 0.51f });
 				sun.addComponent<SunComp>();
 			}
