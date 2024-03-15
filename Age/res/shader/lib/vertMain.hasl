@@ -1,4 +1,10 @@
 void main()
 {
 	gl_Position = vertexProcess();
+	#if defined(AGE_MAX_SHADOW_DIR_LIGHTS) && AGE_MAX_SHADOW_DIR_LIGHTS > 0
+	for (int i = 0; i < AGE_MAX_SHADOW_DIR_LIGHTS; i++)
+	{
+		shadowPositions[i] = shadowVP[i] * fragPos;
+	}
+	#endif
 }

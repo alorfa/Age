@@ -125,6 +125,20 @@ namespace a_game_engine
 		ImageInfo img = { size, format };
 		Sampler2DInfo sampler = { TextureFiltering::Near, TextureWrap::ClampToEdge }; //TODO: change to clamp to border
 		light.shadowMap.create(Texture::Settings{ img, format, sampler, 1 });
+		light.useShadow = true;
 		return *this;
+	}
+	void DirLightComponent::update(float delta)
+	{
+		if (light.useShadow && prevDir != light.dir)
+		{
+			prevDir = light.dir;
+
+			mat4 view;
+			view.setViewMatrix(node->getTransform().getPosition(), -light.dir, vec3(0.f, 0.f, 1.f));
+			mat4 proj;
+			proj.setOrtho(10.f, 1.f, 0.1f, 25.f);
+			light.viewProj = proj * view;
+		}
 	}
 }

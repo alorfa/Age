@@ -16,7 +16,7 @@ namespace a_game_engine
 	{
 		struct LightsInfo
 		{
-			uint dir = 0, point = 0, spot = 0;
+			uint dir = 0, point = 0, spot = 0, shadowDir = 0;
 		};
 
 		const Camera* camera = nullptr;

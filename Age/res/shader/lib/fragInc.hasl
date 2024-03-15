@@ -21,11 +21,15 @@ vec3 computeNormal(in vec3 normal)
 #if defined(AGE_MAX_POINT_LIGHTS) && AGE_MAX_POINT_LIGHTS > 0
 uniform PointLight pointLightSources[AGE_MAX_POINT_LIGHTS];
 #endif
+#if defined(AGE_MAX_SPOT_LIGHTS) && AGE_MAX_SPOT_LIGHTS > 0
+uniform SpotLight spotLightSources[AGE_MAX_SPOT_LIGHTS];
+#endif
 #if defined(AGE_MAX_DIR_LIGHTS) && AGE_MAX_DIR_LIGHTS > 0
 uniform DirLight dirLightSources[AGE_MAX_DIR_LIGHTS];
 #endif
-#if defined(AGE_MAX_SPOT_LIGHTS) && AGE_MAX_SPOT_LIGHTS > 0
-uniform SpotLight spotLightSources[AGE_MAX_SPOT_LIGHTS];
+#if defined(AGE_MAX_SHADOW_DIR_LIGHTS) && AGE_MAX_SHADOW_DIR_LIGHTS > 0
+uniform DirLightShadow shadowDirLightSources[AGE_MAX_SHADOW_DIR_LIGHTS];
+in mat4 shadowPositions[AGE_MAX_SHADOW_DIR_LIGHTS];
 #endif
 
 void paintOver()

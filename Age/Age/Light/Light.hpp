@@ -11,7 +11,7 @@ namespace a_game_engine
 		float size = 0.1f;
 		bool useShadow = false;
 		Texture2D shadowMap;
-		Camera camera;
+		mat4 viewProj;
 	};
 
 	struct PointLight

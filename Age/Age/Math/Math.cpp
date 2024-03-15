@@ -108,7 +108,7 @@ namespace a_game_engine
     }
     void mat4::setViewMatrix(const vec3& offset, const vec3& forward, const vec3& right, const vec3& up)
     {
-        data[0][0] = right.x;
+        data[0][0] = right.x; 
         data[0][1] = right.y;
         data[0][2] = right.z;
         data[1][0] = forward.x;
@@ -120,6 +120,16 @@ namespace a_game_engine
         data[3][0] = offset.x;
         data[3][1] = offset.y;
         data[3][2] = offset.z;
+    }
+    void mat4::setViewMatrix(const vec3& offset, const vec3& forward, const vec3& up)
+    {
+        /*vec3 right = Math::cross(forward, up).new_normalized();
+        vec3 upNorm = Math::cross(right, forward);
+        setViewMatrix(offset, forward, right, upNorm);*/
+
+        reset();
+        asGlm(*this) = glm::lookAt(asGlm(offset),
+            asGlm(offset + forward), asGlm(up));
     }
     void mat4::reset()
     {
@@ -150,7 +160,7 @@ namespace a_game_engine
         cosy = cos(euler.y);
         sinx = sin(euler.x);
         siny = sin(euler.y);
-        return { -sinx * siny, sinx * cosy, -cosx }; //TODO: z-axis may not be processed correctly
+        return { -sinx * siny, sinx * cosy, -cosx };
     }
     vec3 Math::getRightDir(const vec3& euler)
     {
@@ -175,5 +185,12 @@ namespace a_game_engine
     float Math::saturate(float value)
     {
         return clamp(value, 0.f, 1.f);
+    }
+    vec3 Math::cross(const vec3& v1, const vec3& v2)
+    {
+        return vec3(
+            v1.y * v2.z - v2.y * v1.z,
+            v1.z * v2.x - v2.z * v1.x,
+            v1.x * v2.y - v2.x * v1.y);
     }
 }

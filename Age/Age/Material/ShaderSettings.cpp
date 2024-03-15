@@ -17,6 +17,8 @@ namespace a_game_engine
             return true;
         if (spotLights < other.spotLights)
             return true;
+        if (dirLightsShadow < other.dirLightsShadow)
+            return true;
         if (definesIndex < other.definesIndex)
             return true;
         return false;
@@ -27,6 +29,7 @@ namespace a_game_engine
             dirLights == other.dirLights &&
             pointLights == other.pointLights &&
             spotLights == other.spotLights &&
+            dirLightsShadow == other.dirLightsShadow &&
             definesIndex == other.definesIndex;
     }
     bool ShaderSettings::Deferred::operator<(const Deferred& other) const
@@ -99,7 +102,8 @@ namespace a_game_engine
             "#define AGE_MAX_DIR_LIGHTS {}\n"
             "#define AGE_MAX_POINT_LIGHTS {}\n"
             "#define AGE_MAX_SPOT_LIGHTS {}\n"
-            "#define AGE_RENDERING_MODE_FORWARD\n", f.dirLights, f.pointLights, f.spotLights);
+            "#define AGE_MAX_SHADOW_DIR_LIGHTS {}\n"
+            "#define AGE_RENDERING_MODE_FORWARD\n", f.dirLights, f.pointLights, f.spotLights, f.dirLightsShadow);
         if (f.definesIndex >= 0)
             defines += ShaderSettings::additionalDefines[f.definesIndex];
         if (f.implIndex >= 0)

@@ -19,7 +19,7 @@ namespace a_game_engine
 		};
 		struct Forward
 		{
-			uint dirLights = 0, pointLights = 0, spotLights = 0;
+			uint dirLights = 0, pointLights = 0, spotLights = 0, dirLightsShadow = 0;
 			int definesIndex = -1;
 			int implIndex = -1;
 

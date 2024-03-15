@@ -13,6 +13,12 @@ struct DirLight
     vec3 dir, ambient, color;
     float sourceRadius;
 };
+struct DirLightShadow
+{
+    vec3 dir, ambient, color;
+    float sourceRadius;
+    sampler2DShadow shadowMap;
+};
 struct PointLight
 {
     vec3 pos, ambient, color;

@@ -58,6 +58,7 @@ namespace a_game_engine
 		DirLight light;
 
 		const Node* node = nullptr;
+		vec3 prevDir = { 0.f };
 	public:
 		inline DirLightComponent(const Node& n) : node(&n) {}
 
@@ -68,5 +69,7 @@ namespace a_game_engine
 		DirLightComponent& createShadowMap(uvec2 size = {512u}, TextureFormat format = TextureFormat::Depth16);
 
 		inline const DirLight& getLight() const { return light; }
+
+		void update(float delta) override;
 	};
 }

@@ -3,3 +3,8 @@ uniform mat4 model, view, projection;
 out vec2 fragUv;
 out vec3 fragPos;
 out mat3 fragTBN;
+
+#if defined(AGE_MAX_SHADOW_DIR_LIGHTS) && AGE_MAX_SHADOW_DIR_LIGHTS > 0
+uniform mat4 shadowVP[AGE_MAX_SHADOW_DIR_LIGHTS];
+out vec4 shadowPositions[AGE_MAX_SHADOW_DIR_LIGHTS];
+#endif

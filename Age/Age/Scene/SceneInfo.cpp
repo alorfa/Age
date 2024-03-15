@@ -46,11 +46,26 @@ namespace a_game_engine
 				if (dirLight)
 				{
 					const auto& l = dirLight->getLight();
-					props.push_back({ std::format("dirLightSources[{}].color", lights.dir), l.color });
-					props.push_back({ std::format("dirLightSources[{}].ambient", lights.dir), l.ambient });
-					props.push_back({ std::format("dirLightSources[{}].dir", lights.dir), l.dir });
-					props.push_back({ std::format("dirLightSources[{}].sourceRadius", lights.dir), l.size * 0.5f });
-					lights.dir++;
+
+					if (l.useShadow)
+					{
+						props.push_back({ std::format("shadowDirLightSources[{}].color", lights.shadowDir), l.color });
+						props.push_back({ std::format("shadowDirLightSources[{}].ambient", lights.shadowDir), l.ambient });
+						props.push_back({ std::format("shadowDirLightSources[{}].dir", lights.shadowDir), l.dir });
+						props.push_back({ std::format("shadowDirLightSources[{}].sourceRadius", lights.shadowDir), l.size * 0.5f });
+						MaterialProperty matprop = { "shadowDirLightSources[{}].shadowMap", 
+							ShaderProperty::Texture2DProp{ l.shadowMap, (int)lights.shadowDir + 13 } };
+						props.push_back(matprop);
+						lights.shadowDir++;
+					}
+					else
+					{
+						props.push_back({ std::format("dirLightSources[{}].color", lights.dir), l.color });
+						props.push_back({ std::format("dirLightSources[{}].ambient", lights.dir), l.ambient });
+						props.push_back({ std::format("dirLightSources[{}].dir", lights.dir), l.dir });
+						props.push_back({ std::format("dirLightSources[{}].sourceRadius", lights.dir), l.size * 0.5f });
+						lights.dir++;
+					}
 					continue;
 				}
 				addLights(n);

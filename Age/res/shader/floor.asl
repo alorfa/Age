@@ -19,7 +19,7 @@ uniform sampler2D baseColorMap;
 
 void setup()
 {
-    material.base_color = texture(baseColorMap, fragUv).rgb * vec3(0.4, 0.3, 0.7) * 0.4;
+    material.base_color = texture(baseColorMap, fragUv).rgb * vec3(0.4, 0.3, 0.7) * 0.5;
     material.normal = normalize(fragTBN[2]);
     material.roughness = 0.2;
     material.metallic = 0.;

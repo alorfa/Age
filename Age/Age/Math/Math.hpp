@@ -56,5 +56,7 @@ namespace a_game_engine
 		{
 			return lerp(first, second, saturate(t));
 		}
+
+		static vec3 cross(const vec3& v1, const vec3& v2);
 	};
 }
