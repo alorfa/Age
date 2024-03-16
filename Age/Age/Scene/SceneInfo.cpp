@@ -6,14 +6,6 @@
 
 namespace a_game_engine
 {
-	namespace
-	{
-		void drawSceneFromShadow(const Node& node, const DirLightComponent& light)
-		{
-			ShaderSettings::Forward depthOnlySettings;
-			SceneInfo depthInfo;
-		}
-	}
 	void SceneInfo::addLights(const Node& node)
 	{
 		node.forEachConstLocal([&](const Node& n) {
@@ -57,6 +49,7 @@ namespace a_game_engine
 
 					if (l.useShadow)
 					{
+						dirLight->drawSceneFromShadow(node);
 						props.push_back({ std::format("shadowDirLightSources[{}].color", lights.shadowDir), l.color });
 						props.push_back({ std::format("shadowDirLightSources[{}].ambient", lights.shadowDir), l.ambient });
 						props.push_back({ std::format("shadowDirLightSources[{}].dir", lights.shadowDir), l.dir });

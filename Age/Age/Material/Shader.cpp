@@ -11,6 +11,8 @@ namespace a_game_engine
         std::string bindings;
         for (uint i = 0; i < (uint)s.bindings.size(); i++)
             bindings += generateBinding(s.bindings[i], i);
+        if (s.bindings.size() == 0)
+            bindings += "#define AGE_DEPTH_ONLY\n";
 
         GlslCode result;
         result.vert = std::format("#define AGE_VERTEX\n{}\n{}\n{}\n{}\n{}",

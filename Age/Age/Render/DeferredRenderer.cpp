@@ -192,7 +192,6 @@ namespace a_game_engine
 			n.draw(forwardInfo);
 		});
 		Pipeline::setStencilWrite(0);
-		//scene.skyBox.draw(camera, nullptr);
 		skyBox.draw(camera, nullptr);
 
 		//draw lights

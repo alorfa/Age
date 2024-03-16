@@ -77,6 +77,7 @@ namespace a_game_engine
 				glFrontFace(GL_CCW);
 			else
 				glFrontFace(GL_CW);
+			frontFaceCCW = ccw;
 		}
 	}
 	void Pipeline::setUnpackAlignment(int alignment)

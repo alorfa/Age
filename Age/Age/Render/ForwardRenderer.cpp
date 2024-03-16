@@ -67,6 +67,7 @@ namespace a_game_engine
 
 		Pipeline::set3DContext();
 		mainFb.use();
+		Pipeline::setFrontFace(true);
 		Pipeline::setBlendMode(BlendMode::Lerp);
 		Pipeline::clear({ 0.1f, 0.1f, 0.1f }, true, false);
 

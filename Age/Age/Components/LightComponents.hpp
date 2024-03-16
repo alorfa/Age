@@ -2,6 +2,7 @@
 
 #include "Age/Object/Component.hpp"
 #include "Age/Light/Light.hpp"
+#include "Age/LL/Buffers/FrameBuffer2D.hpp"
 
 namespace a_game_engine
 {
@@ -56,6 +57,7 @@ namespace a_game_engine
 	class DirLightComponent : public Component
 	{
 		DirLight light;
+		mutable FrameBuffer2D fb;
 
 		const Node* node = nullptr;
 		vec3 prevDir = { 0.f };
@@ -69,7 +71,10 @@ namespace a_game_engine
 		DirLightComponent& createShadowMap(uvec2 size = {512u}, TextureFormat format = TextureFormat::Depth16);
 
 		inline const DirLight& getLight() const { return light; }
+		inline const Node& getNode() const { return *node; }
 
 		void update(float delta) override;
+
+		void drawSceneFromShadow(const Node& rootNode) const;
 	};
 }

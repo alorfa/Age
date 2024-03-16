@@ -12,6 +12,7 @@ namespace a_game_engine
 		bool useShadow = false;
 		Texture2D shadowMap;
 		mat4 viewProj;
+		vec3 projPos;
 	};
 
 	struct PointLight

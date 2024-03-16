@@ -62,5 +62,7 @@ void paintOver()
 #endif
     light += LIGHTING_MODEL(diffuseMap, specularMap, brdfLut, maxSpecMipLevel);
     light += LIGHTING_MODEL(material.emission);
+#if !defined(AGE_DEPTH_ONLY)
     age_FragColor = vec4(light, material.alpha);
+#endif
 }

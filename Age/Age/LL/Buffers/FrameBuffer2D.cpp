@@ -133,7 +133,13 @@ namespace a_game_engine
 	void FrameBuffer2D::use()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbuf);
-		glDrawBuffers((int)_textures.size(), attachments);
+		if (_textures.size() > 0)
+			glDrawBuffers((int)_textures.size(), attachments);
+		else
+		{
+			glDrawBuffer(GL_NONE);
+			glReadBuffer(GL_NONE);
+		}
 		uvec2 size = getSize();
 
 		for (int i = 0; i < _mipLevel; i++)

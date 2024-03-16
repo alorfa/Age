@@ -2,6 +2,7 @@
 #include "Age/Object/Node.hpp"
 #include "Age/Math/Math.hpp"
 #include "MeshComponent.hpp"
+#include "Age/LL/Pipeline.hpp"
 
 namespace a_game_engine
 {
@@ -126,6 +127,7 @@ namespace a_game_engine
 		Sampler2DInfo sampler = { TextureFiltering::Near, TextureWrap::ClampToEdge }; //TODO: change to clamp to border
 		light.shadowMap.create(Texture::Settings{ img, format, sampler, 1 });
 		light.useShadow = true;
+		fb.setDepthTexture(light.shadowMap);
 		return *this;
 	}
 	void DirLightComponent::update(float delta)
@@ -134,11 +136,30 @@ namespace a_game_engine
 		{
 			prevDir = light.dir;
 
+			light.projPos = node->getTransform().getPosition() + light.dir * 5.f;
 			mat4 view;
-			view.setViewMatrix(node->getTransform().getPosition(), -light.dir, vec3(0.f, 0.f, 1.f));
+			view.setViewMatrix(light.projPos, -light.dir, vec3(0.f, 0.f, 1.f));
 			mat4 proj;
-			proj.setOrtho(10.f, 1.f, 0.1f, 25.f);
+			proj.setOrtho(6.f, 1.f, 0.1f, 25.f);
 			light.viewProj = proj * view;
 		}
+	}
+	void DirLightComponent::drawSceneFromShadow(const Node& rootNode) const
+	{
+		ShaderSettings::Deferred depthOnlySettings;
+		depthOnlySettings.implIndex = 1;
+		SceneInfo depthInfo;
+		depthInfo.cameraPos = light.projPos;
+		depthInfo.nearFar = vec2{ 0.1f, 25.f };
+		depthInfo.projView = light.viewProj;
+		depthInfo.shaderSettings = depthOnlySettings;
+
+		fb.use();
+		Pipeline::clear({ 1.f });
+		Pipeline::set3DContext();
+		Pipeline::setFrontFace(false);
+		rootNode.forEachConst([&](const Node& n) {
+			n.draw(depthInfo);
+		});
 	}
 }
