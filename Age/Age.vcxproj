@@ -220,7 +220,6 @@
     <ClInclude Include="Age\Object\Component.hpp" />
     <ClInclude Include="Age\Material\Material.hpp" />
     <ClInclude Include="Age\Object\Mesh.hpp" />
-    <ClInclude Include="Age\Object\Model.hpp" />
     <ClInclude Include="Age\Object\Node.hpp" />
     <ClInclude Include="Age\Render\DeferredRenderer.hpp" />
     <ClInclude Include="Age\Render\ForwardRenderer.hpp" />
@@ -272,7 +271,6 @@
     <ClCompile Include="Age\Math\Math.cpp" />
     <ClCompile Include="Age\Object\Component.cpp" />
     <ClCompile Include="Age\Object\Mesh.cpp" />
-    <ClCompile Include="Age\Object\Model.cpp" />
     <ClCompile Include="Age\Object\Node.cpp" />
     <ClCompile Include="Age\Render\DeferredRenderer.cpp" />
     <ClCompile Include="Age\Render\ForwardRenderer.cpp" />

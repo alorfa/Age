@@ -115,8 +115,7 @@ namespace a_game_engine
 	void ShaderProgram::setTransformProps(const TransformProps& props) const
 	{
 		setUniform(getLocation("model"), *props.model);
-		setUniform(getLocation("view"), *props.view);
-		setUniform(getLocation("projection"), *props.proj);
+		setUniform(getLocation("projectionView"), *props.projectionView);
 		setUniform(getLocation("cameraPos"), props.cameraPos);
 		setUniform(getLocation("near"), props.near);
 		setUniform(getLocation("far"), props.far);

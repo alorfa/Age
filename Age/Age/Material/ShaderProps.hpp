@@ -8,7 +8,7 @@ namespace a_game_engine
 {
 	struct TransformProps
 	{
-		const mat4* model, * view, * proj;
+		const mat4 *model, *projectionView;
 		vec3 cameraPos;
 		float near, far;
 	};

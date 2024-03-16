@@ -19,7 +19,6 @@
     <ClInclude Include="Age\Transform\Camera.hpp" />
     <ClInclude Include="Age\Application.hpp" />
     <ClInclude Include="Age\EventHandler.hpp" />
-    <ClInclude Include="Age\Object\Model.hpp" />
     <ClInclude Include="Age\Resource\ResourceLoader.hpp" />
     <ClInclude Include="Age\Other\Logger.hpp" />
     <ClInclude Include="Age\Resource\TextureLoader.hpp" />
@@ -78,7 +77,6 @@
     <ClCompile Include="Age\Other\Logger.cpp" />
     <ClCompile Include="Age\Resource\TextureLoader.cpp" />
     <ClCompile Include="Age\Object\Mesh.cpp" />
-    <ClCompile Include="Age\Object\Model.cpp" />
     <ClCompile Include="Age\Resource\ModelLoader.cpp" />
     <ClCompile Include="Age\Math\Math.cpp" />
     <ClCompile Include="Age\Resource\ShaderLoader.cpp" />

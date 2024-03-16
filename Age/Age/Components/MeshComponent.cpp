@@ -25,9 +25,9 @@ namespace a_game_engine
 			(info.drawingCondition and not info.drawingCondition(mesh.material)))
 			return;
 		
+		mat4 projView = info.camera->getProjection() * info.camera->transform.getWorld();
 		TransformProps transform; //TODO: do need to copy all the data for every mesh?
-		transform.view = &info.camera->transform.getWorld();
-		transform.proj = &info.camera->getProjection(); //TODO: combine view and projection matrices
+		transform.projectionView = &projView;
 		transform.cameraPos = info.camera->transform.getPosition();
 		transform.near = info.camera->getNearFar().x;
 		transform.far = info.camera->getNearFar().y;

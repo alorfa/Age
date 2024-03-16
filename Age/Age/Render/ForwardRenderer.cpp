@@ -50,6 +50,7 @@ namespace a_game_engine
 		settings.dirLights = info.lights.dir;
 		settings.pointLights = info.lights.point;
 		settings.spotLights = info.lights.spot;
+		settings.dirLightsShadow = info.lights.shadowDir;
 		info.shaderSettings = settings;
 		info.drawingCondition = [](const Material& m) {
 			return m.shader->opaque;

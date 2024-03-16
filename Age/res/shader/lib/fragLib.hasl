@@ -251,6 +251,34 @@ vec3 pbr_computeLight(DirLight light)
 #endif
     return (finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient;
 }
+vec3 pbr_computeLight(DirLightShadow light, vec4 lightSpacePos)
+{    
+    vec3 R = reflect(-vc.V, material.normal);
+    LightContext c = computeLightData_Sphere(light.dir, vc.V, R, material.normal, light.sourceRadius, 1., 1.);
+    vec3 materialSpec = mix(vec3(material.reflectivity), material.base_color, material.metallic);
+    vec3 F = F_Schlick(c.HV, materialSpec);
+    vec3 diffColor = (vec3(1.) - F) * (1. - material.metallic);
+    vec3 finalSpecular = vec3(0.);
+    vec3 finalDiffuse = vec3(0.);
+    vec3 finalAmbient = vec3(0.);
+#ifndef AGE_DISABLE_SPECULAR
+    float clampedRoughness = max(material.roughness, 0.03);
+    float DMaxValue = max(D_GGX(1., pow4(clampedRoughness)) * INV_PI, 1.);
+    float D = D_GGX(pow2(c.NH), pow4(clampedRoughness)) / DMaxValue;
+    float G = G_Smith(vc.NV, c.NL, material.roughness);
+
+    vec3 numerator = D * G * F;
+    float denominator = 4. * vc.NV * c.NL + 0.0001;
+    finalSpecular = numerator / denominator;
+#endif
+#ifndef AGE_DISABLE_DIFFUSE
+    finalDiffuse = diffColor * material.base_color * INV_PI;
+#endif
+#ifndef AGE_DISABLE_AMBIENT
+    finalAmbient = scene_ao * material.ao * light.ambient * material.base_color;
+#endif
+    return (finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient;
+}
 
 vec3 pbr_computeLight(PointLight light, vec3 fragmentPos)
 {    

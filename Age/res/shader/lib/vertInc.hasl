@@ -1,4 +1,4 @@
-uniform mat4 model, view, projection;
+uniform mat4 model, projectionView;
 
 out vec2 fragUv;
 out vec3 fragPos;
