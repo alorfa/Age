@@ -19,13 +19,16 @@ namespace a_game_engine
 			uint dir = 0, point = 0, spot = 0, shadowDir = 0;
 		};
 
-		const Camera* camera = nullptr;
 		const Shader* shader = nullptr;
+		mat4 projView;
+		vec3 cameraPos;
+		vec2 nearFar;
 		SceneProps props;
 		LightsInfo lights;
 		ShaderSettings::Common shaderSettings;
 		std::function<bool(const Material&)> drawingCondition;
 
 		void addLights(const Node& node);
+		void setCamera(const Camera& c);
 	};
 }

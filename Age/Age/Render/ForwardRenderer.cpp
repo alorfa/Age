@@ -41,12 +41,12 @@ namespace a_game_engine
 	{
 		ShaderSettings::Forward settings;
 		SceneInfo info;
-		info.camera = &camera;
 		info.props.push_back({ "diffuseMap", 10 });
 		info.props.push_back({ "specularMap", 11 });
 		info.props.push_back({ "brdfLut", 12 });
 		info.props.push_back({ "maxSpecMipLevel", float(TexEnums::getLastMipLevel(env->specular.getSize()))});
 		info.addLights(*sc.rootNode);
+		info.setCamera(camera);
 		settings.dirLights = info.lights.dir;
 		settings.pointLights = info.lights.point;
 		settings.spotLights = info.lights.spot;

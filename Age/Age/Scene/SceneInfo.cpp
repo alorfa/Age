@@ -10,11 +10,8 @@ namespace a_game_engine
 	{
 		void drawSceneFromShadow(const Node& node, const DirLightComponent& light)
 		{
-			Camera camera;
-			//camera.transform.
 			ShaderSettings::Forward depthOnlySettings;
 			SceneInfo depthInfo;
-			depthInfo.camera = &camera;
 		}
 	}
 	void SceneInfo::addLights(const Node& node)
@@ -82,6 +79,12 @@ namespace a_game_engine
 				addLights(n);
 			}
 		});
+	}
+	void SceneInfo::setCamera(const Camera& c)
+	{
+		projView = c.getProjection() * c.transform.getWorld();
+		cameraPos = c.transform.getPosition();
+		nearFar = c.getNearFar();
 	}
 }
 

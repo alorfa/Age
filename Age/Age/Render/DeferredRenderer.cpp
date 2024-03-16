@@ -145,7 +145,8 @@ namespace a_game_engine
 		ShaderSettings::Deferred deferred;
 		deferred.implIndex = 0;
 		deferredInfo.shaderSettings = deferred;
-		forwardInfo.camera = deferredInfo.camera = &camera;
+		forwardInfo.setCamera(camera);
+		deferredInfo.setCamera(camera);
 		forwardInfo.props.push_back({ "diffuseMap", 10 });
 		forwardInfo.props.push_back({ "specularMap", 11 });
 		forwardInfo.props.push_back({ "brdfLut", 12 });

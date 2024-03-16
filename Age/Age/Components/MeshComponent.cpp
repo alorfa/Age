@@ -25,12 +25,11 @@ namespace a_game_engine
 			(info.drawingCondition and not info.drawingCondition(mesh.material)))
 			return;
 		
-		mat4 projView = info.camera->getProjection() * info.camera->transform.getWorld();
 		TransformProps transform; //TODO: do need to copy all the data for every mesh?
-		transform.projectionView = &projView;
-		transform.cameraPos = info.camera->transform.getPosition();
-		transform.near = info.camera->getNearFar().x;
-		transform.far = info.camera->getNearFar().y;
+		transform.projectionView = &info.projView;
+		transform.cameraPos = info.cameraPos;
+		transform.near = info.nearFar.x;
+		transform.far = info.nearFar.y;
 		transform.model = &node->getTransform().getWorld(); //TODO: and maybe model too...
 		Mesh::RenderInfo meshInfo{transform, info.props, *info.shader, info.shaderSettings};
 		mesh.draw(meshInfo);
