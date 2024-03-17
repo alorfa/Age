@@ -58,6 +58,7 @@ namespace a_game_engine
 	{
 		DirLight light;
 		mutable FrameBuffer2D fb;
+		float bias = -0.0001f;
 
 		const Node* node = nullptr;
 		vec3 prevDir = { 0.f };
@@ -69,9 +70,11 @@ namespace a_game_engine
 		DirLightComponent& setColor(const vec3& color, float ambientRatio);
 		DirLightComponent& enableShadow(bool value = true);
 		DirLightComponent& createShadowMap(uvec2 size = {512u}, TextureFormat format = TextureFormat::Depth16);
+		DirLightComponent& setBias(float bias = 0.0001);
 
 		inline const DirLight& getLight() const { return light; }
 		inline const Node& getNode() const { return *node; }
+		inline float getBias() const { return bias; }
 
 		void update(float delta) override;
 

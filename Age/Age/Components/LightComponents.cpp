@@ -131,6 +131,11 @@ namespace a_game_engine
 		fb.setDepthTexture(light.shadowMap);
 		return *this;
 	}
+	DirLightComponent& DirLightComponent::setBias(float bias)
+	{
+		this->bias = -bias;
+		return *this;
+	}
 	void DirLightComponent::update(float delta)
 	{
 		if (light.useShadow && prevDir != light.dir)

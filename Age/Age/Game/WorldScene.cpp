@@ -105,6 +105,7 @@ namespace a_game
 				sun.addComponent<DirLightComponent>()
 					.setSize(0.08f)
 					.setDirection({ 0.f, 0.5f, 0.51f })
+					.setBias(0.0001f)
 					.createShadowMap({2048u}, TextureFormat::Depth16)
 					;
 				sun.addComponent<SunComp>();

@@ -19,6 +19,7 @@ namespace a_game
 		Node* node = nullptr;
 		DirLightComponent* dirl = nullptr;
 		const WorldScene* world = nullptr;
+		float time = 0.f;
 	public:
 		SunComp(Node& n);
 
