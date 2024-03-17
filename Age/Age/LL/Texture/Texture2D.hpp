@@ -40,6 +40,7 @@ namespace a_game_engine
 		void setWrap(TextureWrap wrap);
 		void setFiltering(TextureFiltering min, TextureFiltering mag);
 		void setFiltering(TextureFiltering filter);
+		void setShadowSampling(bool value = true);
 
 		inline uint getId() const { return _id; }
 		inline const uvec2& getSize() const { return _size; }

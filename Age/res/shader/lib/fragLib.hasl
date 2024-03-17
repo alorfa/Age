@@ -16,7 +16,7 @@ struct DirLight
 struct DirLightShadow
 {
     vec3 dir, ambient, color;
-    float sourceRadius;
+    float sourceRadius, bias;
     sampler2DShadow shadowMap;
 };
 struct PointLight
@@ -222,6 +222,13 @@ vec3 screenToLinear(vec3 screenRGB)
 {
     return pow(screenRGB, vec3(2.2));
 }
+float computeShadowFactor(sampler2DShadow shadowMap, vec4 lightSpacePos, float bias)
+{
+    vec3 shadowPos = (lightSpacePos.xyz / lightSpacePos.a) * 0.5 + 0.5;
+    shadowPos.z += bias;
+    float result = texture(shadowMap, shadowPos);
+    return result;
+}
 
 vec3 pbr_computeLight(DirLight light)
 {    
@@ -261,6 +268,7 @@ vec3 pbr_computeLight(DirLightShadow light, vec4 lightSpacePos)
     vec3 finalSpecular = vec3(0.);
     vec3 finalDiffuse = vec3(0.);
     vec3 finalAmbient = vec3(0.);
+    float shadowFactor = computeShadowFactor(light.shadowMap, lightSpacePos, light.bias);
 #ifndef AGE_DISABLE_SPECULAR
     float clampedRoughness = max(material.roughness, 0.03);
     float DMaxValue = max(D_GGX(1., pow4(clampedRoughness)) * INV_PI, 1.);
@@ -277,7 +285,7 @@ vec3 pbr_computeLight(DirLightShadow light, vec4 lightSpacePos)
 #ifndef AGE_DISABLE_AMBIENT
     finalAmbient = scene_ao * material.ao * light.ambient * material.base_color;
 #endif
-    return (finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient;
+    return (shadowFactor * c.NL) * ((finalDiffuse + finalSpecular) * light.color) + finalAmbient;
 }
 
 vec3 pbr_computeLight(PointLight light, vec3 fragmentPos)

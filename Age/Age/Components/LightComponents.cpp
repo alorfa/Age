@@ -124,8 +124,9 @@ namespace a_game_engine
 	DirLightComponent& DirLightComponent::createShadowMap(uvec2 size, TextureFormat format)
 	{
 		ImageInfo img = { size, format };
-		Sampler2DInfo sampler = { TextureFiltering::Near, TextureWrap::ClampToEdge }; //TODO: change to clamp to border
+		Sampler2DInfo sampler = { TextureFiltering::Linear, TextureWrap::ClampToEdge }; //TODO: change to clamp to border
 		light.shadowMap.create(Texture::Settings{ img, format, sampler, 1 });
+		light.shadowMap.setShadowSampling();
 		light.useShadow = true;
 		fb.setDepthTexture(light.shadowMap);
 		return *this;

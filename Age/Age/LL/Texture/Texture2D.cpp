@@ -95,6 +95,14 @@ namespace a_game_engine
 	{
 		setFiltering(filter, filter);
 	}
+	void Texture2D::setShadowSampling(bool value)
+	{
+		if (value)
+		{
+			glTextureParameteri(_id, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			glTextureParameteri(_id, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		}
+	}
 	void Texture2D::activate(int number) const
 	{
 		glBindTextureUnit(number, _id);
