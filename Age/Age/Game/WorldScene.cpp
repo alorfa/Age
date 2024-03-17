@@ -109,6 +109,7 @@ namespace a_game
 					.createShadowMap({2048u}, TextureFormat::Depth16)
 					;
 				sun.addComponent<SunComp>();
+				sun.setPosition({ -1.f, 2.f, 2.f });
 			}
 		}
 

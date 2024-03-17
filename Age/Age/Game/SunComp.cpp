@@ -24,8 +24,8 @@ namespace a_game
 		const float s = Math::sin(time);
 		const float c = Math::cos(time);
 
-		vec3 dir = { s, c, 0.7f };
-		dirl->setDirection(dir);
+		vec3 dir = { s, c, 1.02f };
+		//dirl->setDirection(dir);
 	}
 }
 

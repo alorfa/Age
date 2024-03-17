@@ -3,6 +3,7 @@
 #include "Age/Math/Math.hpp"
 #include "MeshComponent.hpp"
 #include "Age/LL/Pipeline.hpp"
+#include "Age/Material/Shader.hpp"
 
 namespace a_game_engine
 {
@@ -124,8 +125,9 @@ namespace a_game_engine
 	DirLightComponent& DirLightComponent::createShadowMap(uvec2 size, TextureFormat format)
 	{
 		ImageInfo img = { size, format };
-		Sampler2DInfo sampler = { TextureFiltering::Linear, TextureWrap::ClampToEdge }; //TODO: change to clamp to border
+		Sampler2DInfo sampler = { TextureFiltering::Linear, TextureWrap::ClampToBorder };
 		light.shadowMap.create(Texture::Settings{ img, format, sampler, 1 });
+		light.shadowMap.setBorderColor({ 1.f });
 		light.shadowMap.setShadowSampling();
 		light.useShadow = true;
 		fb.setDepthTexture(light.shadowMap);
@@ -159,10 +161,13 @@ namespace a_game_engine
 		depthInfo.nearFar = vec2{ 0.1f, 25.f };
 		depthInfo.projView = light.viewProj;
 		depthInfo.shaderSettings = depthOnlySettings;
+		/*depthInfo.drawingCondition = [](const Material& m) {
+			return !m.shader->opaque;
+			};*/
 
-		fb.use();
-		Pipeline::clear({ 1.f });
 		Pipeline::set3DContext();
+		fb.use();
+		Pipeline::clear({ 1.f }, true, false);
 		Pipeline::setFrontFace(false);
 		rootNode.forEachConst([&](const Node& n) {
 			n.draw(depthInfo);

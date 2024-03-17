@@ -241,6 +241,8 @@ namespace a_game_engine
 			return GL_MIRRORED_REPEAT;
 		case TextureWrap::ClampToEdge:
 			return GL_CLAMP_TO_EDGE;
+		case TextureWrap::ClampToBorder:
+			return GL_CLAMP_TO_BORDER;
 		}
 		return GL_REPEAT;
     }

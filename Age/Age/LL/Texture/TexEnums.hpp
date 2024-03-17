@@ -27,7 +27,7 @@ namespace a_game_engine
 		Linear_MipLinear, Linear_MipNear,
 		Near_MipLinear, Near_MipNear
 	};
-	enum class TextureWrap { Repeat, MirroredRepeat, ClampToEdge };
+	enum class TextureWrap { Repeat, MirroredRepeat, ClampToEdge, ClampToBorder };
 
 	enum class MipmapSettings { Enable, Disable, Auto };
 

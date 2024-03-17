@@ -3,6 +3,7 @@
 #include "Age/types.hpp"
 #include "Age/Math/vec2.hpp"
 #include "Age/Math/vec3.hpp"
+#include "Age/Math/vec4.hpp"
 #include "TexEnums.hpp"
 
 namespace a_game_engine
@@ -40,6 +41,7 @@ namespace a_game_engine
 		void setWrap(TextureWrap wrap);
 		void setFiltering(TextureFiltering min, TextureFiltering mag);
 		void setFiltering(TextureFiltering filter);
+		void setBorderColor(const vec4& color);
 		void setShadowSampling(bool value = true);
 
 		inline uint getId() const { return _id; }

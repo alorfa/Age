@@ -55,6 +55,8 @@ namespace a_game_engine
 						props.push_back({ std::format("shadowDirLightSources[{}].dir", lights.shadowDir), l.dir });
 						props.push_back({ std::format("shadowDirLightSources[{}].sourceRadius", lights.shadowDir), l.size * 0.5f });
 						props.push_back({ std::format("shadowDirLightSources[{}].bias", lights.shadowDir), dirLight->getBias()});
+						props.push_back({ std::format("shadowDirLightSources[{}].texelSize", lights.shadowDir), 
+							vec2{1.f / l.shadowMap.getSize().x, 1.f / l.shadowMap.getSize().y} });
 						props.push_back({ std::format("shadowVP[{}]", lights.shadowDir), l.viewProj });
 						MaterialProperty matprop = { std::format("shadowDirLightSources[{}].shadowMap", lights.shadowDir),
 							ShaderProperty::Texture2DProp{ l.shadowMap, (int)lights.shadowDir + 13 } };

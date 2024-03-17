@@ -18,6 +18,7 @@ struct DirLightShadow
     vec3 dir, ambient, color;
     float sourceRadius, bias;
     sampler2DShadow shadowMap;
+    vec2 texelSize;
 };
 struct PointLight
 {
@@ -222,12 +223,28 @@ vec3 screenToLinear(vec3 screenRGB)
 {
     return pow(screenRGB, vec3(2.2));
 }
-float computeShadowFactor(sampler2DShadow shadowMap, vec4 lightSpacePos, float bias)
+float computeShadowFactor(sampler2DShadow shadowMap, vec4 lightSpacePos, vec2 texelSize, float bias)
 {
     vec3 shadowPos = (lightSpacePos.xyz / lightSpacePos.a) * 0.5 + 0.5;
     shadowPos.z += bias;
-    float result = texture(shadowMap, shadowPos);
-    return result;
+
+    float a = texture(shadowMap, vec3(shadowPos.x - texelSize.x, shadowPos.y - texelSize.y, shadowPos.z));
+    float b = texture(shadowMap, vec3(shadowPos.x, shadowPos.y - texelSize.y, shadowPos.z));
+    float c = texture(shadowMap, vec3(shadowPos.x + texelSize.x, shadowPos.y - texelSize.y, shadowPos.z));
+
+    float d = texture(shadowMap, vec3(shadowPos.x - texelSize.x, shadowPos.y, shadowPos.z));
+    float e = texture(shadowMap, shadowPos);
+    float f = texture(shadowMap, vec3(shadowPos.x + texelSize.x, shadowPos.y, shadowPos.z));
+
+    float g = texture(shadowMap, vec3(shadowPos.x - texelSize.x, shadowPos.y + texelSize.y, shadowPos.z));
+    float h = texture(shadowMap, vec3(shadowPos.x, shadowPos.y + texelSize.y, shadowPos.z));
+    float i = texture(shadowMap, vec3(shadowPos.x + texelSize.x, shadowPos.y + texelSize.y, shadowPos.z));
+
+    /*return e*0.25+
+        (b+d+f+h)*0.125+
+        (a+c+g+i)*0.0625;*/
+    return (a+b+c+d+e+f+g+h+i) / 9.;
+    //return e;
 }
 
 vec3 pbr_computeLight(DirLight light)
@@ -268,7 +285,7 @@ vec3 pbr_computeLight(DirLightShadow light, vec4 lightSpacePos)
     vec3 finalSpecular = vec3(0.);
     vec3 finalDiffuse = vec3(0.);
     vec3 finalAmbient = vec3(0.);
-    float shadowFactor = computeShadowFactor(light.shadowMap, lightSpacePos, light.bias);
+    float shadowFactor = computeShadowFactor(light.shadowMap, lightSpacePos, light.texelSize, light.bias);
 #ifndef AGE_DISABLE_SPECULAR
     float clampedRoughness = max(material.roughness, 0.03);
     float DMaxValue = max(D_GGX(1., pow4(clampedRoughness)) * INV_PI, 1.);

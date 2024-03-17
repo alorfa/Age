@@ -95,6 +95,10 @@ namespace a_game_engine
 	{
 		setFiltering(filter, filter);
 	}
+	void Texture2D::setBorderColor(const vec4& color)
+	{
+		glTextureParameterfv(_id, GL_TEXTURE_BORDER_COLOR, &color.x);
+	}
 	void Texture2D::setShadowSampling(bool value)
 	{
 		if (value)
