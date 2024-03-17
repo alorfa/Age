@@ -223,9 +223,8 @@ vec3 screenToLinear(vec3 screenRGB)
 {
     return pow(screenRGB, vec3(2.2));
 }
-float computeShadowFactor(sampler2DShadow shadowMap, vec4 lightSpacePos, vec2 texelSize, float bias)
+float computeShadowFactor(sampler2DShadow shadowMap, vec3 shadowPos, vec2 texelSize, float bias)
 {
-    vec3 shadowPos = (lightSpacePos.xyz / lightSpacePos.a) * 0.5 + 0.5;
     shadowPos.z += bias;
 
     float a = texture(shadowMap, vec3(shadowPos.x - texelSize.x, shadowPos.y - texelSize.y, shadowPos.z));
@@ -275,7 +274,7 @@ vec3 pbr_computeLight(DirLight light)
 #endif
     return (finalDiffuse + finalSpecular) * light.color * c.NL + finalAmbient;
 }
-vec3 pbr_computeLight(DirLightShadow light, vec4 lightSpacePos)
+vec3 pbr_computeLight(DirLightShadow light, vec3 lightSpacePos)
 {    
     vec3 R = reflect(-vc.V, material.normal);
     LightContext c = computeLightData_Sphere(light.dir, vc.V, R, material.normal, light.sourceRadius, 1., 1.);

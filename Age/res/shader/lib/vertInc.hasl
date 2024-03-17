@@ -6,5 +6,5 @@ out mat3 fragTBN;
 
 #if defined(AGE_MAX_SHADOW_DIR_LIGHTS) && AGE_MAX_SHADOW_DIR_LIGHTS > 0
 uniform mat4 shadowVP[AGE_MAX_SHADOW_DIR_LIGHTS];
-out vec4 shadowPositions[AGE_MAX_SHADOW_DIR_LIGHTS];
+out vec3 shadowPositions[AGE_MAX_SHADOW_DIR_LIGHTS];
 #endif

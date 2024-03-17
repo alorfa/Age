@@ -29,7 +29,7 @@ uniform DirLight dirLightSources[AGE_MAX_DIR_LIGHTS];
 #endif
 #if defined(AGE_MAX_SHADOW_DIR_LIGHTS) && AGE_MAX_SHADOW_DIR_LIGHTS > 0
 uniform DirLightShadow shadowDirLightSources[AGE_MAX_SHADOW_DIR_LIGHTS];
-in vec4 shadowPositions[AGE_MAX_SHADOW_DIR_LIGHTS];
+in vec3 shadowPositions[AGE_MAX_SHADOW_DIR_LIGHTS];
 #endif
 
 void paintOver()

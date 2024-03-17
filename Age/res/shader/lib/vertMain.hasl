@@ -4,7 +4,7 @@ void main()
 	#if defined(AGE_MAX_SHADOW_DIR_LIGHTS) && AGE_MAX_SHADOW_DIR_LIGHTS > 0
 	for (int i = 0; i < AGE_MAX_SHADOW_DIR_LIGHTS; i++)
 	{
-		shadowPositions[i] = shadowVP[i] * vec4(fragPos, 1.);
+		shadowPositions[i] = (shadowVP[i] * vec4(fragPos, 1.)).xyz * 0.5 + 0.5;
 	}
 	#endif
 }
