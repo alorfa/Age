@@ -191,7 +191,7 @@
     <ClInclude Include="Age\Components\LightComponents.hpp" />
     <ClInclude Include="Age\egd.hpp" />
     <ClInclude Include="Age\EventHandler.hpp" />
-    <ClInclude Include="Age\Game\FollowToCamera.hpp" />
+    <ClInclude Include="Age\Game\FlashLight.hpp" />
     <ClInclude Include="Age\Game\Rotate.hpp" />
     <ClInclude Include="Age\Game\WorldScene.hpp" />
     <ClInclude Include="Age\Game\Gdata.hpp" />
@@ -246,7 +246,7 @@
     <ClCompile Include="Age\Components\MeshComponent.cpp" />
     <ClCompile Include="Age\EventHandler.cpp" />
     <ClCompile Include="Age\Game\PlayerController.cpp" />
-    <ClCompile Include="Age\Game\FollowToCamera.cpp" />
+    <ClCompile Include="Age\Game\FlashLight.cpp" />
     <ClCompile Include="Age\Game\Rotate.cpp" />
     <ClCompile Include="Age\Game\RotateComp.cpp" />
     <ClCompile Include="Age\Game\SceneController.cpp" />

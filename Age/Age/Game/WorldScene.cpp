@@ -1,7 +1,7 @@
 #include "WorldScene.hpp"
 #include <SFML/Window/Event.hpp>
 #include <Age/EventHandler.hpp>
-#include "FollowToCamera.hpp"
+#include "FlashLight.hpp"
 #include "Rotate.hpp"
 #include "Age/egd.hpp"
 #include "Age/Material/Shader.hpp"
@@ -71,7 +71,7 @@ namespace a_game
 			}
 
 		auto& flashlight = rootNode->addChild();
-		flashlight.addComponent<FollowToCamera>()
+		flashlight.addComponent<FlashLight>()
 			.setCamera(*activeCamera);
 		/*objs[4]->addComponent<RotateComp>()
 			.init(vec3(-2.f, 1.5f, -1.5f), vec3(-3.f, 3.f, 0.f), 0.5f);*/
@@ -105,11 +105,11 @@ namespace a_game
 				sun.addComponent<DirLightComponent>()
 					.setSize(0.08f)
 					.setDirection({ 0.f, 0.5f, 0.51f })
-					.setBias(0.0001f)
 					.createShadowMap({2048u}, TextureFormat::Depth16)
+					.setBias(-0.001f)
 					;
 				sun.addComponent<SunComp>();
-				sun.setPosition({ -1.f, 2.f, 2.f });
+				sun.setPosition({ -1.f, 4.f, 1.f });
 			}
 		}
 

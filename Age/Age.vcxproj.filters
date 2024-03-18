@@ -36,7 +36,7 @@
     <ClInclude Include="Age\LL\Texture\TexEnums.hpp" />
     <ClInclude Include="Age\Object\Node.hpp" />
     <ClInclude Include="Age\Object\Component.hpp" />
-    <ClInclude Include="Age\Game\FollowToCamera.hpp" />
+    <ClInclude Include="Age\Game\FlashLight.hpp" />
     <ClInclude Include="Age\egd.hpp" />
     <ClInclude Include="Age\Scene\SkyBox.hpp" />
     <ClInclude Include="Age\LL\Pipeline.hpp" />
@@ -87,7 +87,7 @@
     <ClCompile Include="Age\LL\Texture\TexEnums.cpp" />
     <ClCompile Include="Age\Object\Node.cpp" />
     <ClCompile Include="Age\Object\Component.cpp" />
-    <ClCompile Include="Age\Game\FollowToCamera.cpp" />
+    <ClCompile Include="Age\Game\FlashLight.cpp" />
     <ClCompile Include="Age\Scene\SkyBox.cpp" />
     <ClCompile Include="Age\LL\Pipeline.cpp" />
     <ClCompile Include="Age\Scene\Scene.cpp" />

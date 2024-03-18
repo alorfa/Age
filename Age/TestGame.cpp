@@ -119,6 +119,16 @@ namespace a_game
 				return e.type == sf::Event::MouseButtonReleased &&
 					e.mouseButton.button == sf::Mouse::Left;
 			});
+		_eventHandler.setEvent("mouseRight", [](const sf::Event& e)
+			{
+				return e.type == sf::Event::MouseButtonPressed &&
+					e.mouseButton.button == sf::Mouse::Right;
+			});
+		_eventHandler.setEvent("mouseRightReleased", [](const sf::Event& e)
+			{
+				return e.type == sf::Event::MouseButtonReleased &&
+					e.mouseButton.button == sf::Mouse::Right;
+			});
 		_eventHandler.setEvent("camera", [](const sf::Event& e)
 			{
 				return e.type == sf::Event::KeyPressed &&
