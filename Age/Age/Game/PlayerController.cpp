@@ -5,6 +5,7 @@
 #include <Age/EventHandler.hpp>
 #include <imgui.h>
 #include "Age/Game/WorldScene.hpp"
+#include "Age/Game/Ball.hpp"
 
 namespace a_game
 {
@@ -27,6 +28,7 @@ namespace a_game
 
 		if (enableControl)
 		{
+
 			const auto direction = Math::getForwardDir(egd.camera.transform.getRotation());
 			if (ev.getEvent("w"))
 				egd.camera.transform.changePosition() += direction * (delta * 4);
@@ -38,6 +40,14 @@ namespace a_game
 				egd.camera.transform.changePosition() -= rightDir * (delta * 4);
 			if (ev.getEvent("d"))
 				egd.camera.transform.changePosition() += rightDir * (delta * 4);
+
+			if (ev.getEvent("mouseLeft"))
+			{
+				auto& ball = _scene->rootNode->addChild();
+				ball.setPosition(egd.camera.transform.getPosition() + direction * 0.2f);
+				ball.addComponent<Ball>()
+					.setVelocity(direction * 10.f);
+			}
 
 			auto windowSize = egd.window->getSize();
 			auto curPos = sf::Mouse::getPosition(*egd.window);
