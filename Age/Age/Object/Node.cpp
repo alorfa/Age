@@ -38,8 +38,14 @@ namespace a_game_engine
 
 	void Node::sortChildren(const vec3& point, uint nodeType, SortMode mode)
 	{
-		std::list<std::unique_ptr<Node>> nnodes;
-		auto proj = [&](const std::unique_ptr<Node>& node) -> float {
+		auto opProj = [&](const std::unique_ptr<Node>& node) -> float {
+			if (node.get() == nullptr)
+				return FLT_MAX;
+			return (node->getTransform().getPosition() - point).square_length();
+			};
+		auto trProj = [&](const std::unique_ptr<Node>& node) -> float {
+			if (node.get() == nullptr)
+				return -1.f;
 			return (node->getTransform().getPosition() - point).square_length();
 			};
 		auto opFunc = [&](float left, float right)
@@ -56,16 +62,29 @@ namespace a_game_engine
 			};
 
 		if ((int)nodeType & (int)Type::Opaque)
-			std::ranges::sort(children, opFunc, proj);
+			std::ranges::sort(children, opFunc, opProj);
 
 		if ((int)nodeType & (int)Type::Transparent)
-			std::ranges::sort(transparentChildren, trFunc, proj);
+			std::ranges::sort(transparentChildren, trFunc, trProj);
 	}
 	void Node::sortBranch(const vec3& point, uint nodeType, SortMode mode)
 	{
 		forEach([&](Node& n) {
 				sortChildren(point, nodeType, mode);
 			});
+	}
+	void Node::destroy()
+	{
+		if (not parent)
+			return;
+
+		Container& container = (type == Type::Opaque) ? parent->children : parent->transparentChildren;
+		auto it = std::find_if(container.begin(), container.end(), [&](const std::unique_ptr<Node>& n)
+			{
+				return n.get() == this;
+			});
+		if (it != container.end())
+			it->reset();
 	}
 	void Node::addChild(std::unique_ptr<Node>&& node)
 	{
@@ -88,33 +107,41 @@ namespace a_game_engine
 	{
 		func(*this);
 		for (const auto& node : children)
-			node->forEach(func);
+			if (node)
+				node->forEach(func);
 
 		for (const auto& node : transparentChildren)
-			node->forEach(func);
+			if (node)
+				node->forEach(func);
 	}
 	void Node::forEachConst(std::function<void(const Node&)> func) const
 	{
 		func(*this);
 		for (const auto& node : children)
-			node->forEachConst(func);
+			if (node)
+				node->forEachConst(func);
 
 		for (const auto& node : transparentChildren)
-			node->forEachConst(func);
+			if (node)
+				node->forEachConst(func);
 	}
 	void Node::forEachLocal(std::function<void(Node&)> func)
 	{
 		for (const auto& node : children)
-			func(*node);
+			if (node)
+				func(*node);
 		for (const auto& node : transparentChildren)
-			func(*node);
+			if (node)
+				func(*node);
 	}
 	void Node::forEachConstLocal(std::function<void(const Node&)> func) const
 	{
 		for (const auto& node : children)
-			func(*node);
+			if (node)
+				func(*node);
 		for (const auto& node : transparentChildren)
-			func(*node);
+			if (node)
+				func(*node);
 	}
 	void Node::handleRawEvents(const sf::Event& ev)
 	{

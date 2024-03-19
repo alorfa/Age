@@ -10,6 +10,7 @@ namespace a_game
 	{
 		Node* node = nullptr;
 		vec3 velocity = { 0.f };
+		float time = 0.f;
 	public:
 		Ball(Node& node);
 

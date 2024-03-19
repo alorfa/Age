@@ -18,7 +18,7 @@ vec4 vertexProcess()
 
 void setup()
 {
-    material.base_color = vec3(0.00);
+    material.base_color = vec3(0.5, 0.05, 0.05);
     material.normal = normalize(fragTBN[2]);
     material.roughness = 0.2;
     material.metallic = 0.;

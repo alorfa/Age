@@ -24,6 +24,12 @@ namespace a_game
 
 	void Ball::update(float delta)
 	{
+		time += delta;
+		if (time > 10.f)
+		{
+			node->destroy();
+			return;
+		}
 		velocity.z -= 9.8f * delta;
 		vec3 newPos = node->getTransform().getPosition() + velocity * delta;
 		if (newPos.z < 0.15f)

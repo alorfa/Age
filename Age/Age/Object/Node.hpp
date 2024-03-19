@@ -110,6 +110,7 @@ namespace a_game_engine
 		void sortChildren(const vec3& point, uint nodeType, SortMode mode = SortMode::Default);
 		void sortBranch(const vec3& point, uint nodeType, SortMode mode = SortMode::Default);
 
+		void destroy();
 		void addChild(std::unique_ptr<Node>&& node);
 		Node& addChild(Type type = Type::Opaque);
 		void forEach(std::function<void(Node&)> func);
