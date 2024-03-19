@@ -16,6 +16,7 @@ namespace a_game_engine
 		debugPass = &egd.shaders.loadRaw(egd.res / "shader/deferredDebugger.rasl");
 		postprocPass = &egd.shaders.loadPostproc(egd.res / "shader/deferredPostprocessing.pasl");
 		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/dirLight.pasl");
+		shadowDirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/shadowDirLight.pasl");
 		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/pointLight.pasl");
 		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/spotLight.pasl");
 		iblPass = &egd.shaders.loadPostproc(egd.res / "shader/ibl.pasl");
@@ -104,15 +105,35 @@ namespace a_game_engine
 				if (dir)
 				{
 					const auto& l = dir->getLight();
-					dirLightPass->use();
-					dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
-					dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
-					dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), l.dir);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), l.ambient);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.color"), l.color);
-					dirLightPass->setUniform(dirLightPass->getLocation("light.sourceRadius"), l.size * 0.5f);
-					dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
+					if (l.useShadow)
+					{
+						shadowDirLightPass->use();
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("baseColor_roughness_map"), 0);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("normal_metalness_map"), 1);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("pos_map"), 2);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.dir"), l.dir);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.ambient"), l.ambient);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.color"), l.color);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.sourceRadius"), l.size * 0.5f);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.shadowMap"), l.shadowMap, 3);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.texelSize"), 
+							vec2{1.f / l.shadowMap.getSize().x, 1.f / l.shadowMap.getSize().y});
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.bias"), dir->getBias());
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("shadowProj"), l.viewProj);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("cameraPos"), cameraPos);
+					}
+					else
+					{
+						dirLightPass->use();
+						dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
+						dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
+						dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
+						dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), l.dir);
+						dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), l.ambient);
+						dirLightPass->setUniform(dirLightPass->getLocation("light.color"), l.color);
+						dirLightPass->setUniform(dirLightPass->getLocation("light.sourceRadius"), l.size * 0.5f);
+						dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
+					}
 					VertexBuffer::getDefFramebuf().draw();
 				}
 			}
@@ -156,7 +177,10 @@ namespace a_game_engine
 		forwardSettings.pointLights = forwardInfo.lights.point;
 		forwardSettings.dirLights = forwardInfo.lights.dir;
 		forwardSettings.spotLights = forwardInfo.lights.spot;
+		forwardSettings.dirLightsShadow = forwardInfo.lights.shadowDir;
 		forwardInfo.shaderSettings = forwardSettings;
+
+		Pipeline::setFrontFace();
 
 		//gbuffer pass
 		gbuffer.use();

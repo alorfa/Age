@@ -1,0 +1,27 @@
+out vec4 FragColor;
+
+in vec2 uv;
+
+uniform sampler2D baseColor_roughness_map, normal_metalness_map, pos_map;
+uniform DirLightShadow light;
+uniform mat4 shadowProj;
+uniform vec3 cameraPos;
+
+void main()
+{	
+	initMaterial();
+    vec4 diffuse_roughness = texture(baseColor_roughness_map, uv);
+    vec4 normal_metalness = texture(normal_metalness_map, uv);
+    vec3 fragPos = texture(pos_map, uv).rgb;
+	material.base_color = diffuse_roughness.rgb;
+	material.roughness = diffuse_roughness.a;
+	material.normal = normal_metalness.xyz;
+	material.metallic = normal_metalness.a;
+
+	vec3 shadowPos = (shadowProj * vec4(fragPos, 1.)).xyz * 0.5 + 0.5;
+
+	initViewContext(fragPos, cameraPos);
+    vec3 outColor = pbr_computeLight(light, shadowPos);
+
+    FragColor = vec4(outColor, 1.0);
+}

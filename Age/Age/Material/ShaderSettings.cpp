@@ -34,7 +34,11 @@ namespace a_game_engine
     }
     bool ShaderSettings::Deferred::operator<(const Deferred& other) const
     {
-        return implIndex < other.implIndex && definesIndex < other.definesIndex;
+        if (implIndex < other.implIndex)
+            return true;
+        if (definesIndex < other.definesIndex)
+            return true;
+        return false;
     }
 
     bool ShaderSettings::Deferred::operator==(const Deferred& other) const

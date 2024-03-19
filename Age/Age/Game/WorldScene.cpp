@@ -94,7 +94,7 @@ namespace a_game
 			else
 			{
 				flashlight.addComponent<SpotLightComponent>()
-					.setColor({ 4.f, 4.f, 10.f }, 0.03f)
+					.setColor({ 4.f, 4.f, 8.f }, 0.03f)
 					.setSize(0.1f)
 					.setCutOff(0.f)
 					.setOuterCutOff(Math::rad(15.f));

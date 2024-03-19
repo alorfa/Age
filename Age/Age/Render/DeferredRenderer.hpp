@@ -17,7 +17,7 @@ namespace a_game_engine
 
 		const ShaderProgram 
 			*debugPass,
-			*pointLightPass, *dirLightPass, *spotLightPass, *iblPass,
+			*pointLightPass, *dirLightPass, *spotLightPass, *iblPass, *shadowDirLightPass,
 			*postprocPass;
 		float exposure = 1.f;
 	public:

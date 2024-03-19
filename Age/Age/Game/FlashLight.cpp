@@ -28,7 +28,7 @@ namespace a_game
 			}
 			else
 			{
-				spotLight->setColor({ 4.f, 4.f, 10.f }, 0.03f);
+				spotLight->setColor({ 4.f, 4.f, 8.f }, 0.03f);
 			}
 		}
 	}

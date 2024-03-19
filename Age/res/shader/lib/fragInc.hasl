@@ -34,6 +34,7 @@ in vec3 shadowPositions[AGE_MAX_SHADOW_DIR_LIGHTS];
 
 void paintOver()
 {
+#if !defined(AGE_DEPTH_ONLY)
     initViewContext(fragPos, cameraPos);
     vec3 light = vec3(0.f);
 #if defined(AGE_MAX_SHADOW_DIR_LIGHTS) && AGE_MAX_SHADOW_DIR_LIGHTS > 0 
@@ -62,7 +63,6 @@ void paintOver()
 #endif
     light += LIGHTING_MODEL(diffuseMap, specularMap, brdfLut, maxSpecMipLevel);
     light += LIGHTING_MODEL(material.emission);
-#if !defined(AGE_DEPTH_ONLY)
     age_FragColor = vec4(light, material.alpha);
 #endif
 }
