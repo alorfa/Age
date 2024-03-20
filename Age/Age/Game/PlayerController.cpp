@@ -12,6 +12,8 @@ namespace a_game
 	PlayerController::PlayerController(const Node& n)
 	{
 		_scene = dynamic_cast<WorldScene*>(n.scene);
+		futPos = egd.camera.transform.getPosition();
+		futRot = egd.camera.transform.getRotation();
 	}
 	void PlayerController::handleRawEvents(const sf::Event& ev)
 	{
@@ -28,18 +30,20 @@ namespace a_game
 
 		if (enableControl)
 		{
-
 			const auto direction = Math::getForwardDir(egd.camera.transform.getRotation());
+			vec3 moveDir = { 0.f };
 			if (ev.getEvent("w"))
-				egd.camera.transform.changePosition() += direction * (delta * 4);
+				moveDir += direction;
 			if (ev.getEvent("s"))
-				egd.camera.transform.changePosition() -= direction * (delta * 4);
+				moveDir -= direction;
 
 			const auto rightDir = Math::getRightDir(egd.camera.transform.getRotation());
 			if (ev.getEvent("a"))
-				egd.camera.transform.changePosition() -= rightDir * (delta * 4);
+				moveDir -= rightDir;
 			if (ev.getEvent("d"))
-				egd.camera.transform.changePosition() += rightDir * (delta * 4);
+				moveDir += rightDir;
+			if (moveDir.square_length() > 0.f)
+				futPos += moveDir.new_normalized() * (delta * 4.f);
 
 			if (ev.getEvent("mouseLeft"))
 			{
@@ -57,16 +61,19 @@ namespace a_game
 				(float)mouseOffset.x / (float)windowSize.y * sensitivity,
 				(float)mouseOffset.y / (float)windowSize.y * sensitivity
 			};
-			vec3 rot = egd.camera.transform.getRotation();
-			rot.x += cameraOffset.y;
-			rot.y -= cameraOffset.x;
+			futRot.x += cameraOffset.y;
+			futRot.y -= cameraOffset.x;
 			const float minrot = Math::rad(0.01f);
 			const float maxrot = Math::rad(179.99f);
-			if (rot.x <= minrot)
-				rot.x = minrot;
-			if (rot.x >= maxrot)
-				rot.x = maxrot;
-			egd.camera.transform.changeRotation() = rot;
+			if (futRot.x <= minrot)
+				futRot.x = minrot;
+			if (futRot.x >= maxrot)
+				futRot.x = maxrot;
+
+			egd.camera.transform.changePosition() = 
+				Math::smooth(egd.camera.transform.getPosition(), futPos, delta * smoothRotSpeed);
+			egd.camera.transform.changeRotation() = 
+				Math::smooth(egd.camera.transform.getRotation(), futRot, delta * smoothRotSpeed);
 		}
 		else
 		{
