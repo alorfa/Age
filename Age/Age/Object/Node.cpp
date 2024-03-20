@@ -54,13 +54,13 @@ namespace a_game_engine
 
 	void Node::sortChildren(const vec3& point, uint nodeType, SortMode mode)
 	{
-		auto opProj = [&](const std::unique_ptr<Node>& node) -> float {
+		auto nearProj = [&](const std::unique_ptr<Node>& node) -> float {
 			if (node.get() == nullptr)
 				return FLT_MAX;
 
 			return (node->getTransform().getPosition() - point).square_length();
 			};
-		auto trProj = [&](const std::unique_ptr<Node>& node) -> float {
+		auto farProj = [&](const std::unique_ptr<Node>& node) -> float {
 			if (node.get() == nullptr)
 				return -1.f;
 
@@ -81,7 +81,10 @@ namespace a_game_engine
 
 		if ((int)nodeType & (int)Type::Opaque)
 		{
-			std::ranges::sort(children, opFunc, opProj);
+			if (mode == SortMode::Near or mode == SortMode::Default)
+				std::ranges::sort(children, opFunc, nearProj);
+			else
+				std::ranges::sort(children, opFunc, farProj);
 			auto unwanted = getEmptyNodesCount(children);
 			if (unwanted > 0)
 				children.resize(children.size() - unwanted);
@@ -89,7 +92,10 @@ namespace a_game_engine
 
 		if ((int)nodeType & (int)Type::Transparent)
 		{
-			std::ranges::sort(transparentChildren, trFunc, trProj);
+			if (mode == SortMode::Near)
+				std::ranges::sort(transparentChildren, trFunc, nearProj);
+			else
+				std::ranges::sort(transparentChildren, trFunc, farProj);
 			auto unwanted = getEmptyNodesCount(transparentChildren);
 			if (unwanted > 0)
 				transparentChildren.resize(transparentChildren.size() - unwanted);

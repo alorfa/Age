@@ -32,7 +32,7 @@ namespace a_game
 		if (_time >= 5.f)
 		{
 			_time = 0.f;
-			_scene->rootNode->sortChildren(egd.camera.transform.getPosition(), Node::Opaque);
+			_scene->rootNode->sortChildren(egd.camera.transform.getPosition(), Node::Opaque, Node::SortMode::Far);
 		}
 	}
 }
