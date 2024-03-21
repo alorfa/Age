@@ -15,11 +15,11 @@ namespace a_game_engine
 	{
 		debugPass = &egd.shaders.loadRaw(egd.res / "shader/deferredDebugger.rasl");
 		postprocPass = &egd.shaders.loadPostproc(egd.res / "shader/deferredPostprocessing.pasl");
-		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/dirLight.pasl");
-		shadowDirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/shadowDirLight.pasl");
-		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/pointLight.pasl");
-		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/spotLight.pasl");
-		iblPass = &egd.shaders.loadPostproc(egd.res / "shader/ibl.pasl");
+		dirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/dirLight.pasl");
+		shadowDirLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/shadowDirLight.pasl");
+		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/pointLight.pasl");
+		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/spotLight.pasl");
+		iblPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ibl.pasl");
 		gbuffer.setTexturesCount(3);
 	}
 

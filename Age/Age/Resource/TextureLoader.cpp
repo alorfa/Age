@@ -73,7 +73,7 @@ namespace a_game_engine
 			Texture2D::Settings s{ img, TextureFormat::RG_F16, sampler, 1 };
 			brdfLut->create(s);
 
-			auto& shader = egd.shaders.loadPostproc(egd.res / "shader/GenBrdfLut.pasl");
+			auto& shader = egd.shaders.loadPostproc(egd.res / "shader/engine/GenBrdfLut.pasl");
 			const auto& buf = VertexBuffer::getDefFramebuf();
 			FrameBuffer2D fb;
 			fb.setTexture(0, *brdfLut);

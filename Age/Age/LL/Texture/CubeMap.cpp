@@ -84,7 +84,7 @@ namespace a_game_engine
 		view[4].setViewMatrix({ 0.f }, -z, -y, x);
 		view[5].setViewMatrix({ 0.f }, z, -y, -x);
 
-		auto& shader = egd.shaders.loadRaw(egd.res / "shader/CubeMapFromPanorama.rasl");
+		auto& shader = egd.shaders.loadRaw(egd.res / "shader/engine/CubeMapFromPanorama.rasl");
 
 		const auto internalFormat = TexEnums::chooseInternalFormat(s.panorama->getFormat(), s.format);
 		CubeMap::Settings cubeSettings{ nullptr, s.size, internalFormat, s.sampler, s.mipmaps };
@@ -128,8 +128,8 @@ namespace a_game_engine
 		view[4].setViewMatrix({ 0.f }, -y, x, -z);
 		view[5].setViewMatrix({ 0.f }, -y, -x, z);
 
-		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/CubeMapCopy.rasl");
-		const auto& roughnessShader = egd.shaders.loadRaw(egd.res / "shader/CubeMapSpecular.rasl");
+		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/engine/CubeMapCopy.rasl");
+		const auto& roughnessShader = egd.shaders.loadRaw(egd.res / "shader/engine/CubeMapSpecular.rasl");
 		const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
 		FrameBuffer2D fb;
 
@@ -181,7 +181,7 @@ namespace a_game_engine
 		view[4].setViewMatrix({ 0.f }, -y, x, -z);
 		view[5].setViewMatrix({ 0.f }, -y, -x, z);
 
-		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/CubeMapDiffuse.rasl");
+		const auto& copyShader = egd.shaders.loadRaw(egd.res / "shader/engine/CubeMapDiffuse.rasl");
 		const auto& skyboxMesh = egd.models.load(egd.res / "model/skybox.obj");
 		FrameBuffer2D fb;
 

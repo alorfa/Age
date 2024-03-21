@@ -11,7 +11,7 @@ namespace a_game_engine
 
     SSAO::SSAO()
     {
-        ssaoPass = &egd.shaders.loadPostproc(egd.res / "shader/ssao.pasl");
+        ssaoPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ssao.pasl");
         //ssaoBlur = &egd.shaders.loadPostproc(egd.res / "shader/ssaoBlur.pasl");
 
         const auto& kernel = getKernel();
