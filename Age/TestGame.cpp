@@ -73,7 +73,7 @@ namespace a_game
 
 		std::cout << std::fixed;
 		std::cout.precision(2);
-		_window.setFramerateLimit(60);
+		_window.setFramerateLimit(600);
 
 		Pipeline::setUnpackAlignment(1);
 		

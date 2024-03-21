@@ -15,6 +15,11 @@ namespace a_game_engine
 {
 	using namespace std::string_literals;
 
+	namespace
+	{
+		uint activeShader = 0;
+	}
+
 	void ShaderProgram::destroy()
 	{
 		if (_id)
@@ -167,10 +172,10 @@ namespace a_game_engine
 	}
 	void ShaderProgram::use() const
 	{
-		glUseProgram(_id);
-	}
-	void ShaderProgram::use(uint id)
-	{
-		glUseProgram(id);
+		if (activeShader != _id)
+		{
+			activeShader = _id;
+			glUseProgram(_id);
+		}
 	}
 }

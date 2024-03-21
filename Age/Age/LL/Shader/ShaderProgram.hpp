@@ -54,6 +54,5 @@ namespace a_game_engine
 		void setTransformProps(const TransformProps& props) const;
 
 		void use() const;
-		static void use(uint id);
 	};
 }

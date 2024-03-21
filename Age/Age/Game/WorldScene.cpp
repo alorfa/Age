@@ -190,7 +190,8 @@ namespace a_game
 
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);
 		activeRenderer->drawScene(*this, *camera, delta);
-		if (activeRenderer == &deferredRenderer)
+		if (false)
+		//if (activeRenderer == &deferredRenderer)
 			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",
 				deferredRenderer.gbufferTime, deferredRenderer.lightTime, deferredRenderer.screenTime));
 		else
