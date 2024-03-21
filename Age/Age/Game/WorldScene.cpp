@@ -139,8 +139,8 @@ namespace a_game
 			&egd.cubemaps.loadRaw(egd.res / "img/skybox4k.exr", s);
 		deferredRenderer.env = forwardRenderer.env = env;
 
-		for (uint i = 0; i < 11; i++)
-			for (uint j = 0; j < 11; j++)
+		for (uint i = 0; i < 6; i++)
+			for (uint j = 0; j < 6; j++)
 			{
 				auto& sphere = rootNode->addChild();
 				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/sphere.obj",
@@ -150,12 +150,12 @@ namespace a_game
 					auto meshes = n.findAllComponents<MeshComponent>();
 					for (auto& mesh : meshes)
 					{
-						mesh->mesh.material.setValue("roughness", ShaderProperty(1.f - (float)i * 0.1f));
-						mesh->mesh.material.setValue("metallic", ShaderProperty((float)j * 0.1f));
+						mesh->mesh.material.setValue("roughness", ShaderProperty(1.f - (float)i * 0.2f));
+						mesh->mesh.material.setValue("metallic", ShaderProperty((float)j * 0.2f));
 					}
 				});
-				sphere.setPosition({ (float)i * 0.4f - 5.f, (float)j * 0.4f - 1.5f, 0.25f });
-				sphere.setScale({ 0.25f });
+				sphere.setPosition({ (float)i * 0.8f - 5.f, (float)j * 0.8f - 1.5f, 0.35f });
+				sphere.setScale({ 0.35f });
 			}
 		vec3 colors[3][3] = {
 			vec3{1.f, 0.1f, 0.1f}, vec3{0.1f, 1.f, 0.1f}, vec3{0.1f, 0.1f, 1.f},
@@ -170,7 +170,7 @@ namespace a_game
 				MeshComponent::addModel(sphere, egd.models.load(egd.res / "model/sphere.obj",
 					ModelLoader::Settings{ vec3{1.f}, false }));
 				MeshComponent::setShader(sphere, egd.shaders.load(egd.res / "shader/glass.asl"));
-				sphere.setPosition({ (float)i - 4.f, (float)j - 0.5f, 0.8f});
+				sphere.setPosition({ (float)i - 4.f, (float)j - 0.5f, 1.f});
 				sphere.setScale({ 0.3f });
 				sphere.forEach([&](Node& n) {
 					auto meshes = n.findAllComponents<MeshComponent>();
