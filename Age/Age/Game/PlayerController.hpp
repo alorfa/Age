@@ -16,7 +16,6 @@ namespace a_game
 		bool enableControl = false;
 
 		vec3 futPos, futRot;
-		const float smoothSpeed = 20.f;
 		const float smoothRotSpeed = 35.f;
 	public:
 		PlayerController(const Node& n);

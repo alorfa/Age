@@ -47,6 +47,11 @@ namespace a_game_engine
 		inline uint getId() const { return _id; }
 		inline const uvec2& getSize() const { return _size; }
 		inline TextureFormat getFormat() const { return _format; }
+		inline bool isValid() const {
+			return _id != 0
+				&& _size.x != 0 && _size.y != 0 &&
+				_format != TextureFormat::Undefined;
+		}
 		void activate(int number = 0) const;
 	};
 

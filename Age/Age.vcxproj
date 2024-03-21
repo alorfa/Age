@@ -204,6 +204,7 @@
     <ClInclude Include="Age\LL\Shader\ShaderProgram.hpp" />
     <ClInclude Include="Age\LL\Shader\ShaderModule.hpp" />
     <ClInclude Include="Age\Render\BloomEffect.hpp" />
+    <ClInclude Include="Age\Render\SSAO.hpp" />
     <ClInclude Include="Age\Resource\CubeMapLoader.hpp" />
     <ClInclude Include="Age\Resource\Image.hpp" />
     <ClInclude Include="Age\LL\Texture\Texture2D.hpp" />
@@ -263,6 +264,7 @@
     <ClCompile Include="Age\LL\Shader\ShaderModule.cpp" />
     <ClCompile Include="Age\LL\Texture\CubeMap.cpp" />
     <ClCompile Include="Age\Render\BloomEffect.cpp" />
+    <ClCompile Include="Age\Render\SSAO.cpp" />
     <ClCompile Include="Age\Resource\CubeMapLoader.cpp" />
     <ClCompile Include="Age\Resource\Image.cpp" />
     <ClCompile Include="Age\LL\Texture\Texture2D.cpp" />

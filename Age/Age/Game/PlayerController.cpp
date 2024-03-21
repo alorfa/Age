@@ -120,6 +120,7 @@ namespace a_game
 				}
 			}
 			ImGui::End();
+			//ImGui::ShowDemoWindow();
 		}
 	}
 	void PlayerController::setCameraActive(bool value)

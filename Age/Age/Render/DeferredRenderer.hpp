@@ -5,6 +5,7 @@
 #include "Age/Scene/SceneInfo.hpp"
 #include "Age/Scene/SkyBox.hpp"
 #include "Age/Render/BloomEffect.hpp"
+#include "Age/Render/SSAO.hpp"
 
 namespace a_game_engine
 {
@@ -20,6 +21,7 @@ namespace a_game_engine
 			*pointLightPass, *dirLightPass, *spotLightPass, *iblPass, *shadowDirLightPass,
 			*postprocPass;
 		float exposure = 1.f;
+		SSAO ssao;
 	public:
 		int gbufferTime = 0, lightTime = 0, screenTime = 0;
 		bool debug = false;

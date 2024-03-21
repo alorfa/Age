@@ -14,6 +14,7 @@
 #include "RotateComp.hpp"
 #include "Age/Math/Math.hpp"
 #include "SunComp.hpp"
+#include "imgui.h"
 
 namespace a_game
 {
@@ -44,13 +45,16 @@ namespace a_game
 
 		auto& light1 = rootNode->addChild();
 		auto& light2 = rootNode->addChild();
+		auto& light3 = rootNode->addChild();
 
 		MeshComponent::addModel(light1, egd.models.load(egd.res / "model/sphere.obj"));
 		MeshComponent::addModel(light2, egd.models.load(egd.res / "model/sphere.obj"));
+		MeshComponent::addModel(light3, egd.models.load(egd.res / "model/sphere.obj"));
 		Shader& lightShader = egd.shaders.load(egd.res / "shader/lightSource.asl");
 		lightShader.requiresEmission = true;
 		MeshComponent::setShader(light1, lightShader);
 		MeshComponent::setShader(light2, lightShader);
+		MeshComponent::setShader(light3, lightShader);
 
 		const bool one_light_test = false;
 		const bool indirect_light_test = false;
@@ -102,6 +106,10 @@ namespace a_game
 					.setColor({ 8.f, 6.f, 2.f }, 0.03f)
 					.addModel(light1)
 					.setSize(0.2f);
+				light3.addComponent<PointLightComponent>()
+					.setColor({ 5.f, 1.5f, 7.f }, 0.03f)
+					.addModel(light3)
+					.setSize(0.2f);
 				sun.addComponent<DirLightComponent>()
 					.setSize(0.08f)
 					.setDirection({ 0.f, 0.5f, 0.51f })
@@ -117,6 +125,9 @@ namespace a_game
 		light1.changeTransform().changeScale() *= 0.1f;
 		light2.changeTransform().changePosition() = vec3(-3.f, 4, 0.1f);
 		light2.changeTransform().changeScale() *= 0.1f;
+		light3.changeTransform().changeScale() *= 0.1f;
+		light3.addComponent<RotateComp>()
+			.init({-3.f, 1.f, 1.5f}, {-1.5f, 1.5f, 2.f}, 0.3f);
 
 		CubeMapLoader::RawSettings s;
 		s.upperLimit = 20000.f;
@@ -139,7 +150,7 @@ namespace a_game
 					auto meshes = n.findAllComponents<MeshComponent>();
 					for (auto& mesh : meshes)
 					{
-						mesh->mesh.material.setValue("roughness", ShaderProperty((float)i * 0.1f));
+						mesh->mesh.material.setValue("roughness", ShaderProperty(1.f - (float)i * 0.1f));
 						mesh->mesh.material.setValue("metallic", ShaderProperty((float)j * 0.1f));
 					}
 				});
@@ -182,6 +193,10 @@ namespace a_game
 		if (activeRenderer == &deferredRenderer)
 			egd.window->setTitle(std::format("Gbuffer: {}, Light: {}, Screen: {}",
 				deferredRenderer.gbufferTime, deferredRenderer.lightTime, deferredRenderer.screenTime));
+		else
+		{
+			egd.window->setTitle(std::format("A graphics engine (OpenGL 4.6). Fps: {}", ImGui::GetIO().Framerate));
+		}
 	}
 	void WorldScene::updateSize(uvec2 size)
 	{

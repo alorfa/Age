@@ -49,6 +49,7 @@ namespace a_game_engine
 		screenBuffer.create(Texture2D::Settings{ screenRGB, TextureFormat::AutoQuality, sampler, 1});
 		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
 
+		ssao.create(newSize);
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
 		gbuffer.setTexture(2, posMap);
@@ -246,6 +247,10 @@ namespace a_game_engine
 		bloom->useUpscale();
 
 		Pipeline::setBlendMode(BlendMode::Disable);
+
+		normalMetalnessMap.activate(3);
+		SSAO::getNoise().activate(4);
+		ssao.use(2, 3, 4, camera.getProjection());
 
 		const vec3 midColor = bloom->getTextures().crbegin()->getMidColor();
 		const float brightness = vec3::dot(midColor, LUMA);
