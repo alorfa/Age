@@ -71,6 +71,7 @@ namespace a_game_engine
 					pointLightPass->setUniform(pointLightPass->getLocation("baseColor_roughness_map"), 0);
 					pointLightPass->setUniform(pointLightPass->getLocation("normal_metalness_map"), 1);
 					pointLightPass->setUniform(pointLightPass->getLocation("pos_map"), 2);
+					pointLightPass->setUniform(pointLightPass->getLocation("ao_map"), 3);
 					pointLightPass->setUniform(pointLightPass->getLocation("light.pos"), l.pos);
 					pointLightPass->setUniform(pointLightPass->getLocation("light.ambient"), l.ambient * l.attOffset);
 					pointLightPass->setUniform(pointLightPass->getLocation("light.color"), l.color * l.attOffset);
@@ -89,6 +90,7 @@ namespace a_game_engine
 					spotLightPass->setUniform(spotLightPass->getLocation("baseColor_roughness_map"), 0);
 					spotLightPass->setUniform(spotLightPass->getLocation("normal_metalness_map"), 1);
 					spotLightPass->setUniform(spotLightPass->getLocation("pos_map"), 2);
+					spotLightPass->setUniform(spotLightPass->getLocation("ao_map"), 3);
 					spotLightPass->setUniform(spotLightPass->getLocation("light.pos"), l.pos);
 					spotLightPass->setUniform(spotLightPass->getLocation("light.ambient"), l.ambient * l.attOffset);
 					spotLightPass->setUniform(spotLightPass->getLocation("light.color"), l.color * l.attOffset);
@@ -112,11 +114,12 @@ namespace a_game_engine
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("baseColor_roughness_map"), 0);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("normal_metalness_map"), 1);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("pos_map"), 2);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("ao_map"), 3);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.dir"), l.dir);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.ambient"), l.ambient);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.color"), l.color);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.sourceRadius"), l.size * 0.5f);
-						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.shadowMap"), l.shadowMap, 3);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.shadowMap"), l.shadowMap, 4);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.texelSize"), 
 							vec2{1.f / l.shadowMap.getSize().x, 1.f / l.shadowMap.getSize().y});
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.bias"), dir->getBias());
@@ -129,6 +132,7 @@ namespace a_game_engine
 						dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
 						dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
 						dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
+						dirLightPass->setUniform(dirLightPass->getLocation("ao_map"), 3);
 						dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), l.dir);
 						dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), l.ambient);
 						dirLightPass->setUniform(dirLightPass->getLocation("light.color"), l.color);
@@ -144,6 +148,7 @@ namespace a_game_engine
 		iblPass->setUniform(iblPass->getLocation("baseColor_roughness_map"), 0);
 		iblPass->setUniform(iblPass->getLocation("normal_metalness_map"), 1);
 		iblPass->setUniform(iblPass->getLocation("pos_map"), 2);
+		iblPass->setUniform(iblPass->getLocation("ao_map"), 3);
 		iblPass->setUniform(iblPass->getLocation("diffuseMap"), 10);
 		iblPass->setUniform(iblPass->getLocation("specularMap"), 11);
 		iblPass->setUniform(iblPass->getLocation("brdfLut"), 12);
@@ -203,6 +208,13 @@ namespace a_game_engine
 				(m.shader->requiresEmission || 
 					m.shader->customRendering);
 		};
+
+		//ssao
+		posMap.activate(2);
+		normalMetalnessMap.activate(3);
+		SSAO::getNoise().activate(4);
+		ssao.use(2, 3, 4, camera.getProjection());
+
 		//forward draw
 		screenFb.use();
 		Pipeline::clear({ 0.f, 0.f, 0.f });
@@ -226,6 +238,7 @@ namespace a_game_engine
 		albedoRoughnessMap.activate(0);
 		normalMetalnessMap.activate(1);
 		posMap.activate(2);
+		ssao.getResult().activate(3);
 		drawLightSources(*scene.rootNode, camera.transform.getPosition());
 
 		//transparent objects
@@ -247,10 +260,6 @@ namespace a_game_engine
 		bloom->useUpscale();
 
 		Pipeline::setBlendMode(BlendMode::Disable);
-
-		normalMetalnessMap.activate(3);
-		SSAO::getNoise().activate(4);
-		ssao.use(2, 3, 4, camera.getProjection());
 
 		const vec3 midColor = bloom->getTextures().crbegin()->getMidColor();
 		const float brightness = vec3::dot(midColor, LUMA);

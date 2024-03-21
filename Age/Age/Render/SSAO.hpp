@@ -27,5 +27,6 @@ namespace a_game_engine
 		SSAO();
 		void create(uvec2 size);
 		void use(int posMapSlot, int normalMapSlot, int noiseSlot, const mat4& projMatrix);
+		inline const Texture& getResult() const { return ssaoBuffer; }
 	};
 }

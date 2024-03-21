@@ -18,7 +18,6 @@ namespace a_game_engine
         for (int i = 0; i < KERNEL_SIZE; i++)
             ssaoPass->setUniform(ssaoPass->getLocation(std::format("kernel[{}]", i).c_str()), kernel[i]);
 
-        fb.setTexture(0, ssaoBuffer);
     }
     void SSAO::create(uvec2 size)
     {
@@ -26,16 +25,17 @@ namespace a_game_engine
         img.format = TextureFormat::R_F32;
         img.size = size;
         ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
+        fb.setTexture(0, ssaoBuffer);
     }
     void SSAO::use(int posMapSlot, int normalMapSlot, int noiseSlot, const mat4& projMatrix)
     {
+        fb.use();
         ssaoPass->use();
         ssaoPass->setUniform(ssaoPass->getLocation("pos_map"), posMapSlot);
         ssaoPass->setUniform(ssaoPass->getLocation("normal_map"), normalMapSlot);
         ssaoPass->setUniform(ssaoPass->getLocation("noise_map"), noiseSlot);
         ssaoPass->setUniform(ssaoPass->getLocation("proj"), projMatrix);
 
-        fb.use();
         VertexBuffer::getDefFramebuf().draw();
     }
 

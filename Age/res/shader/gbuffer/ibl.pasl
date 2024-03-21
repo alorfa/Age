@@ -2,7 +2,7 @@ out vec4 FragColor;
 
 in vec2 uv;
 
-uniform sampler2D baseColor_roughness_map, normal_metalness_map, pos_map;
+uniform sampler2D baseColor_roughness_map, normal_metalness_map, pos_map, ao_map;
 uniform vec3 cameraPos;
 
 uniform sampler2D brdfLut;
@@ -20,6 +20,7 @@ void main()
     material.roughness = diffuse_roughness.a;
     material.normal = normal_metalness.xyz;
     material.metallic = normal_metalness.a;
+    scene_ao = texture(ao_map, uv).r;
 
     initViewContext(fragPos, cameraPos);
     vec3 outColor = pbr_computeLight(diffuseMap, specularMap, brdfLut, maxSpecMipLevel);
