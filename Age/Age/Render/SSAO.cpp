@@ -14,15 +14,12 @@ namespace a_game_engine
         ssaoPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ssao.pasl");
         //ssaoBlur = &egd.shaders.loadPostproc(egd.res / "shader/ssaoBlur.pasl");
 
-        const auto& kernel = getKernel();
-        for (int i = 0; i < KERNEL_SIZE; i++)
-            ssaoPass->setUniform(ssaoPass->getLocation(std::format("kernel[{}]", i).c_str()), kernel[i]);
 
     }
     void SSAO::create(uvec2 size)
     {
         ImageInfo img;
-        img.format = TextureFormat::R_F32;
+        img.format = TextureFormat::R_F16;
         img.size = size;
         ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
         fb.setTexture(0, ssaoBuffer);
@@ -34,7 +31,11 @@ namespace a_game_engine
         ssaoPass->setUniform(ssaoPass->getLocation("pos_map"), posMapSlot);
         ssaoPass->setUniform(ssaoPass->getLocation("normal_map"), normalMapSlot);
         ssaoPass->setUniform(ssaoPass->getLocation("noise_map"), noiseSlot);
-        ssaoPass->setUniform(ssaoPass->getLocation("proj"), projMatrix);
+        ssaoPass->setUniform(ssaoPass->getLocation("projection"), projMatrix);
+
+        const auto& kernel = getKernel();
+        for (int i = 0; i < KERNEL_SIZE; i++)
+            ssaoPass->setUniform(ssaoPass->getLocation(std::format("kernel[{}]", i).c_str()), kernel[i]);
 
         VertexBuffer::getDefFramebuf().draw();
     }

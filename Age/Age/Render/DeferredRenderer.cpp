@@ -49,7 +49,7 @@ namespace a_game_engine
 		screenBuffer.create(Texture2D::Settings{ screenRGB, TextureFormat::AutoQuality, sampler, 1});
 		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
 
-		ssao.create(newSize);
+		ssao.create(newSize / 2u);
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
 		gbuffer.setTexture(2, posMap);
@@ -213,7 +213,7 @@ namespace a_game_engine
 		posMap.activate(2);
 		normalMetalnessMap.activate(3);
 		SSAO::getNoise().activate(4);
-		ssao.use(2, 3, 4, camera.getProjection());
+		ssao.use(2, 3, 4, forwardInfo.projView);
 
 		//forward draw
 		screenFb.use();
@@ -296,6 +296,9 @@ namespace a_game_engine
 			rectangleVerts->draw();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
 			debugPass->setUniform(debugPass->getLocation("tex"), 2);
+			rectangleVerts->draw();
+			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, -0.4f });
+			debugPass->setUniform(debugPass->getLocation("tex"), 3);
 			rectangleVerts->draw();
 		}
 
