@@ -26,7 +26,7 @@ namespace a_game_engine
 
 		SSAO();
 		void create(uvec2 size);
-		void use(int posMapSlot, int normalMapSlot, int noiseSlot, const mat4& projMatrix);
+		void use(int posMapSlot, int normalMapSlot, int noiseSlot, const mat4& projMatrix, const mat4& invCamera);
 		inline const Texture& getResult() const { return ssaoBuffer; }
 	};
 }

@@ -200,6 +200,13 @@ vec3 importanceSample_GGX(vec2 Xi, vec3 N, float roughness)
     return normalize(sampleVec);
 }
 
+vec3 depthToPos(mat4 invViewProj, vec2 uv, float depth)
+{
+    vec4 clipSpaceLocation = vec4(uv * 2 - 1, depth, 1.);
+    vec4 screenSpace = invViewProj * clipSpaceLocation;
+    return screenSpace.xyz / screenSpace.w;
+}
+
 vec3 linearToScreenPrecise(vec3 linearRGB)
 {
     vec3 a = 12.92 * linearRGB;

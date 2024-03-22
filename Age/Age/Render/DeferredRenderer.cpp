@@ -28,7 +28,6 @@ namespace a_game_engine
 		gbuffer.removeRenderBuffer();
 		albedoRoughnessMap.destroy();
 		normalMetalnessMap.destroy();
-		posMap.destroy();
 		screenBuffer.destroy();
 		depthBuffer.destroy();
 	}
@@ -45,20 +44,20 @@ namespace a_game_engine
 		Sampler2DInfo sampler = { TextureFiltering::Near };
 		albedoRoughnessMap.create(Texture2D::Settings{ baseColorRGB_RoughnessA, TextureFormat::AutoQuality, sampler, 1});
 		normalMetalnessMap.create(Texture2D::Settings{ normalRGB_MetalnessA, TextureFormat::AutoQuality, sampler, 1});
-		posMap.create(Texture2D::Settings{ posRGB, TextureFormat::AutoQuality, sampler, 1});
 		screenBuffer.create(Texture2D::Settings{ screenRGB, TextureFormat::AutoQuality, sampler, 1});
 		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
 
 		ssao.create(newSize / 2u);
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
-		gbuffer.setTexture(2, posMap);
-		gbuffer.createRenderBuffer(size);
+		//gbuffer.createRenderBuffer(size);
+		gbuffer.setDepthTexture(depthBuffer);
 		screenFb.setTexture(0, screenBuffer);
-		screenFb.setDepthTexture(depthBuffer);
+		//screenFb.setDepthTexture(depthBuffer);
+		screenFb.createRenderBuffer(size);
 	}
 
-	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos)
+	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos, const mat4& invCamera)
 	{
 		node.forEachConst([&](const Node& n) {
 			for (auto& comp : n.components)
@@ -186,6 +185,8 @@ namespace a_game_engine
 		forwardSettings.dirLightsShadow = forwardInfo.lights.shadowDir;
 		forwardInfo.shaderSettings = forwardSettings;
 
+		const mat4 invCamera = forwardInfo.projView.new_inversed();
+
 		Pipeline::setFrontFace();
 
 		//gbuffer pass
@@ -210,10 +211,10 @@ namespace a_game_engine
 		};
 
 		//ssao
-		posMap.activate(2);
+		depthBuffer.activate(2);
 		normalMetalnessMap.activate(3);
 		SSAO::getNoise().activate(4);
-		ssao.use(2, 3, 4, forwardInfo.projView);
+		ssao.use(2, 3, 4, forwardInfo.projView, invCamera);
 
 		//forward draw
 		screenFb.use();
@@ -237,9 +238,8 @@ namespace a_game_engine
 		Pipeline::setStencilFunc(DepthFunc::Equal, 1);
 		albedoRoughnessMap.activate(0);
 		normalMetalnessMap.activate(1);
-		posMap.activate(2);
 		ssao.getResult().activate(3);
-		drawLightSources(*scene.rootNode, camera.transform.getPosition());
+		//drawLightSources(*scene.rootNode, camera.transform.getPosition(), invCamera);
 
 		//transparent objects
 		Pipeline::setBlendMode(BlendMode::Lerp);
@@ -280,7 +280,6 @@ namespace a_game_engine
 		postprocPass->setUniform(postprocPass->getLocation("bloomRadius"), bloomRadius * bloom->radius);
 		postprocPass->setUniform(postprocPass->getLocation("fogColor"), fogColor);
 		postprocPass->setUniform(postprocPass->getLocation("fogDist"), fogDistance);
-		postprocPass->setUniform(postprocPass->getLocation("posMap"), posMap, 2);
 		postprocPass->setUniform(postprocPass->getLocation("cameraPos"), camera.transform.getPosition());
 		rectangleVerts->draw();
 
@@ -295,10 +294,7 @@ namespace a_game_engine
 			debugPass->setUniform(debugPass->getLocation("tex"), normalMetalnessMap, 1);
 			rectangleVerts->draw();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
-			debugPass->setUniform(debugPass->getLocation("tex"), 2);
-			rectangleVerts->draw();
-			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, -0.4f });
-			debugPass->setUniform(debugPass->getLocation("tex"), 3);
+			debugPass->setUniform(debugPass->getLocation("tex"), ssao.getResult(), 2);
 			rectangleVerts->draw();
 		}
 

@@ -20,6 +20,10 @@ namespace a_game_engine
         {
             return reinterpret_cast<const glm::mat4&>(mat);
         }
+        const mat4& asAge(const glm::mat4& mat)
+        {
+            return reinterpret_cast<const mat4&>(mat);
+        }
         glm::mat4& asGlm(mat4& mat)
         {
             return reinterpret_cast<glm::mat4&>(mat);
@@ -130,6 +134,10 @@ namespace a_game_engine
         reset();
         asGlm(*this) = glm::lookAt(asGlm(offset),
             asGlm(offset + forward), asGlm(up));
+    }
+    mat4 mat4::new_inversed() const
+    {
+        return asAge(glm::inverse(asGlm(*this)));
     }
     void mat4::reset()
     {

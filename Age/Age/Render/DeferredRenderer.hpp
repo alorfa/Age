@@ -13,7 +13,7 @@ namespace a_game_engine
 	{
 		FrameBuffer2D gbuffer, screenFb;
 
-		Texture2D albedoRoughnessMap, normalMetalnessMap, posMap;
+		Texture2D albedoRoughnessMap, normalMetalnessMap;
 		Texture2D screenBuffer, depthBuffer;
 
 		const ShaderProgram 
@@ -36,7 +36,7 @@ namespace a_game_engine
 
 		void clear() override;
 		void updateSize(const uvec2& newSize);
-		void drawLightSources(const Node& node, const vec3& cameraPos);
+		void drawLightSources(const Node& node, const vec3& cameraPos, const mat4& invCamera);
 		void drawScene(const Scene& scene, const Camera& camera, float delta) override;
 	};
 }
