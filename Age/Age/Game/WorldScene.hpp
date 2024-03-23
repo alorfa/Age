@@ -27,7 +27,7 @@ namespace a_game
 		void draw(const Camera* c, float delta) override;
 
 		bool bloomFogBlending = false;
-		int bloomMipCount = 5;
+		int bloomMipCount = 7;
 		int rendererIndex = 0;
 		float fogDistance = 0.f;
 		vec3 fogColor = vec3{ 0.463f, 0.5f, 0.618f };

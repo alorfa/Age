@@ -95,7 +95,6 @@ namespace a_game
 				ImGui::SliderFloat("Fog distance", &_scene->fogDistance, 0.f, 40.f);
 				ImGui::ColorEdit3("Fog color", (float*)(&_scene->fogColor));
 				ImGui::Checkbox("SSAO", &_scene->enableSSAO);
-				ImGui::Checkbox("Bright sun", &_scene->isSunny);
 			}
 			if (ImGui::CollapsingHeader("Scene"))
 			{
@@ -112,6 +111,7 @@ namespace a_game
 					_scene->bloom.radius = 1.3f;
 					_scene->fogDistance = 0.f;
 					_scene->isSunny = true;
+					_scene->useShadow = true;
 				}
 				if (ImGui::Button("Fog"))
 				{

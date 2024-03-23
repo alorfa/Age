@@ -9,12 +9,13 @@ uniform vec2 bloomRadius;
 
 uniform vec3 fogColor;
 uniform float fogDist = 0.;
-uniform sampler2D posMap;
+uniform sampler2D depthMap;
 uniform vec3 cameraPos;
+uniform mat4 invCamera;
 
 vec3 useFog(vec3 color)
 {
-	vec3 fragPos = texture(posMap, uv).rgb;
+	vec3 fragPos = depthToPos(invCamera, uv, texture(depthMap, uv).r);
 	vec3 tmp = cameraPos - fragPos;
 	float distSqr = dot(tmp, tmp);
 	float t = smoothstep(0., fogDist * fogDist, distSqr);

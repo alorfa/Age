@@ -14,7 +14,7 @@ namespace a_game_engine
 		FrameBuffer2D gbuffer, screenFb;
 
 		Texture2D albedoRoughnessMap, normalMetalnessMap;
-		Texture2D screenBuffer, depthBuffer;
+		Texture2D screenBuffer, depthBuffer, finalDepthBuffer;
 
 		const ShaderProgram 
 			*debugPass,

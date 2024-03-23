@@ -25,11 +25,12 @@ namespace a_game_engine
 
 	void DeferredRenderer::clear()
 	{
-		screenFb.removeRenderBuffer();
+		//screenFb.removeRenderBuffer();
 		albedoRoughnessMap.destroy();
 		normalMetalnessMap.destroy();
 		screenBuffer.destroy();
 		depthBuffer.destroy();
+		finalDepthBuffer.destroy();
 	}
 
 	void DeferredRenderer::updateSize(const uvec2& newSize)
@@ -45,13 +46,15 @@ namespace a_game_engine
 		normalMetalnessMap.create(Texture2D::Settings{ normalRGB_MetalnessA, TextureFormat::AutoQuality, sampler, 1});
 		screenBuffer.create(Texture2D::Settings{ screenRGB, TextureFormat::AutoQuality, sampler, 1});
 		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
+		finalDepthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1 });
 
 		ssao.create(newSize / 2u);
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
 		gbuffer.setDepthTexture(depthBuffer);
 		screenFb.setTexture(0, screenBuffer);
-		screenFb.createRenderBuffer(size);
+		//screenFb.createRenderBuffer(size);
+		screenFb.setDepthTexture(finalDepthBuffer);
 	}
 
 	void DeferredRenderer::drawLightSources(const Node& node, const vec3& cameraPos, const mat4& invCamera)
@@ -288,12 +291,14 @@ namespace a_game_engine
 		postprocPass->use();
 		postprocPass->setUniform(postprocPass->getLocation("tex"), screenBuffer, 0);
 		postprocPass->setUniform(postprocPass->getLocation("bloomTex"), bloom->getTextures()[0], 1);
+		postprocPass->setUniform(postprocPass->getLocation("depthMap"), finalDepthBuffer, 2);
 		postprocPass->setUniform(postprocPass->getLocation("exposure"), exposure);
 		postprocPass->setUniform(postprocPass->getLocation("bloomStrength"), bloom->strength);
 		postprocPass->setUniform(postprocPass->getLocation("bloomRadius"), bloomRadius * bloom->radius);
 		postprocPass->setUniform(postprocPass->getLocation("fogColor"), fogColor);
 		postprocPass->setUniform(postprocPass->getLocation("fogDist"), fogDistance);
 		postprocPass->setUniform(postprocPass->getLocation("cameraPos"), camera.transform.getPosition());
+		postprocPass->setUniform(postprocPass->getLocation("invCamera"), invCamera);
 		rectangleVerts->draw();
 
 		if (debug)
