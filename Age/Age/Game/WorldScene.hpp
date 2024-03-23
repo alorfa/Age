@@ -32,6 +32,7 @@ namespace a_game
 		float fogDistance = 0.f;
 		vec3 fogColor = vec3{ 0.463f, 0.5f, 0.618f };
 		bool isSunny = false;
+		bool enableSSAO = true;
 
 		void updateSize(uvec2 size);
 		inline bool& changeDeferredRendererDebug() { return deferredRenderer.debug; }

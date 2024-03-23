@@ -25,6 +25,7 @@ namespace a_game_engine
 	public:
 		int gbufferTime = 0, lightTime = 0, screenTime = 0;
 		bool debug = false;
+		float disableAo = 0.f;
 
 		const EnvCubeMap* env = nullptr;
 		SkyBox skyBox;

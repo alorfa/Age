@@ -10,6 +10,7 @@ uniform sampler2D brdfLut;
 uniform samplerCube specularMap;
 uniform samplerCube diffuseMap;
 uniform float maxSpecMipLevel = 1.;
+uniform float disableAo = 0.;
 
 void main()
 {
@@ -21,7 +22,7 @@ void main()
     material.roughness = diffuse_roughness.a;
     material.normal = normal_metalness.xyz;
     material.metallic = normal_metalness.a;
-    scene_ao = texture(ao_map, uv).r;
+    scene_ao = mix(texture(ao_map, uv).r, 1., disableAo);
 
     initViewContext(fragPos, cameraPos);
     vec3 outColor = pbr_computeLight(diffuseMap, specularMap, brdfLut, maxSpecMipLevel);

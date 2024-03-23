@@ -8,12 +8,12 @@ uniform sampler2D depth_map;
 uniform vec3 kernel[KERNEL_SIZE];
 uniform mat4 camera;
 uniform mat4 invCamera;
+uniform vec2 noiseScale;
 const float radius = 0.5;
 const float bias = 0.025;
 
 void main()
 {	
-	vec2 noiseScale = vec2(textureSize(normal_map, 0)) / vec2(textureSize(noise_map, 0));
     vec3 normal = texture(normal_map, uv).rgb;
     float depthValue = texture(depth_map, uv).r;
     vec3 fragPos = depthToPos(invCamera, uv, depthValue);

@@ -94,6 +94,7 @@ namespace a_game
 					_scene->bloomFogBlending ? 0.7f : 0.2f, "%.2f");
 				ImGui::SliderFloat("Fog distance", &_scene->fogDistance, 0.f, 40.f);
 				ImGui::ColorEdit3("Fog color", (float*)(&_scene->fogColor));
+				ImGui::Checkbox("SSAO", &_scene->enableSSAO);
 				ImGui::Checkbox("Bright sun", &_scene->isSunny);
 			}
 			if (ImGui::CollapsingHeader("Presets"))

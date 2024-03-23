@@ -13,7 +13,6 @@ namespace a_game_engine
     {
         ssaoPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ssao.pasl");
         ssaoPass->use();
-        //ssaoBlur = &egd.shaders.loadPostproc(egd.res / "shader/ssaoBlur.pasl");
 
         const auto& kernel = getKernel();
         for (int i = 0; i < KERNEL_SIZE; i++)
@@ -22,7 +21,7 @@ namespace a_game_engine
     void SSAO::create(uvec2 size)
     {
         ImageInfo img;
-        img.format = TextureFormat::RGB_F16;
+        img.format = TextureFormat::R_F16;
         img.size = size;
         ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
         fb.setTexture(0, ssaoBuffer);
@@ -36,6 +35,11 @@ namespace a_game_engine
         ssaoPass->setUniform(ssaoPass->getLocation("noise_map"), noiseSlot);
         ssaoPass->setUniform(ssaoPass->getLocation("camera"), projMatrix);
         ssaoPass->setUniform(ssaoPass->getLocation("invCamera"), invCamera);
+        vec2 noiseScale = vec2{
+            (float)ssaoBuffer.getSize().x / (float)getNoise().getSize().x,
+            (float)ssaoBuffer.getSize().y / (float)getNoise().getSize().y
+        };
+        ssaoPass->setUniform(ssaoPass->getLocation("noiseScale"), noiseScale);
 
         VertexBuffer::getDefFramebuf().draw();
     }

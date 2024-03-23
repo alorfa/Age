@@ -186,6 +186,7 @@ namespace a_game
 		bloom.blendMode = bloomFogBlending ? BlendMode::Lerp : BlendMode::Add;
 		deferredRenderer.fogColor = fogColor.pow(2.2f);
 		deferredRenderer.fogDistance = fogDistance;
+		deferredRenderer.disableAo = enableSSAO ? 0.f : 1.f;
 		const Camera* camera = c ? c : activeCamera;
 
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);

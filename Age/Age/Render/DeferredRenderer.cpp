@@ -77,6 +77,7 @@ namespace a_game_engine
 					pointLightPass->setUniform(pointLightPass->getLocation("light.maxDist"), l.radius);
 					pointLightPass->setUniform(pointLightPass->getLocation("cameraPos"), cameraPos);
 					pointLightPass->setUniform(pointLightPass->getLocation("invCamera"), invCamera);
+					pointLightPass->setUniform(pointLightPass->getLocation("disableAo"), disableAo);
 					VertexBuffer::getDefFramebuf().draw();
 					continue;
 				}
@@ -100,6 +101,7 @@ namespace a_game_engine
 					spotLightPass->setUniform(spotLightPass->getLocation("light.outerCutOff"), cos(l.outerCutOff));
 					spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
 					spotLightPass->setUniform(spotLightPass->getLocation("invCamera"), invCamera);
+					spotLightPass->setUniform(spotLightPass->getLocation("disableAo"), disableAo);
 					VertexBuffer::getDefFramebuf().draw();
 					continue;
 				}
@@ -125,6 +127,7 @@ namespace a_game_engine
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("shadowProj"), l.viewProj);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("cameraPos"), cameraPos);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("invCamera"), invCamera);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("disableAo"), disableAo);
 					}
 					else
 					{
@@ -139,6 +142,7 @@ namespace a_game_engine
 						dirLightPass->setUniform(dirLightPass->getLocation("light.sourceRadius"), l.size * 0.5f);
 						dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
 						dirLightPass->setUniform(dirLightPass->getLocation("invCamera"), invCamera);
+						dirLightPass->setUniform(dirLightPass->getLocation("disableAo"), disableAo);
 					}
 					VertexBuffer::getDefFramebuf().draw();
 				}
@@ -156,6 +160,7 @@ namespace a_game_engine
 		iblPass->setUniform(iblPass->getLocation("maxSpecMipLevel"), float(TexEnums::getLastMipLevel(env->specular.getSize())));
 		iblPass->setUniform(iblPass->getLocation("cameraPos"), cameraPos);
 		iblPass->setUniform(iblPass->getLocation("invCamera"), invCamera);
+		iblPass->setUniform(iblPass->getLocation("disableAo"), disableAo);
 		VertexBuffer::getDefFramebuf().draw();
 	}
 
@@ -189,7 +194,6 @@ namespace a_game_engine
 		forwardInfo.shaderSettings = forwardSettings;
 
 		const mat4 invCamera = forwardInfo.projView.new_inversed();
-		//const mat4 invCamera = camera.getProjection().new_inversed();
 
 		Pipeline::setFrontFace();
 
@@ -215,10 +219,13 @@ namespace a_game_engine
 		};
 
 		//ssao
-		depthBuffer.activate(2);
-		normalMetalnessMap.activate(3);
-		SSAO::getNoise().activate(4);
-		ssao.use(2, 3, 4, forwardInfo.projView, invCamera);
+		if (disableAo < 0.999f)
+		{
+			depthBuffer.activate(2);
+			normalMetalnessMap.activate(3);
+			SSAO::getNoise().activate(4);
+			ssao.use(2, 3, 4, forwardInfo.projView, invCamera);
+		}
 
 		//forward draw
 		screenFb.use();
