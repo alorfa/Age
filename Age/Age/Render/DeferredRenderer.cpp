@@ -294,13 +294,13 @@ namespace a_game_engine
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.8f });
 			debugPass->setUniform(debugPass->getLocation("scale"), { 0.2f, 0.2f });
 			debugPass->setUniform(debugPass->getLocation("tex"), albedoRoughnessMap, 0);
-			rectangleVerts->draw();
+			VertexBuffer::getQuadFramebuffer().draw();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.4f });
 			debugPass->setUniform(debugPass->getLocation("tex"), normalMetalnessMap, 1);
-			rectangleVerts->draw();
+			VertexBuffer::getQuadFramebuffer().draw();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.f });
 			debugPass->setUniform(debugPass->getLocation("tex"), ssao.getResult(), 2);
-			rectangleVerts->draw();
+			VertexBuffer::getQuadFramebuffer().draw();
 		}
 
 		UI::draw();

@@ -47,5 +47,6 @@ namespace a_game_engine
 		void draw(DrawMode drawMode = Triangles) const;
 
 		static const VertexBuffer& getDefFramebuf();
+		static const VertexBuffer& getQuadFramebuffer();
 	};
 }
