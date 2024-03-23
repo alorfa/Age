@@ -11,16 +11,18 @@ namespace a_game_engine
 
     bool ShaderSettings::Forward::operator<(const Forward& other) const
     {
-        if (dirLights < other.dirLights)
-            return true;
-        if (pointLights < other.pointLights)
-            return true;
-        if (spotLights < other.spotLights)
-            return true;
-        if (dirLightsShadow < other.dirLightsShadow)
-            return true;
-        if (definesIndex < other.definesIndex)
-            return true;
+        if (dirLights != other.dirLights)
+            return dirLights < other.dirLights;
+        if (pointLights != other.pointLights)
+            return pointLights < other.pointLights;
+        if (spotLights != other.spotLights)
+            return spotLights < other.spotLights;
+        if (dirLightsShadow != other.dirLightsShadow)
+            return dirLightsShadow < other.dirLightsShadow;
+        if (definesIndex != other.definesIndex)
+            return definesIndex < other.definesIndex;
+        if (implIndex != other.implIndex)
+            return implIndex < other.implIndex;
         return false;
     }
     bool ShaderSettings::Forward::operator==(const Forward& other) const
@@ -30,14 +32,15 @@ namespace a_game_engine
             pointLights == other.pointLights &&
             spotLights == other.spotLights &&
             dirLightsShadow == other.dirLightsShadow &&
-            definesIndex == other.definesIndex;
+            definesIndex == other.definesIndex &&
+            implIndex == other.implIndex;
     }
     bool ShaderSettings::Deferred::operator<(const Deferred& other) const
     {
-        if (implIndex < other.implIndex)
-            return true;
-        if (definesIndex < other.definesIndex)
-            return true;
+        if (implIndex != other.implIndex)
+            return implIndex < other.implIndex;
+        if (definesIndex != other.definesIndex)
+            return definesIndex < other.definesIndex;
         return false;
     }
 

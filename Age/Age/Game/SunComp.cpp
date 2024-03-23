@@ -18,6 +18,7 @@ namespace a_game
 	void SunComp::update(float delta)
 	{
 		time += delta * 0.1f;
+		dirl->enableShadow(world->useShadow);
 		vec3 baseColor = vec3{ 20.f, 20.f, 15.f };
 		dirl->setColor(world->isSunny ? baseColor * 0.2f : baseColor * 0.1f, 0.f);
 		

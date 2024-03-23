@@ -97,6 +97,11 @@ namespace a_game
 				ImGui::Checkbox("SSAO", &_scene->enableSSAO);
 				ImGui::Checkbox("Bright sun", &_scene->isSunny);
 			}
+			if (ImGui::CollapsingHeader("Scene"))
+			{
+				ImGui::Checkbox("Bright sun", &_scene->isSunny);
+				ImGui::Checkbox("Use shadow", &_scene->useShadow);
+			}
 			if (ImGui::CollapsingHeader("Presets"))
 			{
 				if (ImGui::Button("Sun day"))

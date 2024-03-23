@@ -114,7 +114,7 @@ namespace a_game
 					.setSize(0.08f)
 					.setDirection({ 0.f, 0.5f, 0.51f })
 					.createShadowMap({2048u}, TextureFormat::Depth16)
-					.setBias(-0.001f)
+					.setBias(0.001f)
 					;
 				sun.addComponent<SunComp>();
 				sun.setPosition({ -1.f, 4.f, 1.f });

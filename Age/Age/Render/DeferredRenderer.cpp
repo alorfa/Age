@@ -37,7 +37,6 @@ namespace a_game_engine
 		size = newSize;
 		ImageInfo baseColorRGB_RoughnessA{ newSize, TextureFormat::RGBA_F16 },
 			normalRGB_MetalnessA{ newSize, TextureFormat::RGBA_F16 },
-			posRGB{ newSize, TextureFormat::RGB_F32 },
 			screenRGB{ newSize, TextureFormat::RGB_F16 },
 			depthStencil{ newSize, TextureFormat::Depth24_Stencil8 };
 

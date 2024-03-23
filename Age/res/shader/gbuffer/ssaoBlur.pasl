@@ -3,13 +3,23 @@ out float FragColor;
 in vec2 uv;
 
 uniform sampler2D ssaoTex;
-uniform vec2 halfTexelSize;
+uniform vec2 texelSize;
 
 void main()
 {	
-    float a = texture(ssaoTex, uv - halfTexelSize).r;
-    float b = texture(ssaoTex, vec2(uv.x - halfTexelSize.x, uv.y + halfTexelSize.y)).r;
-    float c = texture(ssaoTex, uv + halfTexelSize).r;
-    float d = texture(ssaoTex, vec2(uv.x + halfTexelSize.x, uv.y - halfTexelSize.y)).r;
-    FragColor = (a+b+c+d) * 0.25;
+	vec2 offset = texelSize;
+	float a = texture(ssaoTex, vec2(uv.x - offset.x, uv.y + offset.y)).r;
+    float b = texture(ssaoTex, vec2(uv.x,            uv.y + offset.y)).r;
+    float c = texture(ssaoTex, vec2(uv.x, uv.y) + offset).r;
+
+    float d = texture(ssaoTex, vec2(uv.x - offset.x, uv.y)).r;
+    float e = texture(ssaoTex, uv).r;
+    float f = texture(ssaoTex, vec2(uv.x + offset.x, uv.y)).r;
+
+    float g = texture(ssaoTex, vec2(uv.x, uv.y) - offset).r;
+    float h = texture(ssaoTex, vec2(uv.x,            uv.y - offset.y)).r;
+    float i = texture(ssaoTex, vec2(uv.x + offset.x, uv.y - offset.y)).r;
+    FragColor = e*0.25+
+        (b+d+f+h)*0.125+
+        (a+c+g+i)*0.0625;
 }

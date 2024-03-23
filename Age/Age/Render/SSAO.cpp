@@ -25,8 +25,9 @@ namespace a_game_engine
         ImageInfo img;
         img.format = TextureFormat::R_F16;
         img.size = size;
-        ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
-        ssaoResult.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
+        Sampler2DInfo sampler = { TextureFiltering::Near };
+        ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, sampler, 1 });
+        ssaoResult.create(Texture::Settings{ img, TextureFormat::AutoQuality, sampler, 1 });
         fbProcess.setTexture(0, ssaoBuffer);
         fbBlur.setTexture(0, ssaoResult);
     }
@@ -51,13 +52,13 @@ namespace a_game_engine
     void SSAO::blur(int ssaoSlot)
     {
         vec2 texelSize = vec2{
-            0.5f / (float)ssaoBuffer.getSize().x,
-            0.5f / (float)ssaoBuffer.getSize().y
+            1.f / (float)ssaoBuffer.getSize().x,
+            1.f / (float)ssaoBuffer.getSize().y
         };
         fbBlur.use();
         ssaoBlur->use();
         ssaoBlur->setUniform(ssaoBlur->getLocation("ssaoTex"), ssaoSlot);
-        ssaoBlur->setUniform(ssaoBlur->getLocation("halfTexelSize"), texelSize);
+        ssaoBlur->setUniform(ssaoBlur->getLocation("texelSize"), texelSize);
         VertexBuffer::getDefFramebuf().draw();
     }
 
