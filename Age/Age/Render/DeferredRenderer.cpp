@@ -20,12 +20,12 @@ namespace a_game_engine
 		pointLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/pointLight.pasl");
 		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/spotLight.pasl");
 		iblPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ibl.pasl");
-		gbuffer.setTexturesCount(3);
+		gbuffer.setTexturesCount(2);
 	}
 
 	void DeferredRenderer::clear()
 	{
-		gbuffer.removeRenderBuffer();
+		screenFb.removeRenderBuffer();
 		albedoRoughnessMap.destroy();
 		normalMetalnessMap.destroy();
 		screenBuffer.destroy();
@@ -50,10 +50,8 @@ namespace a_game_engine
 		ssao.create(newSize / 2u);
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
-		//gbuffer.createRenderBuffer(size);
 		gbuffer.setDepthTexture(depthBuffer);
 		screenFb.setTexture(0, screenBuffer);
-		//screenFb.setDepthTexture(depthBuffer);
 		screenFb.createRenderBuffer(size);
 	}
 
@@ -69,7 +67,7 @@ namespace a_game_engine
 					pointLightPass->use();
 					pointLightPass->setUniform(pointLightPass->getLocation("baseColor_roughness_map"), 0);
 					pointLightPass->setUniform(pointLightPass->getLocation("normal_metalness_map"), 1);
-					pointLightPass->setUniform(pointLightPass->getLocation("pos_map"), 2);
+					pointLightPass->setUniform(pointLightPass->getLocation("depth_map"), 2);
 					pointLightPass->setUniform(pointLightPass->getLocation("ao_map"), 3);
 					pointLightPass->setUniform(pointLightPass->getLocation("light.pos"), l.pos);
 					pointLightPass->setUniform(pointLightPass->getLocation("light.ambient"), l.ambient * l.attOffset);
@@ -78,6 +76,7 @@ namespace a_game_engine
 					pointLightPass->setUniform(pointLightPass->getLocation("light.attOffset"), l.attOffset);
 					pointLightPass->setUniform(pointLightPass->getLocation("light.maxDist"), l.radius);
 					pointLightPass->setUniform(pointLightPass->getLocation("cameraPos"), cameraPos);
+					pointLightPass->setUniform(pointLightPass->getLocation("invCamera"), invCamera);
 					VertexBuffer::getDefFramebuf().draw();
 					continue;
 				}
@@ -88,7 +87,7 @@ namespace a_game_engine
 					spotLightPass->use();
 					spotLightPass->setUniform(spotLightPass->getLocation("baseColor_roughness_map"), 0);
 					spotLightPass->setUniform(spotLightPass->getLocation("normal_metalness_map"), 1);
-					spotLightPass->setUniform(spotLightPass->getLocation("pos_map"), 2);
+					spotLightPass->setUniform(spotLightPass->getLocation("depth_map"), 2);
 					spotLightPass->setUniform(spotLightPass->getLocation("ao_map"), 3);
 					spotLightPass->setUniform(spotLightPass->getLocation("light.pos"), l.pos);
 					spotLightPass->setUniform(spotLightPass->getLocation("light.ambient"), l.ambient * l.attOffset);
@@ -100,6 +99,7 @@ namespace a_game_engine
 					spotLightPass->setUniform(spotLightPass->getLocation("light.cutOff"), cos(l.cutOff));
 					spotLightPass->setUniform(spotLightPass->getLocation("light.outerCutOff"), cos(l.outerCutOff));
 					spotLightPass->setUniform(spotLightPass->getLocation("cameraPos"), cameraPos);
+					spotLightPass->setUniform(spotLightPass->getLocation("invCamera"), invCamera);
 					VertexBuffer::getDefFramebuf().draw();
 					continue;
 				}
@@ -112,7 +112,7 @@ namespace a_game_engine
 						shadowDirLightPass->use();
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("baseColor_roughness_map"), 0);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("normal_metalness_map"), 1);
-						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("pos_map"), 2);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("depth_map"), 2);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("ao_map"), 3);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.dir"), l.dir);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.ambient"), l.ambient);
@@ -124,19 +124,21 @@ namespace a_game_engine
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("light.bias"), dir->getBias());
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("shadowProj"), l.viewProj);
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("cameraPos"), cameraPos);
+						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("invCamera"), invCamera);
 					}
 					else
 					{
 						dirLightPass->use();
 						dirLightPass->setUniform(dirLightPass->getLocation("baseColor_roughness_map"), 0);
 						dirLightPass->setUniform(dirLightPass->getLocation("normal_metalness_map"), 1);
-						dirLightPass->setUniform(dirLightPass->getLocation("pos_map"), 2);
+						dirLightPass->setUniform(dirLightPass->getLocation("depth_map"), 2);
 						dirLightPass->setUniform(dirLightPass->getLocation("ao_map"), 3);
 						dirLightPass->setUniform(dirLightPass->getLocation("light.dir"), l.dir);
 						dirLightPass->setUniform(dirLightPass->getLocation("light.ambient"), l.ambient);
 						dirLightPass->setUniform(dirLightPass->getLocation("light.color"), l.color);
 						dirLightPass->setUniform(dirLightPass->getLocation("light.sourceRadius"), l.size * 0.5f);
 						dirLightPass->setUniform(dirLightPass->getLocation("cameraPos"), cameraPos);
+						dirLightPass->setUniform(dirLightPass->getLocation("invCamera"), invCamera);
 					}
 					VertexBuffer::getDefFramebuf().draw();
 				}
@@ -153,6 +155,7 @@ namespace a_game_engine
 		iblPass->setUniform(iblPass->getLocation("brdfLut"), 12);
 		iblPass->setUniform(iblPass->getLocation("maxSpecMipLevel"), float(TexEnums::getLastMipLevel(env->specular.getSize())));
 		iblPass->setUniform(iblPass->getLocation("cameraPos"), cameraPos);
+		iblPass->setUniform(iblPass->getLocation("invCamera"), invCamera);
 		VertexBuffer::getDefFramebuf().draw();
 	}
 
@@ -186,6 +189,7 @@ namespace a_game_engine
 		forwardInfo.shaderSettings = forwardSettings;
 
 		const mat4 invCamera = forwardInfo.projView.new_inversed();
+		//const mat4 invCamera = camera.getProjection().new_inversed();
 
 		Pipeline::setFrontFace();
 
@@ -238,8 +242,9 @@ namespace a_game_engine
 		Pipeline::setStencilFunc(DepthFunc::Equal, 1);
 		albedoRoughnessMap.activate(0);
 		normalMetalnessMap.activate(1);
+		depthBuffer.activate(2);
 		ssao.getResult().activate(3);
-		//drawLightSources(*scene.rootNode, camera.transform.getPosition(), invCamera);
+		drawLightSources(*scene.rootNode, camera.transform.getPosition(), invCamera);
 
 		//transparent objects
 		Pipeline::setBlendMode(BlendMode::Lerp);

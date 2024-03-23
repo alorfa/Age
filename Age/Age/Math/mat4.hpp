@@ -23,6 +23,7 @@ namespace a_game_engine
 		void setViewMatrix(const vec3& offset, const vec3& forward, const vec3& right, const vec3& up);
 		void setViewMatrix(const vec3& offset, const vec3& forward, const vec3& up);
 		mat4 new_inversed() const;
+		mat4 new_transposed() const;
 
 		void reset();
 	};

@@ -40,4 +40,5 @@ void main()
 	}
 	occlusion = 1.0 - (occlusion / KERNEL_SIZE);
     FragColor = occlusion;
+    //FragColor = vec3(fragPos);
 }

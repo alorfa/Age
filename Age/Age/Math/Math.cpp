@@ -139,6 +139,10 @@ namespace a_game_engine
     {
         return asAge(glm::inverse(asGlm(*this)));
     }
+    mat4 mat4::new_transposed() const
+    {
+        return asAge(glm::transpose(asGlm(*this)));
+    }
     void mat4::reset()
     {
         memset(this, 0, sizeof(*this));

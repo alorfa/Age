@@ -2,7 +2,8 @@ out vec4 FragColor;
 
 in vec2 uv;
 
-uniform sampler2D baseColor_roughness_map, normal_metalness_map, pos_map, ao_map;
+uniform sampler2D baseColor_roughness_map, normal_metalness_map, depth_map, ao_map;
+uniform mat4 invCamera;
 uniform PointLight light;
 uniform vec3 cameraPos;
 
@@ -11,7 +12,7 @@ void main()
     initMaterial();
     vec4 diffuse_roughness = texture(baseColor_roughness_map, uv);
     vec4 normal_metalness = texture(normal_metalness_map, uv);
-    vec3 fragPos = texture(pos_map, uv).rgb;
+    vec3 fragPos = depthToPos(invCamera, uv, texture(depth_map, uv).r);
     material.base_color = diffuse_roughness.rgb;
     material.roughness = diffuse_roughness.a;
     material.normal = normal_metalness.xyz;

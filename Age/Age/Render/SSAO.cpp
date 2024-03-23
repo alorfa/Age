@@ -22,7 +22,7 @@ namespace a_game_engine
     void SSAO::create(uvec2 size)
     {
         ImageInfo img;
-        img.format = TextureFormat::R_F16;
+        img.format = TextureFormat::RGB_F16;
         img.size = size;
         ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
         fb.setTexture(0, ssaoBuffer);
