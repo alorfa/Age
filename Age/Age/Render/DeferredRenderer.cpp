@@ -225,6 +225,8 @@ namespace a_game_engine
 			normalMetalnessMap.activate(3);
 			SSAO::getNoise().activate(4);
 			ssao.use(2, 3, 4, forwardInfo.projView, invCamera);
+			ssao.getRawSsaoBuffer().activate(5);
+			ssao.blur(5);
 		}
 
 		//forward draw

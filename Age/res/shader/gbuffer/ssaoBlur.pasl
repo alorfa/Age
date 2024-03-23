@@ -1,0 +1,15 @@
+out float FragColor;
+
+in vec2 uv;
+
+uniform sampler2D ssaoTex;
+uniform vec2 halfTexelSize;
+
+void main()
+{	
+    float a = texture(ssaoTex, uv - halfTexelSize).r;
+    float b = texture(ssaoTex, vec2(uv.x - halfTexelSize.x, uv.y + halfTexelSize.y)).r;
+    float c = texture(ssaoTex, uv + halfTexelSize).r;
+    float d = texture(ssaoTex, vec2(uv.x + halfTexelSize.x, uv.y - halfTexelSize.y)).r;
+    FragColor = (a+b+c+d) * 0.25;
+}

@@ -11,8 +11,8 @@ namespace a_game_engine
 		static std::vector<vec3> kernel;
 		static Texture2D noise;
 
-		FrameBuffer fb;
-		Texture ssaoBuffer;
+		FrameBuffer fbProcess, fbBlur;
+		Texture ssaoBuffer, ssaoResult;
 
 		const ShaderProgram
 			*ssaoPass = nullptr, 
@@ -27,6 +27,8 @@ namespace a_game_engine
 		SSAO();
 		void create(uvec2 size);
 		void use(int posMapSlot, int normalMapSlot, int noiseSlot, const mat4& projMatrix, const mat4& invCamera);
-		inline const Texture& getResult() const { return ssaoBuffer; }
+		void blur(int ssaoSlot);
+		inline const Texture& getRawSsaoBuffer() const { return ssaoBuffer; }
+		inline const Texture& getResult() const { return ssaoResult; }
 	};
 }

@@ -17,6 +17,8 @@ namespace a_game_engine
         const auto& kernel = getKernel();
         for (int i = 0; i < KERNEL_SIZE; i++)
             ssaoPass->setUniform(ssaoPass->getLocation(std::format("kernel[{}]", i).c_str()), kernel[i]);
+
+        ssaoBlur = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ssaoBlur.pasl");
     }
     void SSAO::create(uvec2 size)
     {
@@ -24,11 +26,13 @@ namespace a_game_engine
         img.format = TextureFormat::R_F16;
         img.size = size;
         ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
-        fb.setTexture(0, ssaoBuffer);
+        ssaoResult.create(Texture::Settings{ img, TextureFormat::AutoQuality, {}, 1 });
+        fbProcess.setTexture(0, ssaoBuffer);
+        fbBlur.setTexture(0, ssaoResult);
     }
     void SSAO::use(int depthMapSlot, int normalMapSlot, int noiseSlot, const mat4& projMatrix, const mat4& invCamera)
     {
-        fb.use();
+        fbProcess.use();
         ssaoPass->use();
         ssaoPass->setUniform(ssaoPass->getLocation("depth_map"), depthMapSlot);
         ssaoPass->setUniform(ssaoPass->getLocation("normal_map"), normalMapSlot);
@@ -41,6 +45,19 @@ namespace a_game_engine
         };
         ssaoPass->setUniform(ssaoPass->getLocation("noiseScale"), noiseScale);
 
+        VertexBuffer::getDefFramebuf().draw();
+    }
+
+    void SSAO::blur(int ssaoSlot)
+    {
+        vec2 texelSize = vec2{
+            0.5f / (float)ssaoBuffer.getSize().x,
+            0.5f / (float)ssaoBuffer.getSize().y
+        };
+        fbBlur.use();
+        ssaoBlur->use();
+        ssaoBlur->setUniform(ssaoBlur->getLocation("ssaoTex"), ssaoSlot);
+        ssaoBlur->setUniform(ssaoBlur->getLocation("halfTexelSize"), texelSize);
         VertexBuffer::getDefFramebuf().draw();
     }
 
