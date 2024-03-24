@@ -21,5 +21,6 @@ namespace a_game_engine
 		void loadFromFile(const std::filesystem::path& path);
 		void clear();
 		void saveToFile(const std::filesystem::path& path);
+		void createFromTexture(const Texture2D& tex, TextureFormat format = TextureFormat::RGB);
 	};
 }

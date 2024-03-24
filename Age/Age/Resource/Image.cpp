@@ -3,9 +3,13 @@
 #include "tinyexr.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb/stb_image_write.h>
 #include "Age/Resource/File.hpp"
 #include "Age/Math/vec3.hpp"
 #include "Age/Math/vec4.hpp"
+#include "Age/LL/opengl.h"
+#include "Age/LL/Texture/Texture2D.hpp"
 
 namespace a_game_engine
 {
@@ -109,7 +113,25 @@ namespace a_game_engine
 	}
 	void Image::saveToFile(const std::filesystem::path& path)
 	{
-		auto ext = path.extension();
-		Logger::logInfo(ext.string());
+		auto ext = path.extension().string();
+		if (ext == ".png")
+		{
+			stbi_write_png(path.string().c_str(), info.size.x, info.size.y, TexEnums::getComponentsCount(info.format), info.data, 0);
+		}
+	}
+	void Image::createFromTexture(const Texture2D& tex, TextureFormat format)
+	{
+		clear();
+		const auto id = tex.getId();
+		int channels, type;
+		TexEnums::toOglOuterFormat(format, channels, type);
+
+		info.size = tex.getSize();
+		info.format = format;
+		const auto channelSize = TexEnums::getSizeInBits(format);
+		const auto channelsCount = TexEnums::getComponentsCount(format);
+		const auto bytes = channelSize * channelsCount * info.size.x * info.size.y / 8;
+		info.data = new ubyte[bytes];
+		glGetTextureImage(id, 0, channels, type, bytes, info.data);
 	}
 }

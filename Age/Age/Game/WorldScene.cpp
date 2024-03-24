@@ -18,6 +18,41 @@
 
 namespace a_game
 {
+	namespace
+	{
+		void combineTextures(
+			const std::filesystem::path& rgb,
+			const std::filesystem::path& alpha,
+			const std::filesystem::path& result)
+		{
+
+			Image imgRgb, imgAlpha, imgResult;
+			imgRgb.loadFromFile(rgb);
+			imgAlpha.loadFromFile(alpha);
+			imgResult.info.format = TextureFormat::RGBA;
+			imgResult.info.size = imgRgb.info.size;
+
+			Texture2D texRgb, texAlpha, texResult;
+			texRgb.create(Texture2D::Settings(imgRgb.info, TextureFormat::Auto));
+			texAlpha.create(Texture2D::Settings(imgAlpha.info, TextureFormat::Auto));
+			texResult.create(Texture2D::Settings(imgResult.info, TextureFormat::Auto));
+
+			FrameBuffer2D fb;
+			fb.setTexture(0, texResult);
+			const auto& shader = egd.shaders.loadPostproc(egd.res / "img/combine.pasl");
+			fb.use();
+			shader.use();
+			shader.setUniform(shader.getLocation("texRgb"), texRgb, 0);
+			shader.setUniform(shader.getLocation("texAlpha"), texAlpha, 1);
+
+			VertexBuffer::getDefFramebuf().draw();
+
+			imgResult.createFromTexture(texResult, TextureFormat::RGBA);
+			imgResult.info.flipVertically();
+			imgResult.saveToFile(result);
+		}
+	}
+
 	WorldScene::WorldScene()
 	{
 		rootNode->addComponent<PlayerController>();
@@ -66,9 +101,9 @@ namespace a_game
 		floor.forEach([](Node& n) {
 				Sampler2DInfo samplerRepeatMip = { TextureFiltering::Linear_MipLinear, TextureWrap::Repeat };
 				auto meshes = n.findAllComponents<MeshComponent>();
-				ShaderProperty::Texture2DProp albedoProp = { egd.textures.load(egd.res / "img/grassAlbedo.png",
+				ShaderProperty::Texture2DProp albedoProp = { egd.textures.load(egd.res / "img/grassAlbedoRoughness.png",
 					TextureLoader::Settings{samplerRepeatMip, TextureFormat::S_RGBA}), 0 };
-				ShaderProperty::Texture2DProp normalProp = { egd.textures.load(egd.res / "img/grassNormal.png",
+				ShaderProperty::Texture2DProp normalProp = { egd.textures.load(egd.res / "img/grassNormalAo.png",
 					TextureLoader::Settings{samplerRepeatMip, TextureFormat::RGBA_8}), 1 };
 				for (auto& m : meshes) {
 					m->mesh.material.setValue("baseColorMap", ShaderProperty(albedoProp));

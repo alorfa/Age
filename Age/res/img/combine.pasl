@@ -1,0 +1,12 @@
+out vec4 FragColor;
+
+in vec2 uv;
+uniform sampler2D texRgb;
+uniform sampler2D texAlpha;
+
+void main()
+{
+    vec3 rgb = texture(texRgb, uv).rgb;
+    float alpha = texture(texAlpha, uv).r;
+    FragColor = vec4(rgb, alpha);
+}
