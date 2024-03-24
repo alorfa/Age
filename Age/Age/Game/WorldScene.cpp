@@ -59,20 +59,24 @@ namespace a_game
 		const bool one_light_test = false;
 		const bool indirect_light_test = false;
 
-		vec2 floorPositions[3][3] = {
-			{vec2{-10.f, -10.f}, vec2{-10.f, 0.f}, vec2{-10.f, 10.f}},
-			{vec2{0.f, -10.f}, vec2{0.f, 0.f}, vec2{0.f, 10.f}},
-			{vec2{10.f, -10.f}, vec2{10.f, 0.f}, vec2{10.f, 10.f}}
-		};
-		for (uint i = 0; i < 3; i++)
-			for (uint j = 0; j < 3; j++)
-			{
-				auto& floor = rootNode->addChild();
-				MeshComponent::addModel(floor, egd.models.load(egd.res / "model/10m.obj", ModelLoader::Settings{
-					vec3{1.f}, true, false, false, false }));
-				MeshComponent::setShader(floor, egd.shaders.load(egd.res / "shader/floor.asl"));
-				floor.setPosition({ floorPositions[i][j].x, floorPositions[i][j].y, 0.f});
-			}
+		auto& floor = rootNode->addChild();
+		MeshComponent::addModel(floor, egd.models.load(egd.res / "model/plane.obj", ModelLoader::Settings{
+			vec3{1.f}, true, false, false, false }));
+		MeshComponent::setShader(floor, egd.shaders.load(egd.res / "shader/grass.asl"));
+		floor.forEach([](Node& n) {
+				Sampler2DInfo samplerRepeatMip = { TextureFiltering::Linear_MipLinear, TextureWrap::Repeat };
+				auto meshes = n.findAllComponents<MeshComponent>();
+				ShaderProperty::Texture2DProp albedoProp = { egd.textures.load(egd.res / "img/grassAlbedo.png",
+					TextureLoader::Settings{samplerRepeatMip, TextureFormat::S_RGBA}), 0 };
+				ShaderProperty::Texture2DProp normalProp = { egd.textures.load(egd.res / "img/grassNormal.png",
+					TextureLoader::Settings{samplerRepeatMip, TextureFormat::RGBA_8}), 1 };
+				for (auto& m : meshes) {
+					m->mesh.material.setValue("baseColorMap", ShaderProperty(albedoProp));
+					m->mesh.material.setValue("normalMap", ShaderProperty(normalProp));
+				}
+			});
+		floor.setPosition({ 0.f });
+			
 
 		auto& flashlight = rootNode->addChild();
 		flashlight.addComponent<FlashLight>()

@@ -107,4 +107,9 @@ namespace a_game_engine
 		info.size.x = info.size.y = 0;
 		info.format = TextureFormat::Undefined;
 	}
+	void Image::saveToFile(const std::filesystem::path& path)
+	{
+		auto ext = path.extension();
+		Logger::logInfo(ext.string());
+	}
 }

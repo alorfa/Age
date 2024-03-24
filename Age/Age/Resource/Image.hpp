@@ -5,6 +5,8 @@
 
 namespace a_game_engine
 {
+	class Texture2D;
+
 	class Image
 	{
 		bool loadExr(const ubyte* data, int size);
@@ -18,5 +20,6 @@ namespace a_game_engine
 		void loadFromMemory(const ubyte* data, int size);
 		void loadFromFile(const std::filesystem::path& path);
 		void clear();
+		void saveToFile(const std::filesystem::path& path);
 	};
 }
