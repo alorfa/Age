@@ -12,7 +12,6 @@ namespace a_game_engine
 	{
 		FrameBuffer2D mainFb;
 		Texture2D colorBuffer, depthBuffer;
-		float exposure = 1.f;
 
 		ShaderProgram* shader;
 	public:
@@ -21,6 +20,7 @@ namespace a_game_engine
 		const EnvCubeMap* env = nullptr;
 		SkyBox skyBox;
 		BloomEffect* bloom = nullptr;
+		float* exposure = nullptr;
 
 		void clear() override;
 		void updateSize(const uvec2& newSize);

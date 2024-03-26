@@ -58,6 +58,7 @@ namespace a_game
 		rootNode->addComponent<PlayerController>();
 		rootNode->addComponent<SceneController>();
 		deferredRenderer.bloom = forwardRenderer.bloom = &bloom;
+		deferredRenderer.exposure = forwardRenderer.exposure = &exposure;
 	}
 	void WorldScene::load()
 	{
@@ -236,11 +237,25 @@ namespace a_game
 
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);
 
-		if (deferredRenderer.makeScreenshot)
+		if (makeScreenshot)
 		{
+			makeScreenshot = false;
 			const uvec2 size = activeRenderer->getSize();
 			activeRenderer->clear();
-			//DeferredRenderer screenRenderer;
+			DeferredRenderer screenshotRenderer;
+			screenshotRenderer.makeScreenshot = true;
+			screenshotRenderer.updateSize(uvec2{ 1920, 1080 });
+			screenshotRenderer.bloom = deferredRenderer.bloom;
+			screenshotRenderer.env = deferredRenderer.env;
+			screenshotRenderer.exposure = deferredRenderer.exposure;
+			screenshotRenderer.fogColor = deferredRenderer.fogColor;
+			screenshotRenderer.fogDistance = deferredRenderer.fogDistance;
+			screenshotRenderer.skyBox = deferredRenderer.skyBox;
+			screenshotRenderer.useShadows = 1;
+			screenshotRenderer.debug = false;
+			screenshotRenderer.disableAo = 0.f;
+			screenshotRenderer.drawScene(*this, *camera, 0.f);
+			screenshotRenderer.clear();
 			activeRenderer->updateSize(size);
 		}
 		activeRenderer->drawScene(*this, *camera, delta);

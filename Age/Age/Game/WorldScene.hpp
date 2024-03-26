@@ -19,6 +19,7 @@ namespace a_game
 	public:
 		WorldScene();
 
+		float exposure = 0.5f;
 		BloomEffect bloom;
 		Camera* activeCamera = nullptr;
 		const EnvCubeMap* env = nullptr;
@@ -34,9 +35,9 @@ namespace a_game
 		bool isSunny = false;
 		bool useShadow = true;
 		bool enableSSAO = true;
+		bool makeScreenshot = false;
 
 		void updateSize(uvec2 size);
 		inline bool& changeDeferredRendererDebug() { return deferredRenderer.debug; }
-		inline bool& setMakeScreenshot() { return deferredRenderer.makeScreenshot; }
 	};
 }

@@ -11,7 +11,7 @@
 *.sln.docstates
 *.exe
 
-Age/user/screenshots
+Age/user
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

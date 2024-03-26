@@ -97,7 +97,7 @@ namespace a_game_engine
 		const float brightness = vec3::dot(midColor, LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
 		const float curExp = 0.25f / clampedBr;
-		exposure = Math::smooth(exposure, curExp, delta * 3.f);
+		*exposure = Math::smooth(*exposure, curExp, delta * 3.f);
 
 		mainFb.useDefault(size);
 		Pipeline::set2DContext();
@@ -108,7 +108,7 @@ namespace a_game_engine
 		shader->use();
 		shader->setUniform(shader->getLocation("tex"), colorBuffer, 0);
 		shader->setUniform(shader->getLocation("bloomTex"), bloom->getTextures()[0], 1);
-		shader->setUniform(shader->getLocation("exposure"), exposure);
+		shader->setUniform(shader->getLocation("exposure"), *exposure);
 		shader->setUniform(shader->getLocation("bloomStrength"), bloom->strength);
 		shader->setUniform(shader->getLocation("bloomRadius"), bloomRadius * bloom->radius);
 		verts->draw();

@@ -20,12 +20,12 @@ namespace a_game_engine
 			*debugPass,
 			*pointLightPass, *dirLightPass, *spotLightPass, *iblPass, *shadowDirLightPass,
 			*postprocPass;
-		float exposure = 1.f;
 		SSAO ssao;
 	public:
 		int gbufferTime = 0, lightTime = 0, screenTime = 0;
 		bool debug = false;
 		float disableAo = 0.f;
+		int useShadows = 0; //-1 is force disable, 1 is force enable, 0 is default
 
 		const EnvCubeMap* env = nullptr;
 		SkyBox skyBox;
@@ -33,7 +33,7 @@ namespace a_game_engine
 		vec3 fogColor;
 		float fogDistance = 0.f;
 		bool makeScreenshot = false;
-		uint ssaoSizeDivisor = 2u;
+		float* exposure = nullptr;
 
 		DeferredRenderer();
 

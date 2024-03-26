@@ -21,6 +21,7 @@ namespace a_game_engine
 		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/spotLight.pasl");
 		iblPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ibl.pasl");
 		gbuffer.setTexturesCount(2);
+		useShadows = 1;
 	}
 
 	void DeferredRenderer::clear()
@@ -37,7 +38,7 @@ namespace a_game_engine
 	{
 		size = newSize;
 		ImageInfo baseColorRGB_RoughnessA{ newSize, TextureFormat::RGBA_F16 },
-			normalRGB_MetalnessA{ newSize, TextureFormat::RGBA_F16 },
+			normalRGB_MetalnessA{ newSize, makeScreenshot ? TextureFormat::RGBA_F32 : TextureFormat::RGBA_F16 },
 			screenRGB{ newSize, TextureFormat::RGB_F16 },
 			depthStencil{ newSize, TextureFormat::Depth24_Stencil8 };
 
@@ -48,7 +49,7 @@ namespace a_game_engine
 		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
 		finalDepthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1 });
 
-		ssao.create(newSize / ssaoSizeDivisor);
+		ssao.create(newSize / (makeScreenshot ? 1u : 2u));
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
 		gbuffer.setDepthTexture(depthBuffer);
@@ -110,7 +111,12 @@ namespace a_game_engine
 				if (dir)
 				{
 					const auto& l = dir->getLight();
-					if (l.useShadow)
+					bool useCurrentShadow = l.shadowMap.isValid();
+					if (useShadows == 0)
+						useCurrentShadow = useCurrentShadow && l.useShadow;
+					if (useShadows < 0)
+						useCurrentShadow = false;
+					if (useCurrentShadow)
 					{
 						shadowDirLightPass->use();
 						shadowDirLightPass->setUniform(shadowDirLightPass->getLocation("baseColor_roughness_map"), 0);
@@ -186,7 +192,7 @@ namespace a_game_engine
 		forwardInfo.props.push_back({ "specularMap", 11 });
 		forwardInfo.props.push_back({ "brdfLut", 12 });
 		forwardInfo.props.push_back({ "maxSpecMipLevel", float(TexEnums::getLastMipLevel(env->specular.getSize())) });
-		forwardInfo.addLights(*scene.rootNode);
+		forwardInfo.addLights(*scene.rootNode, useShadows);
 		ShaderSettings::Forward forwardSettings;
 		forwardSettings.pointLights = forwardInfo.lights.point;
 		forwardSettings.dirLights = forwardInfo.lights.dir;
@@ -280,7 +286,7 @@ namespace a_game_engine
 		const float brightness = vec3::dot(midColor, LUMA);
 		const float clampedBr = Math::lerp(brightness, 0.5f, 0.3f);
 		const float curExp = 0.25f / clampedBr;
-		exposure = Math::smooth(exposure, curExp, delta * 3.f);
+		*exposure = Math::smooth(*exposure, curExp, delta * 3.f);
 
 		if (makeScreenshot)
 			gbuffer.use();
@@ -294,7 +300,7 @@ namespace a_game_engine
 		postprocPass->setUniform(postprocPass->getLocation("tex"), screenBuffer, 0);
 		postprocPass->setUniform(postprocPass->getLocation("bloomTex"), bloom->getTextures()[0], 1);
 		postprocPass->setUniform(postprocPass->getLocation("depthMap"), finalDepthBuffer, 2);
-		postprocPass->setUniform(postprocPass->getLocation("exposure"), exposure);
+		postprocPass->setUniform(postprocPass->getLocation("exposure"), *exposure);
 		postprocPass->setUniform(postprocPass->getLocation("bloomStrength"), bloom->strength);
 		postprocPass->setUniform(postprocPass->getLocation("bloomRadius"), bloomRadius * bloom->radius);
 		postprocPass->setUniform(postprocPass->getLocation("fogColor"), fogColor);
@@ -303,7 +309,7 @@ namespace a_game_engine
 		postprocPass->setUniform(postprocPass->getLocation("invCamera"), invCamera);
 		rectangleVerts->draw();
 
-		if (!makeScreenshot && debug)
+		if (debug)
 		{
 			debugPass->use();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.8f });
@@ -324,7 +330,7 @@ namespace a_game_engine
 			Image img;
 			img.createFromTexture(albedoRoughnessMap);
 			img.info.flipVertically();
-			img.saveToFile("user/screenshots/screen.png");
+			img.saveToFile("user/screenshot.png");
 		}
 
 		UI::draw();

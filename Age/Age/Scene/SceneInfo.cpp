@@ -6,7 +6,7 @@
 
 namespace a_game_engine
 {
-	void SceneInfo::addLights(const Node& node)
+	void SceneInfo::addLights(const Node& node, int useShadows)
 	{
 		node.forEachConstLocal([&](const Node& n) {
 			for (auto& comp : n.components)
@@ -47,7 +47,12 @@ namespace a_game_engine
 				{
 					const auto& l = dirLight->getLight();
 
-					if (l.useShadow)
+					bool useCurrentShadow = l.shadowMap.isValid();
+					if (useShadows == 0)
+						useCurrentShadow = useCurrentShadow && l.useShadow;
+					if (useShadows < 0)
+						useCurrentShadow = false;
+					if (useCurrentShadow)
 					{
 						dirLight->drawSceneFromShadow(node);
 						props.push_back({ std::format("shadowDirLightSources[{}].color", lights.shadowDir), l.color });

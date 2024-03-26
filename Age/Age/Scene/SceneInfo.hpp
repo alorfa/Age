@@ -28,7 +28,7 @@ namespace a_game_engine
 		ShaderSettings::Common shaderSettings;
 		std::function<bool(const Material&)> drawingCondition;
 
-		void addLights(const Node& node);
+		void addLights(const Node& node, int useShadows = 0);
 		void setCamera(const Camera& c);
 	};
 }

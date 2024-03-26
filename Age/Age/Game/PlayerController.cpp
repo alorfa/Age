@@ -28,7 +28,7 @@ namespace a_game
 		if (ev.getEvent("camera"))
 			setCameraActive(!enableControl);
 		if (ev.getEvent("screenshot"))
-			_scene->setMakeScreenshot() = true;
+			_scene->makeScreenshot = true;
 
 		if (enableControl)
 		{
