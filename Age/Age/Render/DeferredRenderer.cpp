@@ -48,12 +48,11 @@ namespace a_game_engine
 		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
 		finalDepthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1 });
 
-		ssao.create(newSize / 2u);
+		ssao.create(newSize / ssaoSizeDivisor);
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
 		gbuffer.setDepthTexture(depthBuffer);
 		screenFb.setTexture(0, screenBuffer);
-		//screenFb.createRenderBuffer(size);
 		screenFb.setDepthTexture(finalDepthBuffer);
 	}
 
@@ -283,7 +282,10 @@ namespace a_game_engine
 		const float curExp = 0.25f / clampedBr;
 		exposure = Math::smooth(exposure, curExp, delta * 3.f);
 
-		FrameBuffer::useDefault(size);
+		if (makeScreenshot)
+			gbuffer.use();
+		else
+			FrameBuffer::useDefault(size);
 		auto* verts = &VertexBuffer::getDefFramebuf();
 		vec2 bloomRadius = {
 			1.f / screenBuffer.getSize().x, 1.f / screenBuffer.getSize().y
@@ -301,7 +303,7 @@ namespace a_game_engine
 		postprocPass->setUniform(postprocPass->getLocation("invCamera"), invCamera);
 		rectangleVerts->draw();
 
-		if (debug)
+		if (!makeScreenshot && debug)
 		{
 			debugPass->use();
 			debugPass->setUniform(debugPass->getLocation("offset"), { 0.8f, 0.8f });
@@ -316,8 +318,21 @@ namespace a_game_engine
 			VertexBuffer::getQuadFramebuffer().draw();
 		}
 
+		if (makeScreenshot)
+		{
+			makeScreenshot = false;
+			Image img;
+			img.createFromTexture(albedoRoughnessMap);
+			img.info.flipVertically();
+			img.saveToFile("user/screenshots/screen.png");
+		}
+
 		UI::draw();
 
 		screenTime = (int)clock.restart().asMicroseconds();
+	}
+	uvec2 DeferredRenderer::getSize() const
+	{
+		return albedoRoughnessMap.getSize();
 	}
 }

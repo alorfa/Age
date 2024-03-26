@@ -37,5 +37,6 @@ namespace a_game
 
 		void updateSize(uvec2 size);
 		inline bool& changeDeferredRendererDebug() { return deferredRenderer.debug; }
+		inline bool& setMakeScreenshot() { return deferredRenderer.makeScreenshot; }
 	};
 }

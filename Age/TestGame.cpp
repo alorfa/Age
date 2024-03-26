@@ -134,6 +134,11 @@ namespace a_game
 				return e.type == sf::Event::KeyPressed &&
 					e.key.code == sf::Keyboard::C;
 			});
+		_eventHandler.setEvent("screenshot", [](const sf::Event& e)
+			{
+				return e.type == sf::Event::KeyPressed &&
+					e.key.code == sf::Keyboard::F2;
+			});
 	}
 	void TestGame::loadResources()
 	{

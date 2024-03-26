@@ -32,6 +32,8 @@ namespace a_game_engine
 		BloomEffect* bloom = nullptr;
 		vec3 fogColor;
 		float fogDistance = 0.f;
+		bool makeScreenshot = false;
+		uint ssaoSizeDivisor = 2u;
 
 		DeferredRenderer();
 
@@ -39,5 +41,6 @@ namespace a_game_engine
 		void updateSize(const uvec2& newSize);
 		void drawLightSources(const Node& node, const vec3& cameraPos, const mat4& invCamera);
 		void drawScene(const Scene& scene, const Camera& camera, float delta) override;
+		uvec2 getSize() const override;
 	};
 }

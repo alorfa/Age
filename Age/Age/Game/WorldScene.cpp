@@ -235,6 +235,14 @@ namespace a_game
 		const Camera* camera = c ? c : activeCamera;
 
 		rootNode->sortChildren(camera->transform.getPosition(), Node::Transparent);
+
+		if (deferredRenderer.makeScreenshot)
+		{
+			const uvec2 size = activeRenderer->getSize();
+			activeRenderer->clear();
+			//DeferredRenderer screenRenderer;
+			activeRenderer->updateSize(size);
+		}
 		activeRenderer->drawScene(*this, *camera, delta);
 		if (false)
 		//if (activeRenderer == &deferredRenderer)

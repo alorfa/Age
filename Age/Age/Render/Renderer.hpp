@@ -18,6 +18,7 @@ namespace a_game_engine
 		virtual void clear() = 0;
 		virtual void updateSize(const uvec2& newSize) = 0;
 		virtual void drawScene(const Scene& scene, const Camera& camera, float delta) = 0;
+		virtual uvec2 getSize() const = 0;
 
 		virtual ~Renderer() = default;
 	};

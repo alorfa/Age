@@ -61,4 +61,16 @@ namespace a_game_engine
 
 		stream.write(s.c_str(), s.length());
 	}
+	void File::writeToFile(const std::filesystem::path& path, const void* data, int length)
+	{
+		std::ofstream stream;
+		stream.open(path, std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+		if (not stream.is_open())
+		{
+			Logger::logError("Cannot to write binary data to " + path.string());
+			return;
+		}
+
+		stream.write((const char*)data, length);
+	}
 }

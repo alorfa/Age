@@ -13,5 +13,6 @@ namespace a_game_engine
 		static std::vector<ubyte> readAllBytes(const std::filesystem::path& path);
 		static std::string readAllText(const std::filesystem::path& path);
 		static void writeToFile(const std::filesystem::path& path, const std::string& s);
+		static void writeToFile(const std::filesystem::path& path, const void* data, int length);
 	};
 }

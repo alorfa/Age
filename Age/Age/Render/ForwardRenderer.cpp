@@ -115,4 +115,8 @@ namespace a_game_engine
 
 		UI::draw();
 	}
+	uvec2 ForwardRenderer::getSize() const
+	{
+		return colorBuffer.getSize();
+	}
 }

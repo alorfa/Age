@@ -83,6 +83,7 @@ namespace a_game_engine
 	void Pipeline::setUnpackAlignment(int alignment)
 	{
 		glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+		glPixelStorei(GL_PACK_ALIGNMENT, alignment);
 	}
 	void Pipeline::clear(const vec3& color, bool depth, bool stencil)
 	{

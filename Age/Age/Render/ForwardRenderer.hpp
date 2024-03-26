@@ -25,5 +25,6 @@ namespace a_game_engine
 		void clear() override;
 		void updateSize(const uvec2& newSize);
 		void drawScene(const Scene& scene, const Camera& camera, float delta) override;
+		uvec2 getSize() const override;
 	};
 }

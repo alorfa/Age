@@ -113,11 +113,10 @@ namespace a_game_engine
 	}
 	void Image::saveToFile(const std::filesystem::path& path)
 	{
-		auto ext = path.extension().string();
-		if (ext == ".png")
-		{
-			stbi_write_png(path.string().c_str(), info.size.x, info.size.y, TexEnums::getComponentsCount(info.format), info.data, 0);
-		}
+		int len = 0;
+		std::unique_ptr<const ubyte> data{ stbi_write_png_to_mem(info.data, 0,
+			info.size.x, info.size.y, TexEnums::getComponentsCount(info.format), &len) };
+		File::writeToFile(path, data.get(), len);
 	}
 	void Image::createFromTexture(const Texture2D& tex, TextureFormat format)
 	{
