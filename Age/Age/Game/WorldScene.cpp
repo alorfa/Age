@@ -61,6 +61,12 @@ namespace a_game
 	}
 	void WorldScene::load()
 	{
+		/*combineTextures(
+			egd.res / "img/grassAlbedo.png",
+			egd.res / "img/grassRoughness.png",
+			egd.res / "img/grassAlbedoRoughness.png"
+			);
+		return;*/
 		activeCamera = &egd.camera;
 
 		auto& sun = rootNode->addChild();

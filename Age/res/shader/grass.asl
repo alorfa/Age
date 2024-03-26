@@ -20,7 +20,7 @@ void setup()
 	vec4 albedoRoughness = texture(baseColorMap, fragUv);
 	vec4 normalAo = texture(normalMap, fragUv);
     material.base_color = albedoRoughness.rgb;
-    material.roughness = pow(albedoRoughness.a, 0.454545);
+    material.roughness = albedoRoughness.a;
     material.normal = normalize(normalAo.rgb * 2 - 1);
     material.ao = normalAo.a;
 }
