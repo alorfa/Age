@@ -9,7 +9,7 @@ uniform vec3 kernel[KERNEL_SIZE];
 uniform mat4 camera;
 uniform mat4 invCamera;
 uniform vec2 noiseScale;
-const float radius = 0.5;
+const float radius = 0.45;
 const float bias = 0.025;
 
 void main()

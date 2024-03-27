@@ -254,7 +254,9 @@ namespace a_game
 			screenshotRenderer.useShadows = 1;
 			screenshotRenderer.debug = false;
 			screenshotRenderer.disableAo = 0.f;
-			screenshotRenderer.drawScene(*this, *camera, 0.f);
+			Camera tempCamera = *camera;
+			tempCamera.setAspectRatio(uvec2{ 1920, 1080 });
+			screenshotRenderer.drawScene(*this, tempCamera, 0.f);
 			screenshotRenderer.clear();
 			activeRenderer->updateSize(size);
 		}

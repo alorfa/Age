@@ -21,12 +21,10 @@ namespace a_game_engine
 		spotLightPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/spotLight.pasl");
 		iblPass = &egd.shaders.loadPostproc(egd.res / "shader/gbuffer/ibl.pasl");
 		gbuffer.setTexturesCount(2);
-		useShadows = 1;
 	}
 
 	void DeferredRenderer::clear()
 	{
-		//screenFb.removeRenderBuffer();
 		albedoRoughnessMap.destroy();
 		normalMetalnessMap.destroy();
 		screenBuffer.destroy();
@@ -49,7 +47,7 @@ namespace a_game_engine
 		depthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1});
 		finalDepthBuffer.create(Texture2D::Settings{ depthStencil, TextureFormat::AutoQuality, sampler, 1 });
 
-		ssao.create(newSize / (makeScreenshot ? 1u : 2u));
+		ssao.create(makeScreenshot ? newSize * 4u : newSize / 2u);
 		gbuffer.setTexture(0, albedoRoughnessMap);
 		gbuffer.setTexture(1, normalMetalnessMap);
 		gbuffer.setDepthTexture(depthBuffer);

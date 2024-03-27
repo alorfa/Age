@@ -25,9 +25,10 @@ namespace a_game_engine
         ImageInfo img;
         img.format = TextureFormat::R_F16;
         img.size = size;
-        Sampler2DInfo sampler = { TextureFiltering::Near };
-        ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, sampler, 1 });
-        ssaoResult.create(Texture::Settings{ img, TextureFormat::AutoQuality, sampler, 1 });
+        Sampler2DInfo nearSampler = { TextureFiltering::Near };
+        Sampler2DInfo linearSampler = { TextureFiltering::Near };
+        ssaoBuffer.create(Texture::Settings{ img, TextureFormat::AutoQuality, nearSampler, 1 });
+        ssaoResult.create(Texture::Settings{ img, TextureFormat::AutoQuality, linearSampler, 1 });
         fbProcess.setTexture(0, ssaoBuffer);
         fbBlur.setTexture(0, ssaoResult);
     }
