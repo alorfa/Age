@@ -14,6 +14,8 @@ namespace a_game_engine
 				return GL_VERTEX_SHADER;
 			case ShaderModule::Fragment:
 				return GL_FRAGMENT_SHADER;
+			case ShaderModule::Compute:
+				return GL_COMPUTE_SHADER;
 			default:
 				return GL_VERTEX_SHADER;
 			}

@@ -9,7 +9,7 @@ namespace a_game_engine
 	{
 		uint _id = 0;
 	public:
-		enum Type { Undefined, Vertex, Fragment };
+		enum Type { Undefined, Vertex, Fragment, Compute };
 
 		static const std::string glslVersionString;
 

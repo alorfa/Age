@@ -55,7 +55,7 @@ namespace a_game_engine
 
 	VertexBuffer::VertexBuffer()
 	{
-		glGenVertexArrays(1, &_id);
+		glCreateVertexArrays(1, &_id);
 	}
 	VertexBuffer::~VertexBuffer()
 	{
@@ -94,18 +94,19 @@ namespace a_game_engine
 	void VertexBuffer::addFloatBuffer(const float* data, size_t size, 
 		const std::vector<Attributes>& attributes, LoadMode loadMode)
 	{
-		bind();
 		uint vbo;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), data, toOglType(loadMode));
+		glCreateBuffers(1, &vbo);
+		glNamedBufferData(vbo, size * sizeof(float), data, toOglType(loadMode));
+
+		glVertexArrayVertexBuffer(_id, (int)_buffers.size(), vbo, 0, attributes[0].stride * sizeof(float));
 
 		for (int i = 0; i < attributes.size(); i++)
 		{
 			auto& attr = attributes[i];
-			glVertexAttribPointer(attr.attribute, (int)attr.units, GL_FLOAT, GL_FALSE,
-				attr.stride * sizeof(float), (void*)(attr.offset * sizeof(float)));
-			glEnableVertexAttribArray(attr.attribute);
+
+			glEnableVertexArrayAttrib(_id, attr.attribute);
+			glVertexArrayAttribFormat(_id, attr.attribute, attr.units, GL_FLOAT, GL_FALSE, attr.offset * sizeof(float));
+			glVertexArrayAttribBinding(_id, attr.attribute, (int)_buffers.size());
 		}
 		_buffers.push_back(vbo);
 	}
@@ -135,14 +136,13 @@ namespace a_game_engine
 	void VertexBuffer::setIndexBuffer(const std::vector<uint>& buffer, LoadMode loadMode)
 	{
 		bind();
-		uint ebo;
-		glGenBuffers(1, &ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer.data(), toOglType(loadMode));
-
 		if (_indexBuffer)
 			glDeleteBuffers(1, &_indexBuffer);
-		_indexBuffer = ebo;
+
+		glCreateBuffers(1, &_indexBuffer);
+		glNamedBufferData(_indexBuffer, buffer.size() * sizeof(uint), buffer.data(), toOglType(loadMode));
+		glVertexArrayElementBuffer(_id, _indexBuffer);
+
 		vertCount = (int)buffer.size();
 	}
 	void VertexBuffer::draw(DrawMode mode, int begin, int vertCount) const
