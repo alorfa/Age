@@ -11,6 +11,7 @@ namespace a_game_engine
 		std::vector<uint> _buffers;
 	public:
 		int vertCount = 0;
+		int instanceCount = 1;
 
 		enum LoadMode : int { Static, Stream, Dynamic };
 
@@ -20,6 +21,8 @@ namespace a_game_engine
 
 			Attributes() = default;
 			Attributes(uint attribute, uint units, uint stride, uint offset);
+
+			static std::vector<Attributes> getAttributes(const std::vector<uint>& buffer);
 		};
 
 		enum DrawMode : int { Points, Lines, LineLoop, LineStrip, Triangles, TriangleStrip, TriangleFan };
@@ -41,10 +44,18 @@ namespace a_game_engine
 		void addFloatBuffer(const float* data, size_t size,
 			const std::vector<uint>& units, LoadMode loadMode = Static);
 		void setIndexBuffer(const std::vector<uint>& buffer, LoadMode loadMode = Static);
+
+		void addInstanceFloatBuffer(const float* data, size_t size,
+			const std::vector<Attributes>& attributes, LoadMode loadMode = Static);
+		void addInstanceFloatBuffer(const float* data, size_t size,
+			const std::vector<uint>& units, LoadMode loadMode = Static);
+
 		void bind() const;
 
 		void draw(DrawMode drawMode, int begin, int count) const;
 		void draw(DrawMode drawMode = Triangles) const;
+
+		inline const std::vector<uint> getVboIds() const { return _buffers; }
 
 		static const VertexBuffer& getDefFramebuf();
 		static const VertexBuffer& getQuadFramebuffer();
