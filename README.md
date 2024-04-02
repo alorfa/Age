@@ -22,4 +22,10 @@ Age is another 3D graphics engine from noname.
 
 - IBL(Split Sum Approximation)
 
-- Postprocessing(including bloom, various tone mapping functions, gamma correction)
+- Postprocessing(including bloom, ssao, various tone mapping functions, gamma correction)
+
+- Ability to take screenshots in better quality than in the game.
+
+## Example:
+
+<img src="https://github.com/alorfa/Age/blob/main/screenshots/screenshot.png">
